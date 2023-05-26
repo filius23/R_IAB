@@ -1,0 +1,457 @@
+# Inferenzstatistik & Zusammenhangsmaße
+
+```{r inf01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+```
+
+
+```{r readin}
+#| message: false
+#| warning: false
+library(tidyverse)
+
+etb18_kap7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         n_max = 1000,
+                         col_select = c("intnr","zpalter","S1","F231","az","F600_12",
+                                        "m1202","F204","gew2018_hr17","gew2018","F518_SUF",
+                                        "F411_01","S3","Mig")) %>% 
+  mutate(F600_12 = ifelse(F600_12 > 4,NA,F600_12),
+         zpalter = ifelse(zpalter>100,NA,zpalter),
+         m1202 = ifelse(m1202 > 4,NA,m1202))
+```
+
+
+Bisher haben wir die Angaben aus unserem Datensatz immer als fix angesehen. 
+Ziel einer statistischen Auswertung ist aber meistens, Aussagen über die *Grundgesamtheit* oder *Population* zu treffen. 
+Im Fall der ETB 2018 wären das also alle Erwerbstätigen in Deutschland.
+
+Für die grundlegenden inferenzstatistischen Tests helfen uns im wesentlichen 3 Funktionen:
+
++ `t.test()` zur Berechnung von t-Tests
++ `cor.test()` zur Berechnung von Korrelationen und weiterer Zusammenhangsmaße
++ `{effectsize}` zur Berechnung von bspw. Cohen's D 
+
+Neue Pakete:
+```{r pckgs}
+#| eval: false
+install.packages("effectsize") # u.a. Cohen's D berechnen 
+install.packages("correlation") # Korrelationmatrix erstellen
+install.packages("survey") # Gewichtung (weiter unten)
+```
+
+## t-Tests
+
+Eines der zentralen Werkzeuge der grundlegenden Inferenzstatistik ist der t-Test.
+In R steht uns dafür `t.test()` zur Verfügung.
+Mit der Option `mu =` können wir einen Wert für die $H_{A}$ angeben:
+```{r}
+t.test(etb18_kap7$zpalter, mu = 45)  
+```
+
+Ein weiterer typischer Anwendungsfall für t-Tests ist der Gruppenvergleich, dazu geben wir in `t.test()` die zu testende Variable und und nach einer `~`[^tilde2] die Gruppenvariable an. 
+Wir testen hier also auf Altersunterschiede zwischen Männern (`S1`=1, daher group1) und Frauen (`S1`=2, daher group2).
+
+[^tilde2]: Tastaturbefehle: `Alt Gr` + `*` auf Windows. Auf macOS `Alt` + `N` und anschließend ein Leerzeichen, damit die Tilde erscheint.
+```{r ttest1}
+t.test(etb18_kap7$zpalter~etb18_kap7$S1)
+```
+
+Es hat sich als Konvention etabliert, von einem signifikanten Unterschied zu sprechen wenn die Irrtumswahrscheinlichkeit unter 5% liegt. Das bedeutet:
+
+<!-- > *Assuming that the null hypothesis is true and the study is repeated an infinite number times by drawing random samples from the same populations(s), less than 5% of these results will be more extreme than the current result.*[^1] -->
+
+<!-- [^1]: [Failing Grade: 89% of Introduction-to-Psychology Textbooks That Define or Explain Statistical Significance Do So Incorrectly. Advances in Methods and Practices in Psychological Science, 2515245919858072.](https://doi.org/10.1177/2515245919858072) -->
+
+Da hier der p-Wert sehr viel kleiner ist als 0.05 ist (`p-value < 2.2e-16`)[^ehoch], können wir von einen statistisch signifikanten Unterschied sprechen.  
+
+[^ehoch]: `2.2e-16` steht für 2.2 aber mit 16 Nullen vorweg. Das ist Rs Art zu sagen, dass der Wert sehr sehr klein ist.
+
+Standardmäßig bekommen wir einen beidseitigen Test (`"two.sided"`), wir können aber auch einen links- (`"less"`) oder rechtsseitigen (`"greater"`) Test anfordern [mehr dazu](#hypt):
+```{r}
+#| eval: false
+t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided")
+t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "less")
+t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "greater")
+
+```
+
+Für Effektgrößen wie Cohen's D empfiehlt sich das Paket [{effectsize}](https://easystats.github.io/effectsize/index.html):
+
+```{r cohensd}
+library(effectsize)
+cohens_d(etb18_kap7$zpalter~etb18_kap7$S1)
+```
+
+
+<!-- https://github.com/gergness/srvyr/ -->
+<!-- https://federicovegetti.github.io/teaching/heidelberg_2018/lab/sst_lab_day2.html -->
+<!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
+
+
+### [Übung](#ttestue)
+
+## Korrelation {#pearson}
+
+Den Korrelationskoeffizienten können wir in R mit `cor.test()` berechnen:
+
+`F231`: `r str_wrap(attributes(etb18_kap7$F231)$label)`?
+```{r cor1}
+cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
+```
+```{r}
+#| echo: false
+c1 <- cor.test(etb18_kap7$zpalter,etb18_kap7$F231,method = "pearson")
+```
+
+Es handelt sich mit `r sprintf("%.4f",c1$estimate)` also um einen geringen Zusammenhang. Der p-Wert gibt uns auch hier wieder Auskunft über die stat. Signifikanz: mit `r sprintf("%.5f",c1$p.value)` liegt der p-Wert deutlich unter 0,05.
+
+Um eine  Korrelationsmatrix zu erhalten hilft das Paket [{correlation}](https://github.com/easystats/correlation): 
+```{r}
+#| eval: false
+install.packages("correlation")
+```
+
+```{r corrm}
+library(correlation)
+etb18_kap7 %>% select(zpalter,F231,az) %>% 
+  correlation() %>% 
+  summary(.)
+```
+```{r corr_df}
+corr_df <- 
+  etb18_kap7 %>%
+    group_by(S1) %>%
+    select(zpalter,F231,az) %>% 
+    correlation()
+data.frame(corr_df)
+```
+
+<!-- ## Ergebnisse weiterverarbeiten -->
+
+<!-- Die Kennzahlen aus dem Output können wir auch separat aufrufen: -->
+<!-- ```{r} -->
+<!-- ttest1 <- t.test(etb18_kap7$zpalter~etb18_kap7$S1,alternative = "two.sided") -->
+<!-- ttest1$statistic # t-Wert -->
+<!-- ttest1$p.value # p-Wert -->
+<!-- ``` -->
+<!-- Mit `tidy()` aus [{broom}](https://broom.tidymodels.org/) können wir einen `data.frame()` erstellen, der die wesentlichen Parameter enthält: -->
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- library(broom) -->
+<!-- tidy(ttest1) %>%  -->
+<!--   rmarkdown::paged_table() -->
+<!-- ``` -->
+
+<!-- Was hilft uns das?  -->
+
+<!-- Wir können diesen `data.frame()` mit `{ggplot}` visualisieren, indem wir die Konfidenzintervallgrenzen in `geom_pointrange()` angeben: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 1.5 -->
+<!-- library(ggplot2) -->
+<!-- tidy(ttest1) %>%  -->
+<!-- ggplot(aes(y=method,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = conf.low,xmax = conf.high), color = "navy", height = .2) +  -->
+<!--   geom_point(color = "navy", size = 2) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+
+<!-- data.frame(corr_df) %>%  -->
+<!--   ggplot(aes(y=Parameter1,x=r, color = Parameter2)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_errorbarh(aes(xmin = CI_low,xmax = CI_high), height = .2) +  -->
+<!--   geom_point(size = 2) + -->
+<!--   facet_wrap(~Group) -->
+<!-- ``` -->
+
+<!-- Wir können mit `bind_rows()` auch mehrere Tests zu einem `data.frame` zusammenfügen: -->
+<!-- ```{r} -->
+<!-- ttest_m <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==1], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==1],method = "pearson") -->
+
+<!-- ttest_w <-  -->
+<!--   cor.test(etb18_kap7$zpalter[etb18_kap7$S1==2], -->
+<!--            etb18_kap7$F231[etb18_kap7$S1==2],method = "pearson") -->
+
+<!-- test_df2 <- bind_rows(tidy(ttest_m), -->
+<!--                       tidy(ttest_w),  -->
+<!--                       .id = "S1") # Variable S1 erstellen als Identifikator -->
+
+<!-- test_df2 -->
+<!-- ``` -->
+
+<!-- Das können wir jetzt wieder plotten: -->
+<!-- ```{r} -->
+<!-- #| out-width: "80%" -->
+<!-- #| fig-height: 2 -->
+<!-- ggplot(test_df2,aes(y=S1,x=estimate)) + -->
+<!--   geom_vline(aes(xintercept = 0),linetype = "dashed") + -->
+<!--   geom_pointrange(aes(xmin = conf.low,xmax = conf.high), color = "navy") -->
+<!-- ``` -->
+
+
+
+## Weitere Zusammenhangsmaße:
+
+### Rangkorrelation & Kendall's $\tau$
+   
+Ein klassisches ordinales Merkmal ist der höchste Ausbildungsabschluss in `m1202`. 
+Wir sehen uns den (möglichen) Zusammenhang zwischen dem höchsten Ausbildungsabschluss `m1202` und `F600_12` an:
+
+```{r ord_vars}
+#| echo: false
+#| warning: false
+#| message: false
+library(kableExtra)
+tribble(~"v",~"l",
+          "F600_12", "Häufigkeit: unter Lärm arbeiten",
+          "1" , "häufig",
+          "2" , "manchmal",
+          "3" , "selten",
+          "4" , "nie"
+        ) %>% 
+    kable() %>% 
+  kable_styling(bootstrap_options = "condensed", full_width = F,font_size = 10) %>% 
+  column_spec(1,monospace = TRUE) %>% 
+  row_spec(c(1), bold = T, background = "#F2F2F2FF") %>% 
+    row_spec(0, color = "white")
+```
+
+Für den Spearman-Rangkorrelationskoeffizienten können wir `method = "spearman"` nutzen:
+```{r spearm1}
+#| warning: false 
+#| eval: false
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "spearman")
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "spearman")
+```
+
+Ein weiteres Zusammenhangsmaß für ordinale Variablen sind Konkordanzmaße wie Kendall's $\tau$, mit der Option `method = "kendall"`:
+```{r s07_6}
+#| eval: false
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12, method = "kendall")
+```
+Hier wird Kendall's $\tau_b$ ausgegeben - [siehe Anhang für Kendall's $\tau_a$](#corss)
+
+### $\chi^2$ & Cramér's $v$ {#chi2}
+
+Mit `chisq.test()` bekommen wir $\chi^2$ ausgegeben, diese müssen wir jedoch auf ein `xtabs()`-Objekt anwenden (`F204` Mehrarbeitsvergütung und `S1` Geschlecht)
+```{r}
+tab1 <- xtabs(~ F204 + S1, data = etb18_kap7)
+chisq.test(tab1)
+```
+
+Für Cramér's $v$ können wir wieder auf `{effectsize}` zurückgreifen:
+```{r}
+library(effectsize)
+cramers_v(etb18_kap7$F204,etb18_kap7$S1)
+```
+
+[Weitere Maße](#corrs)
+
+### [Übung](#corr)
+
+## Gewichtung 
+
+
+> Bei der Datenanalyse ist man oft mit einer Stichprobe aus einer größeren Population konfrontiert und man möchte aus dieser Stichprobe Rückschlüsse auf die größere Population ziehen. Die meisten statistischen Verfahren für diese sog. „Inferenzstatistik“ beruhen dabei auf der Annahme, dass die Stichprobe eine einfache Zufallsstichprobe ist. Bei einer solchen Stichprobe gelangen alle Elemente der Grundgesamtheit mit der gleichen Wahrscheinlichkeit in die Stichprobe. In der Praxis sind solche Stichproben aber die große Ausnahme. Häufig haben bestimmte Gruppen von Personen höhere Auswahlwahrscheinlichkeiten als andere. [Kohler/Kreuter, S.81](https://doi.org/10.1515/9783110469509)
+
+
+
+Gewichte sind ein häufig verwendetes Gegenmittel. 
+Die einfachste Variante für eine Gewichtung ist die Option  `wt=` in `count()`:
+```{r}
+etb18_kap7 %>% 
+  count(S1,m1202,wt = gew2018)
+```
+
+Für umfangreichere Anwendungen stehen in R stehen die Pakete [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) und das darauf aufbauende [`{srvyr}`](https://cran.r-project.org/web/packages/srvyr/vignettes/srvyr-vs-survey.html) zur Verfügung.
+```{r}
+#| eval: false
+install.packages("survey")
+```
+
+
+Zunächst verwenden wir `svydesign()`, um die Gewichtung festzulegen. 
+Im weiteren stellt [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) dann zahlreiche Funktionen zur Verfügung, die eine gewichtete Variante der basis-Befehle sind - bspw. `svymean()` und `svytable()`:
+```{r}
+#| include: false
+etb18_kap7 %>% summarise(mean = weighted.mean(zpalter,w = gew2018))
+```
+
+```{r}
+#| message: false
+#| warning: false
+library(survey)
+etb18_kap7_weighted <- svydesign(id      = ~intnr,
+                            weights = ~gew2018,
+                            data    = etb18_kap7)
+
+svymean(~zpalter, etb18_kap7_weighted, na.rm = TRUE)
+mean(etb18_kap7$zpalter, na.rm = TRUE)
+```
+Für Tabellen gibt es in `{survey}` auch eine Funktion: 
+```{r}
+svytable(~S1+m1202,etb18_kap7_weighted)
+xtabs(~S1+m1202,etb18_kap7)
+```
+
+
+Für [Regressionsmodelle](#reg) gibt es bspw. `survey::svyglm()`
+
+<!-- Lektüre: [Kiesl, H. (2014). Gewichtung. In N. Baur & J. Blasius (Eds.), Handbuch Methoden der empirischen Sozialforschung (pp. 349–356). Springer Fachmedien Wiesbaden.](https://doi.org/10.1007/978-3-531-18939-0_24) -->
+
+
+
+## Übungen
+
+### Übung 1 {#ttestue}
+
+```{r}
+#| eval: false
+etb18_ue7 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         n_max = 1000,
+                         col_select = c("intnr","S1","az","F518_SUF","m1202","F411_01","gew2018")) %>% 
+  mutate(across(matches("m1202|F411_01"), ~ifelse(.x > 4|.x<0,NA,.x)),
+         F518_SUF = ifelse(F518_SUF>99990,NA,F518_SUF)) # missings in m1202 mit NA überschreiben
+```
+
+Testen Sie die Hypothese, dass ein signifikanter Unterschied in der Arbeitszeit (`az`) zwischen Männern und Frauen besteht (`S1`). Beide Variablen haben keine Missings - Sie können direkt los legen.
+
+Sehen Sie sich die Informationen an, welche `t.test()` erstellt: legen Sie das Ergebnis des Tests als Objekt ab (`test1 <- ...`) und sehen Sie sich die Informationen unter `test1$` an (drücken Sie die `↹` Taste).
+
+Berechnen Sie das Cohen's d für diesen Zusammenhang.
+
+
+
+### Übung 2 {#corr}
+
++ Untersuchen Sie die Korrelation zwischen der Wochenarbeitszeit (`az`) und dem Einkommen (`F518_SUF`) der Befragten.
+
++ Die Missings in `F518_SUF` sind mit dem Befehl oben schon ausgeschlossen, `az` hat keine Missings.
+
++ Berechnen Sie die Rangkorrelation für den Zusammenhang zwischen der Häufigkeit von starkem Termin- oder Leistungsdruck `F411_01` und der Ausbildungsvariable `m1202`.
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+# library(gt)
+# vals1 <- 
+#   haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>% 
+#   select(starts_with("F411_01")) %>% 
+#     map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+#     pivot_longer(-var) %>% 
+#     pivot_wider(names_from = value,values_from = name) 
+#     
+# 
+# haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>% 
+#   select(starts_with("F411_01")) %>% 
+#   map_dfr(.,~attributes(.x)$label) %>% 
+#       t(.) %>% data.frame() %>% 
+#       rownames_to_column(.,var = "var") %>%  
+#   left_join(vals1) %>% 
+#   gt() %>% 
+#   tab_options(  table.font.size = 12) %>% 
+#   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+
+library(flextable)
+library(officer)
+vals1 <- 
+haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>% 
+  select(matches("F411_01|m1202")) %>% 
+  map_dfr(.,~attributes(.x)$labels %>% enframe(value = "value"),.id = "var")
+
+haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>% 
+  select(matches("F411_01|m1202")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+  t(.) %>% data.frame() %>% 
+  rownames_to_column(.,var = "var") %>% 
+  left_join(vals1) %>% 
+  relocate(value,.after = 2) %>% 
+  flextable() %>% 
+  merge_v(j=1:2) %>% 
+  font(fontname = "Roboto") %>% 
+  font(fontname = "Azeret Mono",j = 1) %>%
+  border_remove() %>% 
+  hline(i = 5,j = 3:4,border = fp_border(width = .1,color = "grey50")) %>% 
+  hline_top(border = fp_border(width = .1,color = "grey50")) %>% 
+  hline_bottom(border = fp_border(width = .1,color = "grey50"))
+```
+
+<!-- + Berechnen Sie die Rangkorrelation getrennt für Männer und Frauen (Hinweis: die Rangkorrelation können Sie mit in `{correlation}` mit `correlation(method = "spearman")` berechnen)  -->
+
+
+<!--   + So können Sie `educ` in `etb18_kap7` erstellen und die Missings in `F411_01` überschreiben und Erstellen Sie einen kleineren Datensatz, indem Sie die ersten 300 Zeilen auswählen: -->
+<!-- ```{r, eval =F} -->
+<!-- etb18_kap7_small <-  -->
+<!--   etb18_kap7 %>%  -->
+<!--   mutate(educ = case_when(S3 %in% 2:4 ~ 1, -->
+<!--                           S3 %in% 5:6 ~ 2, -->
+<!--                           S3 %in% 7:8 ~ 3), -->
+<!--          F411_01 = ifelse(F411_01 > 4,NA,F411_01)) %>%  -->
+<!--   slice(1:300) -->
+<!-- ``` -->
+<!--   + Erstellen Sie eine Kreuztabelle aus `educ` und `F411_01` -->
+<!--   + Berechnen Sie Spearman's $\rho$, Kendall's $\tau$ und Cramér's $v$ auf Basis von `etb18_kap7_small`. -->
+
+
+### Übung 3 {#weight}
+
++ Legen Sie die Gewichtung auf Basis von `gew2018` an.
++ Berechnen Sie den Mittelwert für den Bruttoverdienst `F518_SUF` mit und ohne Gewichtung.
+
+
+
+<!-- + Erstellen Sie eine Kontingenztabelle für `gkpol` und `Mig` - einmal gewichtet und einmal ohne Gewichte. Sehen Sie die Unterschiede? -->
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- #| warning: false -->
+<!-- #| message: false -->
+<!-- library(gt) -->
+<!-- etb18_kap7 %>% select(matches("gkpol|Mig")) %>%  -->
+<!--   map_dfr(.,~attributes(.x)$labels,.id = "var") %>%  -->
+<!--   pivot_longer(-var) %>%  -->
+<!--   filter(!is.na(value)) %>%  -->
+<!--   gt() %>%  -->
+<!--   tab_options(  table.font.size = 12) %>%  -->
+<!--   tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var)) -->
+<!-- ``` -->
+
+## Anhang
+
+### Weitere Korrelationsmaße {#corrs}
+
+Kendall's $\tau_a$, welches im Nenner alle Paarvergleiche berücksichtigt, können wir mit `KendallTauA()` aus dem Paket `DescTools` berechnen:
+```{r s07_7, eval = F}
+install.packages("DescTools")
+```
+```{r s07_8}
+#| warning: false
+library(DescTools)
+KendallTauA(etb18_kap7$m1202,etb18_kap7$F600_12)
+KendallTauB(etb18_kap7$m1202,etb18_kap7$F600_12) # entspricht in method = "kendall" cor.test()
+cor.test(etb18_kap7$m1202,etb18_kap7$F600_12,method = "kendall")
+```
+Der Wert von Kendall's $\tau_a$ ist niedriger als von Kendall's $\tau_b$, da hier der Nenner durch die Berücksichtigung *aller* möglichen Paarvergleiche größer wird, der Zähler aber für beide Varianten von Kendall's $\tau$ gleich definiert ist. 
+
+
+Eine andere Alternative, welche auch beim Vorliegen von Bindungen den vollen Wertebereich [-1,1] erreichen kann ist Goodman & Kruskal's $\gamma$. Dieses können wir mit dem Befehl `GoodmanKruskalGamma` aus dem Paket `{DescTools}` berechnen:
+```{r s07_9}
+library(DescTools)
+GoodmanKruskalGamma(etb18_kap7$m1202,etb18_kap7$F600_12)
+```
+Auch Goodman & Kruskal's $\gamma$ deutet auf einen negativen Zusammenhang hin, hier ist die Stärke aber deutlich höher. Dies ist auf die Berücksichtigung der Bindungen zurückzuführen: hier werden alle Bindungen ausgeschlossen, also auch Paarvgleiche mit Bindungen nur auf  einer Variable. Es reduziert sich also der Nenner, somit ergibt sich im Ergebnis ein höherer Koeffizient für Goodman & Kruskal's $\gamma$ als für Kendall's $\tau_b$. 
+
+
+[Hier findet sich eine Liste weiterer Kennzahlen, die sich mit {correlate}](https://easystats.github.io/correlation/articles/types.html) berechnen lassen.

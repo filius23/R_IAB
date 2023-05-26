@@ -1,0 +1,197 @@
+# Häufige Fehlermeldungen {#rerror}
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(tweetrmd)
+```
+
+Die Arbeit in R ist - wie in jedem Datenanalyseprogramm - ein Hangeln von Fehlermeldung zu Fehlermeldung. 
+Das kann gerade zu Beginn frustrierend sein, bis die tiefere Bedeutung von Fehlermeldungen und deren Ursachen etwas deutlicher werden. 
+Die folgende Auflistung enthält einige der häufigsten Fehlermeldungen und ihre (wahrscheinlichsten) Ursachen. 
+Die Liste lehnt sich stark an die die großartige Zusammenstellung von [Nick C. Huntington-Klein](https://nickch-k.github.io/DataCommSlides/Lecture_04_Common_R_Problems.html) an.
+
+## Einige generelle Tipps zur Fehlervermeidung 
+
+1. Führen Sie Ihren Code Zeile für Zeile aus. Prüfen Sie zwischen den einzelnen Zeilen die Ausgabe und stellen Sie sicher, dass sie so aussieht, wie Sie es erwarten. Oft treten Fehler auf, weil eine frühere Codezeile nicht das getan hat, was wir beabsichtigt haben. Wenn Sie dort keine Probleme feststellen, machen Sie weiter, bis Sie auf die Fehlermeldung stoßen.
+1. Lesen Sie die Fehlermeldung und schauen Sie, ob Sie sich einen Reim darauf machen können
+1. Selbst wenn du die Meldung nicht verstehst, gibt sie dir oft einen Hinweis auf die Ursache des Problems, so dass du weißt, wo du nachschauen musst, um deinen Code zu überprüfen
+1. Google: oftmals hilft es eine Fehlermeldung oder ein Problem ("How to .... in R") zu googeln. Neben stackoverflow gibt es unzählige Blogs, Tutorials und andere Hilfeseiten für R in hervorragender Qualität - und sie sind (fast) immer kostenlos!
+
+```{r}
+#| echo: false
+tweetrmd::include_tweet("https://twitter.com/hioberman/status/1566699138309410817")
+```
+
+R zeigt den Befehl immer bis zum Fehler an:
+
+```{r}
+#| error: true
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("F518_SUF","az","S1","m1202")) %>% 
+  mutate(across(dplyr::everything(),~ifelse(.x<0 | .x > 99998, NA, . x)))
+```
+
+Hier ist also `. x` "unerwartet" - es hat sich ein  Leerzeichen zu viel eingeschlichen. 
+
+## There is no package called
+
+Die Fehlermeldung `there is no package called 'XXXX'` erscheint, wenn Sie ein Paket bspw. mit `library()` laden, diese Paket allerdings nicht installiert ist.
+
+Lösungsvorschläge:
+
+1. Tippfehler? 
+1. Noch nicht installiert? Eventuell ist das Paket nicht (richtig) installiert: `install.packages('packagename')` 
+
+## Could not find function
+
+Die Fehlermeldung `could not find function "XXX"` weist darauf hin, dass R die genannte Funktion nicht finden kann. 
+
+Lösungsvorschläge:
+
+1. Tippfehler? Ist die Funktion richtig geschrieben?
+1. Ist die Funktion aus einem Paket? Ist das Paket richtig geladen? Pakete müssen nach jedem Neustart von R neu geladen werden. Und: Das Knitten einer RMarkdown-Datei findet in einer neuen Umgebung statt - d.h. hier müssen alle Pakete und Daten geladen werden, auch wenn Sie in der Session bereits geladen sind.
+
+## Object not found
+
+`object 'NAME' not found` weißt darauf hin, dass ein Objekt aufgerufen wurde, das nicht existiert.
+
+Lösungsvorschläge:
+
+1. Tippfehler? Ist der Objektname richtig geschrieben?
+1. Fehler in der Reihenfolge? Wird das Objekt wirklich *erst* erstellt, bevor es weiterverwendet wird? Das hier wird nicht funktionieren:
+```{r}
+#| eval: false
+max(x)
+x <- c(2.54,2,5,12,2,3,412,23,12)
+```
+
+## Object of type 'closure' is not subsettable
+
+This is the most aggravating and least-informative R error. "Subsettable" is a hint though - you're trying to take a subset of something (such as picking an element from a vector, or picking a column from a data set), but the thing you're doing it to is a "closure" that you can't do that to.
+
+Most commonly, this is a case of accidentally giving the name of a function where you mean to give the name of a vector or data frame. For example:
+
+```{r, eval = FALSE}
+mean_data <- tibble(person = c('Me','You'), meanness = c(1000,999))
+# Now let's look at that meanness variable, but oops, I'm referring to the function mean() instead of my data mean_data
+mean$meanness
+# Error in mean$meanness : object of type 'closure' is not subsettable
+```
+
+Lösungsvorschläge:
+
+1. See where it says the error is "in" - that's the place where you've referred to the wrong thing. fix it!
+
+
+## Column doesn't exist
+
+If you get an error like `column 'columnname' doesn't exist`, that means it's trying to refer to a column name that is not actually in your data.
+
+Lösungsvorschläge:
+
+1. Did you spell the column's name correctly? Maybe you made a typo.
+1. Are you referring to the proper dataset? Maybe you created the variable in `my_data2` but you're trying to access it in `my_data`. 
+1. Does your column name have spaces or other strange characters in it like dashes? If so, in many applications (anywhere you're not treating the column name as a string) you have to surround the column name in backticks (`r "\u0060"`) so it knows where the column name starts and ends.
+1. Did you perhaps drop the column before trying to refer to it? For example, in the below code, the `group_by() %>% summarize()` will only keep columns named in the `group_by()` or in the `summarize()`. So even though the `mpg` column was there at the start, it no longer is by the time we refer to it.
+
+```{r, eval = FALSE}
+mtcars %>%
+  group_by(am) %>%
+  summarize(mean_hp = mean(hp)) %>%
+  mutate(hp_by_mpg = mean_hp/mpg)
+```
+
+## Warning: Package was compiled with R version
+
+```{r, eval = F}
+Warnmeldung:
+
+Paket ‘XXX’ wurde unter R Version 4.1.2 erstellt
+```
+
+
+If you load a package and get a warning that looks like `Warning: packagename was compiled with R version...`, that just means that the package was compiled using a slightly newer version of R than yours. It's generally not a problem as long as you have a somewhat-recent version of R.
+
+Lösungsvorschläge:
+
+1. Ignorieren
+1. R auf die neueste Version updaten 
+
+## Rtools is required to build packages from source
+
+If you are installing packages, you may be asked whether you'd like to build packages from source. If you say "Yes", but you do not have Rtools installed, you will get an error, and the package won't install properly.
+
+Lösungsvorschläge:
+
+1. When asked whether you want to install packages from source, say "No."
+1. Install Rtools before installing packages. The easiest way to do this is to install the **installr** package, and then run `installr::install.rtools()`.
+
+## File does not exist, or No such file or directory
+
+If you get an error like `'filename.csv' does not exist`, that means that you're trying to load a file, but the file is not in the location you're telling R to look.
+
+Lösungsvorschläge:
+
+1. Did you spell the filename correctly? Maybe you made a typo. Or, perhaps, you're trying to open an Excel fie (`.xlsx`) but telling R to look for a CSV (`.csv`). Or you wrote "file.csv" but the file is "file (1).csv". 
+1. Is the file perhaps open in Excel? Sometimes, Microsoft Office will hold files hostage and not let them be opened in other programs while they're open in Office. Close the Excel window that has the file open.
+1. **Most often**, this is a working directory issue. If you tell R to look for `'filename.csv'`, it will look for that file in the *working directory*. Or, if you tell it to look for `'data/filename.csv'`, it will look for a folder called "data" in the working directory, and for filename.csv inside of that. In recent versions of RStudio, the current working directory is listed right on top of the Console. Did you check whether the file is actually in that folder? If you're running RMarkdown, it will set the working directory to the folder where the .RMD file is located. Did you put the file in the right spot relative to where the RMD is stored? See my [video on filepaths](https://www.youtube.com/watch?v=NG7Y0kkGR8g) for more help.
+
+## Klammern, Kommata, Punkte
+
+Just in general, a very large percentage of errors students come to me with occur simply because they made a typo, or didn't balance their parentheses (pairing each ( with a )).
+
+Lösungsvorschläge:
+
+1. If you get an error message of any kind, read the relevant part of the code carefully to make sure you didn't make a typo
+1. Avoid coding where you have lots and lots of nested parentheses (this is something that **tidyverse** piping we learn is intended to avoid). Then, for whatever parentheses you do have, click on each one in RStudio - it will highlight its "partner" or show where there is a missing partner.
+
+## Ergebnis `NA`
+
+Fehlende Werte sind Teil eines jeden Datensatzes. Wir haben oben kennengelernt, dass in R `NA` für fehlende Angaben steht.
+R geht mit `NA` etwas anders um als bspw. Stata;
+Sobald ein Wert `NA` ist, gibt R als Ergebnis `NA` aus:
+```{r 03NAdemo}
+werte <- c(1,2,NA)
+mean(werte)
+min(werte)
+```
+
+*Lösung*
+Mit der Option `na.rm = TRUE` werden alle `NA` Werte vor der Berechnung ignoriert;
+
+```{r 03NAdemo2}
+mean(werte,na.rm=TRUE)
+min(werte,na.rm=TRUE)
+```
+
+
+## Numerische Variablen und strings
+
+When you put something in quotes, like '1', it will treat it as a *string variable* - a set of characters to be read as text.
+
+If you want a variable to be treated as a number, **do not put it in quotes.** This way lies madness.
+
+R is pretty loose, and will allow you to do things like ask whether `'2' > 1`, and will answer yes. This *feels* like it's okay to put the 2 in quotes. But it's not. What R is doing is saying "oof... I can't compare a number to a letter, but you're asking me to. I'll just convert this number to a string as well, so I'm really doing `'2' > '1'`, and since '2' is alphabetically after '1', that's true, which is the desired result. Great! Except it also means that `'02' > 1` is false, since '02' is alphabetically before '1'. Same with `'120'>'20'` being false. Oops.
+
+Lösungsvorschläge:
+
+1. If it's a number, and you want it treated like a numeric value, don't put quotes around it.
+
+
+## `<-`, `=` und `==`
+
+`<-` is for assigning objects. You can say `a <- 1`, and that will create an object `a` with the value `1` inside.
+
+`=` *can also* be for assigning objects, just like `<-`, but is also for assigning arguments and options in functions. In the function `mean()`, which takes the argument `x`, I can say `mean(x = 1:10)` but not `mean(x <- 1:10)`.
+
+`==` is for *checking* whether two things are equal. `a == 1` will check whether the object `a` is equal to `1`, and will return `TRUE` if it is, or `FALSE` otherwise.
+
+Commonly, this will cause problems in cases like this:
+
+```{r, eval = FALSE}
+data %>%
+  filter(state = "WA")
+```
+
+which we might expect to filter our data to rows that are in the state of Washington, but instead will try to assign a new object `state` to be equal to `"WA"`.
+
+

@@ -1,0 +1,692 @@
+# Tabellenexport
+
+Eure Zeit ist zu wertvoll, um Tabellen per Hand zu erstellen! 
+
+Diese Pakete werden gebraucht, alle sind mit dem entsprechenden `install.packages("")` installierbar:
+```{r tab01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(janitor) # kreuztabellen
+library(gt)
+library(flextable)
+library(tidyverse)
+library(modelsummary)
+library(officer) # eigentlicher Word-Export
+```
+
+```{r, message = F}
+#| eval: false
+library(dplyr) # für die Datenvorbereitung
+library(modelsummary) # Tabellen vorbereiten
+library(skimr) # Tabellen vorbereiten
+library(janitor) # kreuztabellen
+library(flextable) # Formatierung der Tabelle für Word
+library(officer) # eigentlicher Word-Export
+```
+
+
+
+
+Zu diesen Variablen sollen folgende deskriptiven Übersichtstabellen erstellt und als Word-Dokument exportiert werden:
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+
+haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("F518_SUF","az","S1","m1202"),n_max = 1) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+
+Wir starten mit einem Ausschnitt der ETB 2018:
+
+```{r}
+etb18_kap14 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("F518_SUF","az","S1","m1202")) %>% 
+  mutate(across(matches("F518|m1202"),~ifelse(.x<0 | .x >= 99998, NA, .x))) %>% 
+  na.omit() # alle Zeilen mit (mind.) 1 NA löschen
+```
+
+
+
+
+## `{flextable}` 
+
+Mit dem Paket `{flextable}` können wir `data.frame`s als Tabelle in eine Word-Datei exportieren, `{officer}` erweiteret diese Funktionen speziell für den Export in Word:
+```{r, eval = F}
+install.packages("flextable")
+library(flextable)
+install.packages("officer")
+library(officer)
+```
+
+```{r}
+df1 <- data.frame(x1= c(2,2), y1 = c(0,1))
+df1
+```
+
+`{flextable}` stellt uns eine Reihe an Funktionen zur Formatierung zur Verfügung, um die Darstellung des `data.frame` zu anzupassen:
+```{r}
+flextable(df1) %>% 
+  border_remove() %>% 
+  hline_top(border = fp_border(color = "orange")) %>%
+  hline(i=1,border = fp_border(color = "blue",style = "dotted")) %>% 
+  set_header_labels(x1 = "Anderes Label") %>% 
+  add_header_row(values = c("Überschrift",""),colwidths = c(1,1)) %>% 
+  autofit()
+```
+[Hier](https://ardata-fr.github.io/flextable-book/) finden sich weitere Infos zu `flextable`, u.a. können bspw. die Trennlinien dünner gemacht werden oder eine andere Farbe angegeben werden.  [Hier](https://davidgohel.github.io/flextable/reference/index.html) finden sich alle vefügbaren Funktionen.
+
+## Deskription
+
+### Verteilungstabellen für metrische Variablen
+
+Für die metrischen Merkmale kennen wir ja das `summary()`:
+```{r}
+summary(etb18_kap14$F518_SUF)
+summary(etb18_kap14$az)
+```
+Eine einfach Möglichkeit, diese `summary()` untereinander anzuordnen, ist `summarise` in Kombination mit `pivot_longer()` zu verwenden:
+
+```{r}
+etb18_kap14 %>% 
+  select(az,F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(min = min(value,na.rm = T),
+            mean = mean(value,na.rm = T),
+            max = max(value,na.rm = T))
+```
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- etb18_kap14 %>%  -->
+<!--   select(az,F518_SUF) %>%  -->
+<!--   skim() %>%  -->
+<!--   as_tibble() %>%  -->
+<!--   rename_with(~str_remove(.x,"numeric\\.")) %>%  -->
+<!--   rmarkdown::paged_table() -->
+<!-- ``` -->
+
+```{r}
+etb18_kap14 %>% 
+  select(az,F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(Min  = min(value,na.rm = T),
+            Mean = mean(value,na.rm = T),
+            Max  = mean(value,na.rm = T)) %>% 
+  flextable()
+```
+
+```{r}
+met_ft <- 
+  etb18_kap14 %>% 
+  select(az,F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(Min  = min(value,na.rm = T),
+            Mean = mean(value,na.rm = T),
+            Max  = mean(value,na.rm = T)) %>% 
+  flextable() %>% 
+  autofit()
+```
+
+Der eigentliche Export ist dann mit `save_as_docx`, wo wir eine Überschrift und mit `path` die Zieldatei  angeben können:
+```{r,eval = F}
+save_as_docx("Metrische unab. Variablen" = met_ft, path = "./results/Met_UVs_Tabelle.docx")
+```
+```{r word_tab, echo = F, out.height="55%",out.width="50%", fig.align="center"}
+knitr::include_graphics("./pic/112_met_tab.png")
+```
+
+:::{.callout-tip collapse="true"}
+# Aussagekräftigere Variablenbeschriftung mit `rename()` & Nachkommastellen
+
+Um den Variablen in der Tabelle aussagekräftigere Namen zu geben, benennen wir sie einfach mit `rename()` um.
+Falls wir mehr als ein Wort als Variablenname/späteres Label vergeben wollen, setzen wir die Wörter in `'``'`.
+
+Mit `digits =` in `colformat_double()` können wir die Anzahl der Nachkommastellen setzen:
+```{r}
+  etb18_kap14 %>% 
+  select(`Arbeitszeit umfangreichste Tätigkeit` =az,Bruttoverdienst=F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(Min  = min(value,na.rm = T),
+            Mean = mean(value,na.rm = T),
+            Max  = mean(value,na.rm = T)) %>% 
+  flextable() %>% 
+  colformat_double(digits = 2) %>% 
+  autofit()
+```
+
+::: 
+
+### Häufigkeitsauszählungen 
+
+
+```{r}
+etb18_kap14 %>%  
+  select(S1,m1202) %>% 
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+  pivot_longer(everything(),names_to = "variable") %>% 
+  count(variable,value)
+```
+
+```{r}
+etb18_kap14 %>%  
+  select(S1,m1202) %>% 
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+  pivot_longer(everything(),names_to = "variable") %>% 
+  count(variable,value) %>% 
+  flextable()
+```
+
+```{r}
+kat_ft <- 
+  etb18_kap14 %>%  
+    select(S1,m1202) %>% 
+    mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+    pivot_longer(everything(),names_to = "variable") %>% 
+    count(variable,value)  %>% 
+  flextable()
+```
+
+Für den Export können wir dann wieder `save_as_docx()` verwenden:
+```{r,eval = F}
+save_as_docx("Kategoriale unab. Variablen" = kat_ft, path = "./results/Kat_UVs_Tabelle.docx")
+```
+```{r word_tabkat, echo = F, out.height="55%",out.width="50%", fig.align="center"}
+knitr::include_graphics("./pic/112_kat_tab.png")
+```
+
+### [Übung](#tabue1) 
+
+
+## Regressionstabellen
+
+Für Regressionstabellen können wir mit `{modelsummary}` eine `{flextable}`-Tabelle erstellen:
+
+```{r}
+etb18_kap14_reg_df <- 
+  etb18_kap14 %>%
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+         m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni")))
+
+m1 <- lm(F518_SUF ~ az + S1, data = etb18_kap14_reg_df)
+m2 <- lm(F518_SUF ~ az + S1 + m1202, data = etb18_kap14_reg_df)
+modelsummary(list("Modell 1"=m1,"Modell 2"=m2),
+                                output = "flextable",gof_omit = "IC|Log|RMS",
+                           coef_rename = c("(Intercept)"="Intercept",
+                                           "S1Frauen" = "Frauen",
+                                           "m1202dual/schul." = "Duale/Schulische Ausbildung",
+                                           "m1202Aufst." = "Aufstiegsfortbildung",
+                                           "m1202FH/Uni" = "FH/Uni-Abschluss"),
+                           stars = T,fmt =2)
+```
+
+### Referenzkategorien einfügen {#refcats}
+
+Um die Referenzkategorie für kategoriale Variablen kenntlich zu machen, können wir den Hinweis *ref.* mitaufanzeigen. 
+
+Dazu können wir mit Hilfe des Arguments `add_rows` eine zusätzliche Zeile für die Referenzkategorie der Variable `S1` einfügen. 
+Zunächst erstellen wir einen `data.frame`, welcher neben den Modellnamen die Koeffizientennamen sowie die einzufügenden Werte enthält. Mit `tribble` aus dem Paket `tibble` lässt sich das einfach bewerkstelligen: wir können die Zeilen und Spalten gleich so aufschreiben, wie wir sie haben möchten:
+
+```{r}
+library(tibble)
+ref_rows <- tribble( ~ term,    ~ "Modell 1",  ~ "Modell 2",
+                     "Männer",    'ref.',   'ref.')
+attr(ref_rows, 'position') <- 5 # Zeile angeben 
+
+modelsummary(
+  list("Modell 1" = m1, "Modell 2" = m2),
+  output = "flextable",
+  gof_omit = "IC|Log|RMS",
+  coef_rename = c(
+    "(Intercept)" = "Intercept",
+    "S1Frauen" = "Frauen",
+    "m1202dual/schul." = "Duale/Schulische Ausbildung",
+    "m1202Aufst." = "Aufstiegsfortbildung",
+    "m1202FH/Uni" = "FH/Uni-Abschluss"
+  ),
+  add_rows = ref_rows,
+  stars = T,
+  fmt = 2
+) %>% autofit()
+```
+
+**Das funktioniert auch für mehrere Referenzkategorien:**
+```{r}
+ref_rows2 <- tribble(~term,    ~"Modell 1",  ~"Modell 2",
+                "Männer",    'ref.',   'ref.',
+                "keine Ausbildung",    '',   'ref.',
+                )
+attr(ref_rows2, 'position') <- c(5,8) # Zeile angeben 
+
+modelsummary(
+  list("Modell 1" = m1, "Modell 2" = m2),
+  output = "flextable",
+  gof_omit = "IC|Log|RMS",
+  coef_rename = c(
+    "(Intercept)" = "Intercept",
+    "S1Frauen" = "Frauen",
+    "m1202dual/schul." = "Duale/Schulische Ausbildung",
+    "m1202Aufst." = "Aufstiegsfortbildung",
+    "m1202FH/Uni" = "FH/Uni-Abschluss"
+  ),
+  add_rows = ref_rows2,
+  stars = T,
+  fmt = 2
+)
+```
+
+
+:::{.callout-tip collapse="true"}
+# Tipparbeit beim Umbenennen sparen mit `coef_rename =`
+
+Mit Hilfe der Option `coef_rename =` und einer `function()` können wir die Variablenumbenennung auch automatisieren. 
+**[Mehr dazu hier](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html#coef_rename)** 
+Dazu erstellen wir eine Funktion erstellen, welche bspw. mit `gsub()`  Variablennamen durch die gewünschte Beschriftung ersetzt:
+```{r}
+
+rename_function <- function(old_names) {
+  new_names <- 
+    gsub("m1202", "Ausbildung: ", old_names) %>% 
+    gsub("S1", "Geschlecht: ",.) %>% 
+    gsub("az", "Arbeitszeit (h) ",.)
+  
+  return(setNames(new_names, old_names))
+}
+
+## diese Funktion dann in modelsummary verwenden:
+modelsummary(list("Modell 1" = m1, "Modell 2" = m2),
+             output = "flextable",gof_omit = "IC|Log|RMS", 
+             coef_rename = rename_function) # function anwenden
+```
+
+
+:::
+
+
+Auf den mit `{modelsummary}` erstellten `flextable` können wir natürlich auch [alle Funktionen](https://ardata-fr.github.io/flextable-book/) für `flextable` anwenden und dann mit `save_as_docx()` die Tabelle exportieren:
+```{r}
+regtab2 <- 
+  modelsummary(
+  list("Modell 1" = m1, "Modell 2" = m2),
+  output = "flextable",
+  gof_omit = "IC|Log|RMS",
+  coef_rename = c(
+    "(Intercept)" = "Intercept",
+    "S1Frauen" = "Frauen",
+    "m1202dual/schul." = "Duale/Schulische Ausbildung",
+    "m1202Aufst." = "Aufstiegsfortbildung",
+    "m1202FH/Uni" = "FH/Uni-Abschluss"
+  ),
+  add_rows = ref_rows2,
+  stars = T,
+  fmt = 2) %>% 
+  autofit() %>% 
+  italic(i = ~ `Modell 2` == "ref.",j =2:3)
+```
+
+
+```{r}
+#| eval: false
+save_as_docx(regtab2,path = "./results/regressionstabelle.docx")
+```
+
+```{r word_reg, echo = F, out.height="55%",out.width="50%", fig.align="center"}
+knitr::include_graphics("./pic/112_reg_tab.png")
+
+```
+
+
+## Alle Tabellen in eine Datei mit `{officer}`
+
+Um die Tabellen in Dokument gemeinsames Dokument zu exportieren, ist das Paket `officer` eine große Hilfe. Mehr Infos [hier](https://ardata-fr.github.io/officeverse/officer-for-word.html).
+
+```{r}
+library(officer)
+```
+Zunnächst lesen wir mit `read_docx()` eine Vorlage ein, welche Einstellungen für das Word-Dokument enthält (Seitenformat,..) und fügen dann mit `body_add_flextable()` die Tabellen ein. Mit `body_add_par(.,"")` können wir leere Absätze einfügen. 
+```{r, eval = F}
+read_docx("pfad/zur/Vorlage/DIN_A4_Vorlage.docx") %>%
+   body_add_flextable(., value = met_ft ) %>% # flextable met_ft einfügen
+   body_add_par(.,"") %>% # leeren Absatz einfügen
+   body_add_flextable(., value = kat_ft ) %>% # flextable cat_ft einfügen
+   body_add_par(.,"") %>% # leeren Absatz einfügen
+   body_add_flextable(., value = regtab2 ) %>% # flextable regtab2 einfügen
+   print(target = "./results/Tables.docx")
+```
+```{r}
+#| include: false
+#| eval: false
+# read_docx("C:/Users/filse/Documents/Benutzerdefinierte Office-Vorlagen/Vorlage_Roboto_hoch.docx") 
+```
+
+```{r word_tab_full, echo = F, out.height="50%",out.width="65%", fig.align="center"}
+knitr::include_graphics("./pic/112_all_tab.png")
+```
+
+
+## Übung 
+
+### Übung {#tabue1}
+
+```{r}
+etb_ue14 <- 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",col_select = c("gkpol","az","zpalter","m1202"))%>% 
+  filter(zpalter < 100, m1202 > 0) %>% 
+  mutate(gkpol = factor(gkpol,levels = 1:7, labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", "50k bis <100k", 
+                                                         "100k bis <500k", "500k und mehr")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) 
+```
+
++ Erstellen Sie eine Übersicht für die Variablen `zpalter` (Alter) und `az` (Arbeitszeit) und exportieren Sie diese in eine Word-Datei. Verwenden Sie den obigen Einlesebefehl - dann sind die Missings  bereits ausgeschlossen,
+  + Erstellen Sie zunächst einen `data.frame` mit min, mean und max der beiden Variablen.
+  + Formatieren Sie diesen `data.frame` dann als `flextable`
+  + Speichern Sie diesen mit `save_as_docx()`
+
+
++ Erstellen Sie eine Übersichtstabelle zu `gkpol` (Größe der Wohngemeinde) und `m1202` (Ausbildung).
+  + Die Labels sind bereits im obigen Einlesebefehl gesetzt.
+
+  
+  
+### Übung {#regtabue}
+
++ Erstellen sie folgende Regressionsmodelle und erstellen Sie mit `{modelsummary}` eine Regressiontabelle:
+```{r}
+#| eval: false
+m1 <- lm(az ~ m1202 , etb_ue14)
+m2 <- lm(az ~ m1202 + zpalter, etb_ue14)
+```
+
+## Latex
+
+[`{kableExtra}`](https://haozhu233.github.io/kableExtra/) ist mein Favorit für Tabellen in  [pdf](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf) Outputs.
+
+### Verteilungstabellen für metrische Variablen 
+```{r}
+#| warning: false
+library(kableExtra)
+
+met_kbl <- 
+  etb18_kap14 %>% 
+  select(az,F518_SUF) %>% 
+  pivot_longer(cols = everything(), names_to = "variable") %>% 
+  group_by(variable) %>% 
+  summarise(Min  = min(value,na.rm = T),
+            Mean = mean(value,na.rm = T),
+            Max  = mean(value,na.rm = T)) %>% 
+  kbl(., booktabs = T, format = 'latex') %>% #  ab hier spezifisch für latex
+  kable_styling(latex_options = "striped")
+
+write(met_kbl,file = "./results/desc1.tex")
+```
+
+### Häufigkeitsauszählungen 
+```{r}
+kat_kbl <- 
+  etb18_kap14 %>%  
+    select(S1,m1202) %>% 
+    mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen")),
+           m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+    pivot_longer(everything(),names_to = "variable") %>% 
+    count(variable,value)  %>% 
+  kbl(., booktabs = T, format = 'latex') %>%  # ab hier latex-syntax
+  kable_styling(latex_options = "striped", stripe_index = c(1,2))
+
+write(kat_kbl,file = "./results/crosstab1.tex")
+```
+
+### Regressionstabelle mit `{modelsummary}`
+```{r}
+#| warning: false
+#| message: false
+  m1 <- lm(F518_SUF ~ az + S1, data = etb18_kap14_reg_df)
+  m2 <- lm(F518_SUF ~ az + S1 + m1202, data = etb18_kap14_reg_df)
+  
+  ref_rows2 <- tribble(~term,    ~"Modell 1",  ~"Modell 2",
+                  "Männer",    'ref.',   'ref.',
+                  "keine Ausbildung",    '',   'ref.',
+                  )
+  attr(ref_rows2, 'position') <- c(5,8) # Zeile angeben 
+  
+  modelsummary(
+    list("Modell 1" = m1, "Modell 2" = m2),
+    gof_omit = "IC|Log|RMS",
+    coef_rename = c(
+      "(Intercept)" = "Intercept",
+      "S1Frauen" = "Frauen",
+      "m1202dual/schul." = "Duale/Schulische Ausbildung",
+      "m1202Aufst." = "Aufstiegsfortbildung",
+      "m1202FH/Uni" = "FH/Uni-Abschluss"
+    ),
+    add_rows = ref_rows2,
+    stars = T,
+    fmt = 2,
+    output = "./results/modelsummary.tex" ## Latex-Output
+  )
+```
+
+
+## Anhang
+
+### Kreuztabellen
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(janitor)
+etb18_kap14 %>%  
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen"))) %>% 
+  mutate(m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% 
+  tabyl(.,m1202,S1) %>%
+    adorn_totals(where = c("row","col")) %>% 
+  flextable() %>%
+  border_remove() %>%
+  hline(i=4) %>%
+  hline_top() %>%
+  set_header_labels(m1202 = "Ausbildung") %>% 
+  add_header_row(values = c("","Geschlecht",""),colwidths = c(1,2,1))
+```
+
+
+Hier ist die Herausforderung, einen `data.frame()` für `{flextable}` vorzubereiten: `xtabs()` gibt keinen `data.frame` aus und  meistens ist der long shape Output von `count()` auch nicht das was wir wollen:
+```{r}
+tab1 <- xtabs(~S1+m1202,etb18_kap14)
+class(tab1)
+```
+
+```{r}
+etb18_kap14 %>% 
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen"))) %>% # zahlenwerte in S1 mit labels überschreiben 
+  mutate(m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% # auch für m1202
+  count(S1,m1202) %>% 
+  flextable()
+```
+
+[`tabyl()`](https://sfirke.github.io/janitor/articles/tabyls.html) aus [{janitor}](https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html) hilft hier weiter:
+
+```{r}
+#| warning: false
+#| message: false
+library(janitor)
+etb18_kap14 %>% 
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen"))) %>% # zahlenwerte in S1 mit labels überschreiben 
+  mutate(m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% # auch für m1202
+  tabyl(m1202,S1) %>%
+    adorn_totals(where = c("row","col")) 
+```
+:::{.callout-tip}
+Übrigens: Mit `adorn_percentages()` können wir bspw. statt absoluten Häufigkeiten die prozentualen Anteile ausgeben lassen. Weitere [`adorn_...()`](https://sfirke.github.io/janitor/articles/tabyls.html#the-adorn_-functions) Funktionen in der [Vignette](https://sfirke.github.io/janitor/articles/tabyls.html#the-adorn_-functions).
+
+:::
+
+
+```{r}
+etb18_kap14 %>% 
+  mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen"))) %>% # zahlenwerte in S1 mit labels überschreiben 
+  mutate(m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% # auch für m1202
+  tabyl(m1202,S1) %>%
+    adorn_totals(where = c("row","col"))  %>%
+  flextable() %>%
+  border_remove() %>% # linien raus
+  hline(i=4) %>% # in zeile 4 eine Linie einfügen
+  hline_top() %>% # linie oben
+  set_header_labels(m1202 = "Ausbildung") %>%  # kopf-label links
+  add_header_row(values = c("","Geschlecht",""),colwidths = c(1,2,1)) # label oben
+```
+```{r}
+cross_tab <- 
+  etb18_kap14 %>% 
+    mutate(S1 = factor(S1,levels = 1:2, labels = c("Männer","Frauen"))) %>% # zahlenwerte in S1 mit labels überschreiben 
+    mutate(m1202 = factor(m1202, levels = 1:4,labels = c("ohne","dual/schul.","Aufst.","FH/Uni"))) %>% # auch für m1202
+    tabyl(m1202,S1) %>%
+      adorn_totals(where = c("row","col"))  %>%
+    flextable() %>%
+    border_remove() %>% # linien raus
+    hline(i=4) %>% # in zeile 4 eine Linie einfügen
+    hline_top() %>% # linie oben
+    set_header_labels(m1202 = "Ausbildung") %>%  # kopf-label links
+    add_header_row(values = c("","Geschlecht",""),colwidths = c(1,2,1)) # label oben
+```
+```{r}
+#| eval: false
+save_as_docx("Kreuztabelle" = cross_tab, path = "./results/Kreuztabelle.docx")
+```
+
+### Layout-Tipps für Tabellen
+
+[Hier](https://clauswilke.com/dataviz/figure-titles-captions.html#tables) finden sich einige Hinweise von Claus Wilke für ein gelungenes Tabellen-Layout:
+
++ Do not use vertical lines.
++ Do not use horizontal lines between data rows. Horizontal lines as separator between the title row and the first data row or as frame for the entire table are fine.
++ Text columns should be left aligned.
++ Number columns should be right aligned and should use the same number of decimal digits throughout.
++ Columns containing single characters are centered.
++ The header fields are aligned with their data, i.e., the heading for a text column will be left aligned and the heading for a number column will be right aligned.
+
+### weitere Pakete
+
+Neben `{flextable}` gibt es noch eine ganze Reihe an weiteren Paketen - allerdings sind zielen diese vor allem auf pdf und HTML-Formate. [Hier](https://rfortherestofus.com/2019/11/how-to-make-beautiful-tables-in-r/) findet sich eine gelungene Übersicht.
+Hier eine Übersicht mit meiner persönlichen Einschätzung[^gtsjoberg] 
+
+[^gtsjoberg]: Adaptiert von [D Sjoberg](https://github.com/ddsjoberg/gtsummary/blob/5c2bcbc6d96959266f99a7e88630a0a2dd2a9031/vignettes/rmarkdown.Rmd)
+
+
+```{r}
+#| code-fold: true
+#| warning: false
+# create table-table with gt
+pkg_tabl <- 
+list(
+  printer = c("gt", "flextable", "kableExtra"),
+  output = c("HTML", "PDF", "Word")
+) %>%
+  purrr::cross_df() %>%
+  dplyr::mutate(
+    rating = dplyr::case_when(
+      printer == "gt" & output == "HTML" ~ 1, # good output
+      printer == "gt" & output %in% c("Word") ~ 5, # under construction
+      printer == "gt" & output %in% c("PDF") ~ 3, # under construction
+      
+      
+      printer == "flextable" & output == "Word" ~ 1, # bester
+      printer == "flextable" & output %in% c("HTML","PDF") ~ 2, # okay
+      
+      printer == "kableExtra" & output %in% c("PDF", "HTML") ~ 1, # good output
+      printer == "kableExtra" & output %in% c("Word") ~ 4, # not supported
+      
+      
+    ) %>%
+      factor()
+  ) %>%
+  tidyr::pivot_wider(id_cols = printer, names_from = output, values_from = rating) %>%
+  dplyr::mutate(
+    link = dplyr::case_when(
+      printer == "gt" ~ 
+        "[gt](https://gt.rstudio.com/index.html)",
+      printer == "kable" ~ 
+        "[kable](https://bookdown.org/yihui/rmarkdown-cookbook/kable.html)",
+      printer == "flextable" ~
+        "[flextable](https://davidgohel.github.io/flextable/articles/overview.html)",
+      printer == "kableExtra" ~ 
+        "[kableExtra](http://haozhu233.github.io/kableExtra/)",
+      printer == "huxtable" ~
+        "[huxtable](https://hughjonesd.github.io/huxtable/)",
+      printer == "tibble" ~ 
+        "[tibble](https://tibble.tidyverse.org/)"
+    )
+  ) %>%
+  gt() %>%
+  cols_move_to_start(columns = c(link)) %>%
+  cols_hide(columns = c(printer)) %>%
+  cols_label(link = md("**Paket**"), 
+             
+             HTML = md("**HTML**"), PDF = md("**PDF**"), 
+             Word = md("**Word**")) %>%
+  fmt_markdown(columns = c(link)) %>%
+  fmt_markdown(columns = everything()) %>%
+  data_color(
+    columns = c(HTML, PDF, Word),
+    colors = scales::col_factor(
+      palette = c("#bae1ff", "#ffb3ba", "#ffdfba", "#ffffba", "#baffc9"),
+      domain = NULL,
+      reverse = TRUE
+    ),
+    alpha = 0.8
+  ) %>%
+  cols_width(c(HTML, PDF, Word) ~ px(60),
+             c(link) ~ px(110),
+             c(link) ~ px(140))
+  
+# Emoji library: https://gist.github.com/rxaviers/7360908
+
+pkg_tabl %>% 
+  text_transform(
+    locations = cells_body(columns = c(HTML, PDF,  Word)),
+    fn = function(x) {
+      dplyr::case_when(
+          x == 1 ~ as.character(emo::ji("star")),
+          x == 2 ~ as.character(emo::ji("heavy_check_mark")),
+          x == 3 ~ as.character(emo::ji("grey_question")),
+          x == 4 ~ as.character(emo::ji("o2")),
+          x == 5 ~ as.character(emo::ji("wrench")),
+          TRUE   ~ as.character(emo::ji("o2"))
+      )
+    }
+  )
+
+
+```
+
+
+
+-   [`{kableExtra}`](https://haozhu233.github.io/kableExtra/) - mein Favorit für Tabellen in [html](https://cran.r-project.org/web/packages/kableExtra/vignettes/awesome_table_in_html.html) und [pdf](https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf) Outputs.
+ 
+-   [`{gt}`](https://gt.rstudio.com/) Großes Projekt mit sehr vielen Möglichkeiten, Tabellen auch interaktiv zu gestalten - daher vor allem für HTML-Outputs geeignet.
+
+-   [`{gtsummary}`](https://www.danieldsjoberg.com/gtsummary/) - `{gt}` speziell für Deskriptionen eines Treatment/Control Vergleich, [hier](https://www.danieldsjoberg.com/clinical-reporting-gtsummary-rmed/material.html) eine aktuelle Einführung
+
+```{r}
+#| echo: false
+tweetrmd::include_tweet("https://twitter.com/statistishdan/status/1562975951859830785?s=11&t=2WoUgCchuRUQ_4h29nMsAg")
+```
+
+Weitere Tabellenpakete:
+
+-   [`{huxtable}`](https://hughjonesd.github.io/huxtable/)
+
+-   [`{DT}`](https://rstudio.github.io/DT/)
+
+-   [`{reactable}`](https://glin.github.io/reactable/)

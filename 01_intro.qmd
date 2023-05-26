@@ -1,0 +1,289 @@
+# Einstieg in R
+
+```{r setup01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+```
+
+## Installation und Einrichten von R & RStudio
+
+Bei R handelt es sich um ein vollständig kostenloses Programm, das Sie unter [CRAN](https://cran.r-project.org/) herunterladen können. Ebenfalls kostenlos ist die Erweiterung RStudio, die Sie unter [hier](https://www.rstudio.com/products/rstudio/download/#download) herunterladen können. RStudio erweitert R um eine deutlich informativere und ansprechendere Oberfläche, Hilfe und Auto-Vervollständigung beim Schreiben von Syntax und insgesamt eine verbesserte Nutzeroberfläche. Jedoch ist RStudio eine Erweiterung von R, sodass Sie beide Programme benötigen.
+
+::: callout-note
+Installieren Sie zuerst R und dann RStudio, dann erkennt RStudio die installierte R-Version und die beiden Programme verbinden sich in der Regel automatisch. R ist dabei sozusagen der Motor, RStudio unser Cockpit. Wir könnten direkt mit R arbeiten, aber mit RStudio haben wir eine komfortablere Option und einen besseren Überblick.
+:::
+
+
+::: {#fig-rstudio layout-ncol="2"}
+![](./pic/101_engine_R.png){width="200"} ![](./pic/101_cockpit_rstudio2.png){width="200"}
+
+R und RStudio
+:::
+
+## RStudio einrichten
+
+Öffnen Sie nach erfolgreicher Installation die Anwendung RStudio ![](./pic/rstudio-icon.png){width="20px"} und Sie sollten folgende Ansicht vor sich sehen:
+
+```{r layout, echo = F, out.height="80%",out.width="80%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio.png"))
+```
+
+![](./prereq/RStudio0.png)
+
+Um Probleme bei der künftigen Arbeit mit R zu vermeiden, deaktivieren Sie bitte das automatische Speichern und Laden des Workspace. Rufen Sie dazu das entsprechende Menü unter dem Reiter "Tools -\> Global options" auf und deaktivieren Sie bitte "Restore .RData into workspace at startup" und setzen Sie "Save workspace to .RData on exit:" auf `Never`. RStudio speichert ansonsten alle geladenen Objekte wenn Sie die Sitzung beenden und lädt diese automatisch wenn Sie das Programm das nächste Mal öffnen. Dies führt erfahrungsgemäß zu Problemen.
+
+```{r workspace, echo = F, out.height="80%",out.width="80%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_setup.png"))
+# file.copy(from = paste0(path1,"101_RStudio_setup.png"),to = paste0(path2,"101_RStudio_setup.png"))
+```
+
+![](./pic/101_RStudio_setup.png)
+
+Bestätigen Sie die Einstellungen mit "Apply" und schließen Sie das Fenster mit "OK".
+
+## Erste Schritte in R
+
+Nach diesen grundlegenden Einstellungen können wir uns an die ersten Schritte in R machen. Öffnen Sie dazu zunächst ein Script, indem Sie auf das weiße Symbol links oben klicken oder drücken Sie gleichzeitig STRG/Command + Shift + N .
+
+```{r script1, echo = F, out.height="40%",out.width="40%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_script2.png"))
+```
+
+![](./pic/101_RStudio_script2.png){width="438"}
+
+Es öffnet sich ein viertes Fenster, sodass Sie nun folgende Ansicht vor sich haben sollten:
+
+```{r default_layout, echo = F, out.height="80%",out.width="80%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_script.png"))
+
+```
+
+![](./pic/101_RStudio_script.png)
+
+Dieser Scripteditor ist der Ort, an dem wir Befehle erstellen und anschließend durchführen werden. Der Scripteditor dient dabei als Sammlung aller durchzuführenden Befehle. Wir können diese Sammlungen speichern, um sie später wieder aufzurufen und vor allem können wir so Befehlssammlungen mit anderen teilen oder Skripte von anderen für uns selbst nutzen. Wir entwerfen also zunächst im Scripteditor eine Rechnung:
+
+```{r script_entwurf, echo = F, out.height="40%",out.width="40%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_script0.png"))
+```
+
+![](./pic/101_RStudio_script0.png){width="340"}
+
+Um diese nun auszuführen, klicken wir in die auszuführende Zeile, sodass der Cursor in dieser Zeile ist und drücken gleichzeitig STRG und Enter (Mac-User Command und Enter):
+
+```{r keyboard, echo = F, out.width="50%"}
+# myimages <- c( paste0(path1,"101_keyboard_pc.png"), paste0(path1,"101_keyboard_mac.png") )
+# knitr::include_graphics(myimages)
+```
+
+::: {#fig-keys layout-ncol="2"}
+![](./pic/101_keyboard_pc.png){width="390"}
+
+![](./pic/101_keyboard_mac.png){width="390"}
+
+Shortcuts für Berechnungen
+:::
+
+R gibt die Ergebnisse unten in der Console aus:
+
+```{r erste_rechnung,echo = F, out.height="35%",out.width="35%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_Erste_Rechnung.png"))
+```
+
+![](./pic/101_RStudio_Erste_Rechnung.png)
+
+Das funktioniert auch für mehrere Rechnungen auf einmal indem wir mehrere Zeilen markieren und dann wieder STRG und Enter (Mac-User Command und Enter) drücken:
+
+```{r zweite_rechnung,echo = F, out.height="65%",out.width="65%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_Rechnung.png"))
+```
+
+![](./pic/101_RStudio_Rechnung.png)
+
+Eingaben aus dem Script-Editor und Ergebnisse aus der Konsole werden in Zukunft so dargestellt:
+
+```{r W02_1, include=T, echo = T}
+2+5
+3-4
+5*6
+7/8
+```
+
+R beherrscht natürlich auch längere Berechnungen, zum Beispiel wird auch Punkt vor Strich beachtet:
+
+```{r W02_2, include=T, echo = T}
+2+3*2
+(2+3)*2
+```
+
+Auch weitere Operationen sind möglich:
+
+```{r W02_3, eval=F}
+4^2 ## 4²
+sqrt(4) ## Wurzel 
+exp(1) ## Exponentialfunktion (Eulersche Zahl)
+log(5) ## Natürlicher Logarithmus
+log(exp(5)) ## log und exp heben sich gegenseitig auf
+```
+
+Zahlenreihen können wir mit `seq()` oder `:` erstellen:
+```{r}
+2:6
+seq(2,11,3)
+```
+
+
+### Objekte erstellen
+
+Bisher haben wir uns unsere Berechnungen immer direkt ausgeben lassen.
+Für umfangreichere Berechnungen - wir wollen ja ab dem nächsten Kapitel mit Datensätzen arbeiten - wollen wir aber die Zwischenschritte speichern.
+
+Ergebnisse lassen sich mit einem `<-` unter einem beliebigen Namen als Objekt speichern. Dann wird R uns nicht das Ergebnis anzeigen, sondern den Befehl in der Konsole wiederholen:
+
+```{r W02_7, include=T, echo = T}
+x <- 4/2
+```
+
+Im Fenster "Environment" rechts oben sehen wir jetzt das abgelegte Objekt `x`:
+
+```{r enviro_bsp,echo = F, out.height="50%",out.width="50%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_Environment2.png"))
+```
+
+![](./pic/101_RStudio_Environment2.png)
+
+Wir können es später wieder aufrufen:
+
+```{r W02_7.0}
+x
+```
+
+Außerdem können wir Objekte in Rechnungen weiter verwenden - wir setzen einfach `x` ein und erstellen zB. `y`:
+
+```{r W02_7.1, include=T, echo = T}
+y <- x * 5
+y
+```
+
+```{r enviro_bsp2,echo = F, out.height="45%",out.width="45%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_Environment.png"))
+```
+
+![](./pic/101_RStudio_Environment.png)
+
+### Mehrere Werte ablegen
+
+Mit `c()` lassen sich mehrere Werte unter einem Objekt ablegen und auch mit diesen lässt sich rechnen:
+
+```{r W02_8, include=T, echo = T}
+x1 <- c(1,2,3)
+x1
+x1* 2
+```
+
+Mit `length()` können wir die Anzahl der abgelegten Werte nachsehen:
+```{r length}
+length(x1)
+```
+
+
+```{r calc1, include=T, echo = T}
+y1 <- c(10,11,9)
+y1
+y1/x1
+```
+
+
+### Werte löschen
+
+Natürlich können wir Objekte auch wieder löschen und zwar mit `rm()`. Wenn wir ein nicht existierendes Objekt aufrufen bekommen wir eine Fehlermeldung:
+
+```{r error_test,error=TRUE}
+rm(x1)
+x1
+```
+
+Mit `rm(list = ls())` können alle Objekte aus dem Environment gelöscht werden.
+
+### Scripte speichern
+
+Das Script können wir speichern, um es später wieder aufzurufen.
+
+```{r save1,echo = F, out.height="80%",out.width="80%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_script3.png"))
+```
+
+![](./pic/101_RStudio_script3.png){width="342"}
+
+Wichtig ist dabei, der gespeicherten Datei die Endung ".R" zu geben, also zum Beispiel "01_Script.R".
+
+```{r save2,echo = F, out.height="50%",out.width="50%", fig.align="center"}
+# knitr::include_graphics(paste0(path1,"101_RStudio_script4.png"))
+```
+
+
+### Kommentare
+
+Neben den eigentlichen Befehlen sind Kommentare ein zentraler Bestandteil einer Datenanalyse-Syntax.
+Nur so können künftige Nutzende (insbesondere wir selbst in 3 Wochen oder 2 Jahren) nachvollziehen was passiert. 
+Kommentare in R können mit `#` eingefügt werden:
+```{r}
+2+ 5 # hier steht ein Kommentar
+
+2+ # auch hier kann ein Kommentar stehen
+  5
+```
+
+
+```{r}
+( 2 + # ein
+    3) * # kommentar
+  2 # über mehrere Zeilen
+```
+
+
+
+**Tipp:** Erstellen Sie sich am besten sofort einen Ordner, in dem Sie alle R Scripte und Datensätze aus dieser Veranstaltung gesammelt ablegen.
+
+
+### Skripte strukturieren
+
+```{r,eval = F}
+# Überschrift 1 ----
+
+## Abschnit 1.1 ----
+3+2*4
+3+2*3
+## Abschnit 1.2 ----
+3+2*sqrt(3)
+
+# Überschrift 2 ----
+x <- c(2,6,8,2,35)
+y <- seq(2,10,2)
+
+y/x
+```
+
+```{r}
+#| echo: false
+#| out-width: "40%"
+#| out-height: "40%"
+# knitr::include_graphics("./pic/101_skript_überschriften.png")
+```
+![](./pic/101_skript_überschriften.png){width="742"}
+
+
+
+## Übungen
+
+-   Legen Sie die Anzahl der Studierenden an der Uni Oldenburg (15643) unter `stud` ab.
+-   Legen Sie die Anzahl der Professuren an der Uni Oldenburg (210) unter `prof` ab.
+-   Berechnen Sie die Anzahl der Studierenden pro Professur an der Uni Oldenburg indem Sie die Objekte `stud` und `prof` verwenden.
+-   Legen Sie das Ergebnis unter `studprof` ab und rufen Sie das das Objekt noch einmal auf!
+-   Sehen Sie die erstellten Variablen im Environment-Fenster?
+-   Legen Sie die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter `studs` ab.
+-   Legen Sie die Zahl der Profs der Uni Bremen (322), Uni Vechta (67) und Uni Oldenburg (210) zusammen unter `profs` ab.
+-   Berechnen die Anzahl der Studierenden pro Professur für alle drei Universitäten.
+-   Sie möchten zusätzlich die Zahl der Studierenden (14000) und Professuren (217) der Uni Osnabrück in `studs` und `profs` ablegen. Wie gehen Sie vor?
+-   Berechnen Sie für alle vier Universitäten das Verhältnis von Studierenden und Professuren!
+-   Löschen Sie das Objekt `stud`. Woran erkennen Sie, dass das funktioniert hat?
+-   Löschen Sie alle Objekte aus dem Environment. Woran erkennen Sie, dass das funktioniert hat?

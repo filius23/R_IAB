@@ -1,0 +1,490 @@
+# Logistische Regressionsmodelle 
+
+```{r reg01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(LaCroixColoR)
+library(patchwork)
+library(ggrepel)
+library(gt)
+library(paletteer)
+library(kableExtra)
+library(extrafont)
+library(marginaleffects)
+
+windowsFonts(Nunito=windowsFont("Nunito Sans"))
+mark_color <- "grey25"
+color1x =  "#00519E" # uol farbe
+colorhex <- "#FCFCFC" #"#FCF9F0FF"7
+colorhex <- NA #"#FCF9F0FF"7
+
+m_etb18 <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF","m1202","zpalter")) 
+
+theme_x <- 
+  theme_minimal(base_family = "Nunito",base_size = 10) +
+  theme(
+    text = element_text(family = "Nunito"),
+    plot.background = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    rect = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    axis.text =  element_text(color = mark_color,face = "plain", size = rel(1.05), angle = 0), 
+    axis.title = element_text(color = mark_color,face = "plain", size = rel(1), angle = 0), 
+    axis.title.y = element_text(color = mark_color,face = "plain", angle = 90,vjust = .5), 
+    axis.ticks = element_blank(),
+    axis.line = element_line(size = .1), 
+    legend.text = element_text(family = "Nunito"),
+    legend.title = element_text(family = "Nunito"),
+    panel.grid = element_line(colour = "grey81", linetype = 1, size = .15), 
+    panel.grid.minor.y = element_blank(), 
+    panel.grid.minor.x = element_blank(), 
+    plot.subtitle = element_text(hjust=.5,family = "Nunito"),
+    plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
+    plot.margin = unit(c(1, 1, 1, 1), "lines"))
+
+theme_set(theme_x)
+
+```
+
+
+In diesem Kapitel widmen wir uns dem Fall einer binären abhängigen Variable/Dummyvariable. Für solche Fälle sind logistische Regressionsmodelle gebräuchlich, die sich in Ihrer Anwendung etwas von 'normalen', linearen Regressionsmodellen unterscheiden. Kern dieses Unterschieds ist die Link-Funktion, welche die Koeffizienten etwas schwerer interpretierbar macht - daher haben sich sog. marginal effects als Darstellungsform für Ergebnisse logistischer Regressionen etabliert. 
+In R steht uns dafür das Paket [`{marginaleffects}`](https://vincentarelbundock.github.io/marginaleffects/), welches sich in der Anwendung sehr dem `margins`-Befehl in Stata ähnelt.
+
+
+Bisher hatten wir immer Regressionsmodelle betrachtet, die eine metrisch skalierte abhängige Variable hatten.[^1]
+Aber gerade Individualmerkmale sind nur selten metrisch skaliert, z.B. Erwerbstatus, Familienstand, Geschlecht, Elternstand, ... Ein lineares OLS-Regressionsmodell wie wir es bisher kennen gelernt haben, hilft uns hier nicht weiter. 
+Schauen wir uns beispielsweise die Arbeitsplatzsituation der männlichen Befragten in der ETB 2018 an (`F605`)[^3] :
+
+[^1]: Leseempfehlung: [Logistische Regression von Henning Best & Christof Wolf, S. 827-854 in "Handbuch der sozialwissenschaftlichen Datenanalyse"](www.doi.org/10.1007/978-3-531-92038-2_31)
+[^3]: Die Einschränkung auf männliche Befragte hat hier den einfachen Grund, dass so der Koeffizient größer ist 
+
+
+**`r attributes(m_etb18$F605)$label`**
+   
+Die 1 steht dabei jeweils für "ja", die `2` für "nein". Wir verändern die Codierung aber so, dass die "nein"-Antworten mit `0` versehen werden. Die neue Variable nennen wir `outside`. Außerdem teilen wir `F518_SUF` durch 100 und legen die so erstellte Variable "Einkommen in 100EUR" in `inc100` ab, um die Nachkommastellen des Koeffizienten zu reduzieren:
+
+```{r}
+m_etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                           col_select = c("S1","F605","F518_SUF","m1202","zpalter","Bula")) %>% 
+  filter(F605 < 9, F518_SUF < 99998, zpalter < 100, S1==1) %>% 
+  mutate(inc100 = F518_SUF/100,
+         outside = 2-F605)
+
+m_etb18 %>% count(outside,F605)
+summary(m_etb18$inc100)
+```
+
+## Das logistische Regressionsmodell {#logmod}
+
+Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise wie folgt aus:
+
+\begin{equation*}
+\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}
+\end{equation*}
+
+In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:[^log_fam]
+
+
+[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(outside ~ inc100, data = m_etb18)` oder `glm(outside ~ inc100, family = gaussian(), data = m_etb18)` ist gleichbedeutend mit `lm(outside ~ inc100, data = m_etb18)`: es wird ein lineares OLS-Modell berechnet.
+```{r}
+m2 <- glm(outside ~ inc100, family = "binomial", data = m_etb18)
+summary(m2)
+```
+
+Die Interpretation der $\beta$ aus einem logistischen Regressionsmodell bezieht sich also auf die Logits (die logarithmierten Odds):  
+
+::: inter
+
+Es besteht ein am 0,001-Niveau signifikanter Zusammenhang zwischen dem Einkommen und der Wahrscheinlichkeit, im Freien zu arbeiten. Mit einem um 100 Euro höheren Einkommen gehen um `r sprintf("%2.6f",abs(m2$coefficients[2]))` niedrigere *Logits* einher, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten.
+:::
+
+## average marginal effects
+
+Logits sind aber sehr unhandlich - wie verändert sich jetzt aber die *Wahrscheinlichkeit* für $\texttt{outside} = 1$ mit `inc100`? Hier haben wir das Problem, dass die Ableitung der "rücktransformierten Funktion" nicht so einfach ist wie im Fall der OLS. Verändern wir nämlich auch die [Regressionsgleichung von oben[^2]](#logmod) mit `exp()` und $p=\frac{Odds}{1+Odds}$, so landen wir bei 
+
+\begin{equation*}
+\widehat{P(outside=1)} = \frac{e^{\hat\beta0+\hat\beta1 \times \texttt{inc100}}}{1+e^{\hat\beta0+\hat{\beta1}\times \texttt{inc100}}}
+\end{equation*}
+
+[^2]: $\widehat{Logit(outside=1)} = \widehat{ln\left(\frac{P(outside=1)}{1-P(outside=1)}\right)} = \hat\beta0 + \hat{\beta1}\times \texttt{inc100}$
+
+
+Diesen Ausdruck müssten wir nach `inc100` ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für $\texttt{outside} = 1$ mit einem um einen Euro höheren Befragteneinkommen verändert. 
+Durch die Tatsache dass `inc` hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor ("oben und unten") steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen `lm()`-Modellen der Fall war. 
+Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket `{marginaleffects}` brauchen. 
+Darin findet sich der Befehl `avg_slopes()`, welcher uns erlaubt ein $\beta$ zwischen dem Einkommen und der _Wahrscheinlichkeit_ für $\texttt{outside} = 1$ zu berechnen. Dieses wird auch als *average marginal effect* bezeichnet, da sie den *durchschnittlichen marginalen Effekt* der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben. 
+
+```{r,eval=F}
+install.packages("marginaleffects") # nur einmal nötig
+library(marginaleffects)
+```
+
+```{r ame1}
+avg_slopes(m2)
+```
+    
+```{r ameInline,echo=F }
+mx <- avg_slopes(m2, by = TRUE) %>% data.frame() %>% pull(estimate)
+```
+
+::: inter
+
+Mit einem um 100 Euro (`inc100` ist in 100 EUR gemessen) höheren Einkommen geht im Durchschnitt eine um `r sprintf("%2.5f",abs(mx))` (`r sprintf("%2.5f",abs(mx*100))` Prozentpunkte) geringere Wahrscheinlichkeit einher, mehr als die Hälfte der Arbeitszeit im Freien zu arbeiten.
+
+:::
+
+## Predctions 
+
+Alternativ können die Ergebnisse aus log. Regressionen auch als vorhergesagte Werte dargestellt werden.
+Vorhergesagte Werte können wir mit `predictions()` aus `{marginaleffects}` erstellen:
+```{r}
+predictions(m2, 
+            newdata = data.frame(inc100  = 1:5), # einzusetzende Werte
+            type = "response" # vorhergesagte Wkt als Einheit (statt logits)
+            )
+```
+
+Das können wir in einem `ggplot()` grafisch darstellen:
+```{r}
+#| fig-width: 6
+#| fig-height: 4
+predictions(m2, newdata = data.frame(inc100  = 1:70), type = "response") %>% # vorhergesagte Werte
+  data.frame() %>% 
+  ggplot(aes(y = estimate , x = inc100)) + 
+  geom_errorbar(aes(ymin = conf.low, ymax= conf.high), color = "slateblue",width = .1) + # konfidenzintervalle
+  geom_point(color = "slateblue") + # punktschätzer
+  theme_minimal()
+```
+
+
+## [Übung 1](#ame1)
+
+
+## Fixed effects logistische Regression mit `{fixest}` {#feglm}
+
+
+Mit `feglm()` lassen sich auch logistische FE-Modelle schätzen:
+
+```{r logit_fixest, warning = FALSE}
+library(fixest)
+m_etb18 <-
+  m_etb18 %>%
+  mutate(m1202_fct = factor(m1202,levels = 1:4,
+                            labels = c("Ohne","duale","Aufst","FH/Uni")),
+         m1202_fct = fct_relevel(m1202_fct,"Ohne"))
+
+feglm(outside ~ m1202_fct + zpalter |Bula, data = m_etb18, family = binomial)
+
+fe_log1 <- feglm(outside ~ m1202_fct + zpalter|Bula, data = m_etb18, family = binomial)
+avg_slopes(fe_log1,by = TRUE, variables = "m1202_fct")
+avg_slopes(fe_log1,by = TRUE, variables = "zpalter")
+```
+
+
+## Übung {#ame1}
+```{r}
+
+etb_ue10 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                            col_select = c("F1605e","m1202")) %>% 
+  filter(F1605e < 4, !is.na(F1605e), m1202 %in% 1:4) %>% 
+  mutate(fam_beruf = 2-F1605e,
+         m1202 = factor(m1202))
+```
+
+
++ Erstellen Sie ein logistisches Regressionsmodell mit `fam_beruf` basierend auf der Frage
+
+**`r attributes(etb_ue10$F1605e)$label`nbaren?**
+
+als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie die Ausbildung `m1202` als unabhängige Variable.
+
+Berechnen Sie die AME mit `marginaleffects`.
+
+
+## Anhang: Hintergrund zu log. Regression & average marginal effects
+
+Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien arbeiten, hilft uns die OLS-Vorgehensweise nicht so richtig weiter. Die "Punktewolke" zur Optimierung der Abweichung zwischen tatsächlichen und vorhergesagten Werten (Residuen) sieht hier anders aus als bisher:
+
+```{r, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869") +
+  theme(aspect.ratio = .75)
+```
+Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Variable uminterpretieren. $\hat{y}$ wird dann nicht mehr dichotom, sondern als metrische Wahrscheinlichkeit interpretiert, dass der Befragte mehr als die Hälfte der Arbeitszeit im Freien arbeitet (also die Wahrscheinlichkeit für outside = 1). Das können wir dann wie gehabt in eine Regressionsgleichung aufnehmen, zB. mit dem Einkommen als unabhängiger Variable:   
+
+\begin{equation*}
+\widehat{y_i} = P(outside\texttt{\small{=}}1) = \hat\beta0 + \hat\beta1 * \texttt{inc100}_i
+\end{equation*}
+
+Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).
+
+```{r,include=F}
+m1 <- lm(outside ~ inc100, data = m_etb18)
+summary(m1)
+```
+
+```{r, fig.align="center", fig.width=5, fig.height=3.5, warning=FALSE, message=F}
+#| code-fold: true
+ggplot(m_etb18, aes(x = inc100, y = outside)) +
+  geom_point(color = "#172869", size = .75) +
+  geom_smooth(method = "lm", color = lacroix_palette("PeachPear",6)[2],se = F ) + 
+  labs(y = "P(outside = 1)", x = "Einkommen (in 100 EUR)",
+       title = "lineares Wahrscheinlichkeitsmodell")
+  
+```
+```{r, eval = F}
+library(ggfortify)
+autoplot(m1,which = 1:2) # Homosk. & NV 
+```
+
+```{r, echo=F, fig.align="center", warning=FALSE, message=F}
+library(ggfortify)
+autoplot(m1,which = 1:2,nrow=1,ncol = 2) + theme_x + theme(aspect.ratio = .75)
+```
+
+
+### Logistische Linkfunktion
+Um diese Probleme zu umgehen, sind für dichotome abhängige Variablen logistische Regressionsmodelle ein sehr verbreitetes Vorgehen. Dafür werden neben dem bereits angesprochenen Schritt der Betrachtung von $\hat{y}$ als Wahrscheinlichkeit zwei weitere Transformationen der abhängigen Variable vorgenommen:
+
+- *Odds statt Wahrscheinlichkeiten*: Um die obere Grenze des Wertebereichs der abhängigen Variablen auf $+\infty$ auszudehnen, werden statt Wahrscheinlichkeiten Odds betrachtet. Odds sind definiert als der Quotient aus Wahrscheinlichkeit und der Gegenwahrscheinlichkeit für ein gegebenes Ereignis. In unserem Beispiel sind also die Odds dafür, dass ein*e Befragte*r angibt, sich nachts outside zu fühlen: $$Odds(outside=1) = \frac{P(outside=1)}{P(outside=0)}= \frac{P(outside=1)}{1-P(outside=1)} $$ 
+Die Odds gehen gegen 0, je unwahrscheinlicher das betrachtete Ereignis ist. Für sehr wahrscheinliche Ereignisse nehmen die Odds Werte an, die gegen $+\infty$ gehen, das Verhältnis zwischen Dividend ("Zähler") und Divisor ("Nenner") wird immer größer.
+
+- *Logits statt Odds*: Damit bleibt aber noch das Problem der negativen Werte bestehen: Auch Odds sind nur für [0;$+\infty$] definiert. Um auch den negativen Wertebereich sinnvoll interpretierbar zu machen, werden die Odds logarithmiert, wir erhalten die sogenannten Logits: $$Logit(outside=1) = log(Odds(outside=1)) = log\left(\frac{P(outside=1)}{1-P(outside=1)}\right)$$ 
+Die Logarithmierung führt für Werte zwischen 0 und 1 zu negativen Werten, für Werte größer als 1 zu positiven Werten. 
+
+Dementsprechend gibt es bei logistischen Regressionen drei Einheiten:
+
+ + Wahrscheinlichkeiten $P = \frac{\text{Anzahl Treffer}}{\text{Anzahl aller Möglichkeiten}}$
+ 
+ + $\text{Odds} = \frac{P}{1-P} = \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}}$
+ 
+ + $\text{log-Odds/Logits} = log(Odds) = log( \frac{\text{Anzahl Treffer}}{\text{Anzahl Nicht-Treffer}})$
+
+  
+  
+<br>  
+
+```{r, echo = F}
+df <- 
+  data.frame(p1 = c(.5,1/3,1/4,1/5,2/3,3/4,1)) %>% 
+  mutate(p = c("$$\\frac{1}{2}$$","$$\\frac{1}{3}$$","$$\\frac{1}{4}$$",
+               "$$\\frac{1}{5}$$","$$\\frac{2}{3}$$","$$\\frac{3}{4}$$",
+               "$$1$$" ),
+         odds1 = c("$$1$$","$$0.5$$","$$0.33$$","$$0.25$$","$$2$$","$$3$$","$$\\frac{1}{0}$$"),
+         odds2 = c("oder 1:1","oder 1:2","oder 1:3","oder 1:5","oder 2:1","oder 3:1","*sicher*"), 
+         logodds = round(log(p1/(1-p1)),4))
+
+gt(df[,2:5]) %>% 
+  cols_width(p~px(120),
+             odds1 ~ px(200),
+             logodds ~ px(200),
+             everything()  ~ px(100)) %>% 
+  opt_align_table_header(align = c("right")) %>% 
+  cols_align(align = "right",columns = everything()) %>% 
+  cols_align(align = c("right"),columns = logodds) %>% 
+    cols_label(
+      p = md('$$P$$'), 
+      odds1 = md('$$Odds = \\frac{P}{1-P}$$'),
+      odds2 = '',
+      logodds= md('$$Logits = log(Odds)$$')) %>% 
+  fmt_markdown(columns = everything()) %>% 
+  tab_options(heading.title.font.size = "small",
+              table.border.top.style = "hidden",
+              table.border.bottom.style = "hidden") %>% 
+  tab_style(
+    style = "vertical-align:top",
+    locations = cells_title(groups = "title")) %>% 
+  tab_options(data_row.padding = px(1))
+  
+  
+```
+
+
+
+### Vorhergesagte Werte
+
+Zunächst stellt sich die Frage, was Logits denn bedeuten. Eigentlich möchten wir ja Wahrscheinlichkeiten im Wertebereich zwischen 0 und 1 (bzw. 0% und 100%) als Interpretationseinheit haben. Die Berechnung eines vorhergesagten Werts für einen Befragten mit einem Einkommen von 1000 Euro (`inc100`=10) ergibt durch einsetzen bzw. `predict()` natürlich auch die Logits:
+```{r}
+summary(m2)$coefficients
+-0.53856546   + -0.03868975 * 10
+predict(m2, data.frame(inc100 = 10))
+```
+
+    
+::: inter
+
+Befragte mit einem Einkommen von 1000EUR haben dem Modell zu Folge Logits von `r sprintf("%2.5f",predict(m2, data.frame(inc100 = 10)))`, mehr als die Hälfte der Arbeitszeit im Freien zu arbeiten.
+
+:::
+
+Um an die Wahrscheinlichkeit für `outside` = 1 zu bekommen, müssen wir die Transformationsschritte sozusagen "rückabwickeln"! Dafür müssen wir zunächst mit `exp` den `ln()` vor den Odds heraus rechnen und können dann durch die die Formel $p=\frac{Odds}{1+Odds}$ die Wahrscheinlichkeit aus den odds berechnen:
+```{r}
+logits <- -0.9254629 
+exp(logits) # Odds statt Logits
+odds <- exp(logits) 
+odds/(1+odds) # Wahrscheinlichkeit statt Odds 
+exp(logits)/(1+exp(logits)) # beide Schritte auf einmal
+```
+
+    
+::: inter
+
+Die Wahrscheinlichkeit, dass ein Befragter mit einem Einkommen von 1000 Euro angibt, mehr als die Hälfte Ihrer Arbeitszeit im Freien zu arbeiten, liegt also unserem Modell zu Folge bei `r sprintf("%2.3f",predict(m2, data.frame(inc100 = 10), type = "response")*100)`\%.   
+
+::: 
+
+Mit der Option `type="response"` können wir das auch mit `predict()` direkt berechnen:
+```{r}
+predict(m2, data.frame(inc100 = 10), type="response")
+```
+
+### Die Idee von average marginal effects
+
+Wie verändern sich dann die vorhergesagten Werte, wenn wir `inc100` um eine Einheit (also 100€) erhöhen? Die Logits verändern sich pro Einheit `inc100` natürlich genau um $\hat\beta1$, also hier `r sprintf("%2.5f",m2$coefficients[2])`. Um sich die Steigung an einigen Werten anzusehen, berechnen wir jeweils die Abstände der vorhergesagten Werte für $x-0.5$ und $x+0.5$:
+
+
+*Um die Werte jeweils mit dem eingesetzten Wert zu beschriften, stellen wir den Wert mit * `""=` *voran:*
+```{r}
+predict(m2, data.frame(inc100=c("54.5"=54.5,"55.5"=55.5,"64.5"=64.5,"65.5"=65.5,
+                                "74.5"=74.5,"75.5"=75.5)))
+```
+
+Die Differenzen sind immer gleich - entsprechend der Interpretation gehen mit einem um eine Einheit höheren `inc100` um `r sprintf("%2.5f",abs(m2$coefficients[2]))` höhere Logits einher, dass die Befragten mehr als die Hälfte Ihrer Arbeitszeit im Freien arbeiten:
+
++ Steigung bei `inc100` = 55: `r sprintf("%2.5f",predict(m2, data.frame(inc100=55.5)))` $-$ `r sprintf("%2.5f",predict(m2, data.frame(inc100=54.5)))` = `r sprintf("%2.5f",predict(m2, data.frame(inc100=c(54.5,55.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 55.5 - Vorhersage bei 54.5}}
+
++ Steigung bei `inc100` = 65: `r sprintf("%2.5f",predict(m2, data.frame(inc100=65.5)))` $-$ `r sprintf("%2.5f",predict(m2, data.frame(inc100=64.5)))` = `r sprintf("%2.5f",predict(m2, data.frame(inc100=c(64.5,65.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 56.5 - Vorhersage bei 64.5}}
+
++ Steigung bei `inc100` = 75: `r sprintf("%2.5f",predict(m2, data.frame(inc100=75.5)))` $-$ `r sprintf("%2.5f",predict(m2, data.frame(inc100=74.5)))` = `r sprintf("%2.5f",predict(m2, data.frame(inc100=c(74.5,75.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 75.5 - Vorhersage bei 74.5}}
+
+Wenn wir uns diese Schritte aber jeweils für die vorhergesagten Wahrscheinlichkeiten ansehen, sieht das aber anders aus:
+
+```{r}
+predict(m2, data.frame(inc100=c("54.5"=54.5,"55.5"=55.5,"64.5"=64.5,"65.5"=65.5,
+                                "74.5"=74.5,"75.5"=75.5)), type = "response")
+```
+
+Hier werden die Differenzen mit zunehmendem `inc100` immer kleiner:
+
++ Steigung bei `inc100` = 55: `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=55.5)))` $-$ `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=54.5)))` = `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=c(54.5,55.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 55.5 - Vorhersage bei 54.5}}
+
++ Steigung bei `inc100` = 65: `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=65.5)))` $-$ `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=64.5)))` = `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=c(64.5,65.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 65.5 - Vorhersage bei 64.5}}
+
++ Steigung bei `inc100` = 75: `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=75.5)))` $-$ `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=74.5)))` = `r sprintf("%2.5f",predict(m2,type="response", data.frame(inc100=c(74.5,75.5))) %>% diff(.) )`  \quad\textsf{\small{Vorhersage bei 75.5 - Vorhersage bei 74.5}}
+
+
+
+
+```{r AME1, echo=F, fig.align='center', fig.height=4.15, fig.show='hold', fig.caption=T}
+df3 <- tibble(x1 = m_etb18$inc100,
+              y.logit = m2$fitted.values,
+              me = margins::margins(m2)$dydx_inc, # steigung
+              ) %>%
+  mutate(y.p = exp(y.logit)/(1+exp(y.logit)),
+         y = ifelse(y.logit>0,1,0),
+         pred.p = predict(m2,data.frame(inc100 = x1), type = "response"), # vorhergesagte Wkt-Werte: y-Werte für Scatterplot
+         x2 = dplyr::lead(x1),         # x- Werte um eine Zeile verschieben
+         pred.p2 = dplyr::lead(pred.p), # y- Werte um eine Zeile verschieben
+         dif_pred = pred.p2 -pred.p, # Differenz zwischen y- und y-Wert für x+1,
+         pred.l = predict(m2,data.frame(inc100 = x1)),
+         pred.l2 = dplyr::lead(pred.l), # logit pred. Werte um eine Zeile verschieben
+         dif_pred.l = pred.l2 - pred.l, # Differenz
+         me_min = pred.p - .5*me,
+         me_max = pred.p + .5*me
+  )
+highlight2 <- c(55,75)
+set.seed(2224)
+df3_small <- df3 %>% slice_sample(n=75) 
+
+la16_zoom <- 
+      ggplot(df3_small %>% filter(between(x1,highlight2[1],highlight2[2])) %>% distinct(x1,.keep_all = T), 
+             aes(x = x1 , y = pred.l)) + 
+        geom_segment(aes(x=x1-.5,xend=x1+.5,y=pred.l-.5*m2$coefficients[2],yend=pred.l+.5*m2$coefficients[2]),
+                     size = .5,
+                     lineend = "square",
+                     color = "orange") + #lacroix_palette("PeachPear", type = "discrete")[2]) +
+        geom_segment(aes(x=x1-.5, xend=x1+.5, y=pred.l-.5*m2$coefficients[2],yend=pred.l-.5*m2$coefficients[2]),
+                     size = .5,
+                     color = lacroix_palette("PeachPear", type = "discrete")[1]) +
+        geom_segment(aes(x=x1+.5, xend=x1+.5, y=pred.l-.5*m2$coefficients[2],yend=pred.l+.5*m2$coefficients[2]),
+                     linejoin = "bevel",lineend = "butt",
+                     arrow = arrow(length = unit(0.015, "npc")),
+                     size = .5,
+                     color = lacroix_palette("PeachPear", type = "discrete")[1]) +
+        geom_point(color = lacroix_palette("PeachPear", type = "discrete")[6],size = 2) +
+        geom_text_repel(aes(label = round(pred.l+.5*m2$coefficients[2] - (pred.l-.5*m2$coefficients[2]),5)),
+                        nudge_x = 2,
+                        direction = "x",
+                        segment.colour = NA,
+                        size = 2.75) +
+        expand_limits(x = c(highlight2+2)) +
+  labs(x = "inc100", title = "Steigung, ausgedrückt in Logits",y ="Logit(outside = 1) aus m2") +
+  theme_x +
+  theme(plot.title = element_text(hjust=.5,size = 15))
+
+la13_inset <- 
+    ggplot(df3 %>% distinct(x1,.keep_all = T), aes(x = x1 , y = pred.l)) + 
+      geom_point(color = lacroix_palette("PeachPear", type = "discrete")[6],size = .35) +
+      geom_rect(data = filter(df3, x1 %in% highlight2),
+                aes(xmin= min(x1) - (max(x1)-min(x1))/10, 
+                    xmax= max(x1) + (max(x1)-min(x1))/10, 
+                    ymax= min(pred.l) - (max(pred.l)-min(pred.l))/10, 
+                    ymin= max(pred.l) + (max(pred.l)-min(pred.l))/10),
+                fill = NA,size = .15,color = lacroix_palette("PeachPear", type = "discrete")[4]) +
+      labs(title ="", x = "", y = "") + 
+      theme_x + 
+      theme_minimal(base_family = "Nunito",base_size = 5) +
+      theme(axis.title = element_blank(),plot.title = element_blank(),plot.subtitle = element_blank(),
+            plot.background = element_rect(fill = colorhex, colour = lacroix_palette("PeachPear", type = "discrete")[5]))
+            
+
+la16_zoom + inset_element(la13_inset, left = 0.6, bottom = 0.6, right = 1, top = 1)
+```
+
+```{r AME2,echo=F, fig.align='center', fig.height=4.15, fig.caption=T}
+pa16_zoom <- 
+ggplot(df3_small %>% filter(between(x1,highlight2[1],highlight2[2])) %>% distinct(x1,.keep_all = T), 
+       aes(x = x1 , y = pred.p)) + 
+  geom_segment(aes(x=x1-.5,xend=x1+.5,y=me_min,yend=me_max),color = paletteer_d("dutchmasters::milkmaid")[4], size = .5) +
+  geom_segment(aes(x=x1+.5,xend=x1+.5,y=me_min,yend=me_max),color = paletteer_d("dutchmasters::milkmaid")[8], size = .5,
+               linejoin = "bevel",lineend = "butt",
+               arrow = arrow(length = unit(0.015, "npc"))) +
+  geom_segment(aes(x=x1-.5,xend=x1+.5,y=me_min,yend=me_min), color = paletteer_d("dutchmasters::milkmaid")[8], size = .5) +
+  geom_point(color = "#FF3200", size =2 ) + #paletteer_d("dutchmasters::milkmaid")[6],size = 2) +
+  geom_text_repel(aes(label = me %>% round(.,5)),
+                  nudge_x = 2,
+                  direction = "x",
+                  segment.colour = NA,
+                  size = 2.75) +
+  labs(x = "inc100", title = "Steigung, ausgedrückt in Wahrscheinlichkeiten",y ="P(outside = 1) aus m2")+
+  theme_x + 
+  theme(plot.title = element_text(hjust=.5,size = 15),
+        plot.subtitle = element_text(hjust=.5)) +
+  expand_limits(x = c(highlight2+2)) 
+
+p.a16 <- ggplot(df3 %>% distinct(x1,.keep_all = T), aes(x = x1 , y = pred.p)) + 
+            geom_point(color =  "#FF3200",size = .35) + #paletteer_d("dutchmasters::milkmaid")[6],size = .35) +
+            geom_rect(data = filter(df3, x1 %in% highlight2),
+                      aes(xmin= min(x1) - (max(x1)-min(x1))/10, 
+                          xmax= max(x1) + (max(x1)-min(x1))/10, 
+                          ymax= min(pred.p) - (max(pred.p)-min(pred.p))/10, 
+                          ymin= max(pred.p) + (max(pred.p)-min(pred.p))/10),
+                      fill = NA,size = .075,color = paletteer_d("dutchmasters::milkmaid")[10]) +
+            labs(title ="", x = "", y = "") + 
+            theme_x + 
+            theme_minimal(base_family = "Nunito",base_size = 5) +
+            theme(axis.title = element_blank(),plot.title = element_blank(),plot.subtitle = element_blank(),
+                  plot.background = element_rect(fill = colorhex, colour = paletteer_d("dutchmasters::milkmaid")[13]))
+
+pa16_zoom + inset_element(p.a16, left = 0.6, bottom = 0.6, right = 1, top = 1)
+```
+Diese Steigungen werden für alle Beobachtungen aus dem zu Grunde liegenden Datensatz aufsummiert und dann der Durchschnitt gebildet ($\rightarrow$ *average* marginal effects)
+
+
+## Links
+
++ [Die Seite zu `{marginaleffects}`](https://vincentarelbundock.github.io/marginaleffects/articles/marginaleffects.html) bietet sehr ausführliche und anschauliche Beispiele zu den verschiedenen Varianten marginaler Effekte
+
++ [Ausführliche Einführung zu marginalen Effekten von Andrew Heiss](https://www.andrewheiss.com/blog/2022/05/20/marginalia/)
+
+
+[Ableitungen grafisch erstellt](https://twitter.com/allison_horst/status/1554921698742468625?s=11&t=Ac_YizlsYkOfUIkuWmaaWQ)

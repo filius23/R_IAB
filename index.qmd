@@ -1,0 +1,27 @@
+# Willkommen {#index .unnumbered}
+
+```{r indx, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(kableExtra)
+library(tidyverse)
+```
+
+Eine Einführung in R für Mitarbeitende am IAB.
+
+```{r main, echo = F, out.height="70%",out.width="70%", fig.align="center"}
+knitr::include_graphics("./pic/00_frontpage.png")
+```
+
+
+**Kursinformationen**
+
+::: {.g-col-12 .g-col-sm-6 .g-col-md-4}
+
+
+{{< fa calendar-alt >}} &nbsp; 17.04 - 18.04. und 24.04. - 25.04.2023
+
+{{< fa clock >}} &nbsp; 8:30 – 15:30 Uhr
+
+{{< fa location-dot >}} &nbsp; E09
+
+:::

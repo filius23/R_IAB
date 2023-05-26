@@ -1,0 +1,130 @@
+# Links & Weiterführendes {.unnumbered}
+
+```{r ref01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(gt)
+library(paletteer)
+library(kableExtra)
+```
+
+
+## `%>%` vs. `|>`
+
+In diesem Kurs haben wir die Pipe ` %>%` aus `{tidyverse}` (streng genommen aus dem Paket `{magrittr}`) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe `|>` eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher `%>%` durch `|>`. 
+Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an 'alte Variante' gehalten.
+Letztlich spricht aber nichts dagegen, nach einem Update auf `|>` umzusteigen - oder einfach bei ` %>% ` zu bleiben.
+
+<img src="pic/pipe.png" height="480px" />
+
+Unter anderem steht [hier mehr zu den Unterschieden](https://r4ds.hadley.nz/workflow-pipes.html#vs) zwischen beiden Pipes.
+Außerdem bietet [dieser Blogbeitrag](https://kpress.dev/blog/2022-06-19-replacing-the-magrittr-pipe-with-native-r-pipe/) einen guten Überblick zu den Fallstricken beim Umstieg von ` %>% ` auf `|>`. 
+
+
+## Anonyme Funktionen: `.x` vs. `/(x)` {#anonymfun}
+
+Mit [R 4.1.0](https://towardsdatascience.com/the-new-pipe-and-anonymous-function-syntax-in-r-54d98861014c) wurde in base R eine neue 'anonymous function short hand' eingeführt, welche die 'formula syntax' Schreibweise `~mean(.x)` ablöst, die wir in [Kapitel 6](#06_data_wrangle2) kennen gelernt haben.
+In der neuen base R wäre das `\(x) mean(x)` geschrieben. 
+
+Aus der [`{purrr}` release notes für Version 1.0.0](https://www.tidyverse.org/blog/2022/12/purrr-1-0-0/#documentation) (Dezember 2022):
+*We believe that it’s better to use these new base tools because they work everywhere: the base pipe doesn’t require that you load magrittr and the new function shorthand works everywhere, not just in purrr functions. Additionally, being able to specify the argument name for the anonymous function can often lead to clearer code.*
+
+Dementsprechend würde die Anwendung in `across()` wie folgt aussehen:
+
+```{r}
+#| eval: false
+sat_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 16) %>% 
+    select(F1450_04,F1450_05,F1450_06) %>% 
+    slice(12:16)
+
+# formula syntax
+sat_small %>% 
+  mutate(across(matches("F1450"),~mean(.x)))
+# anonymous function short hand
+sat_small %>% 
+  mutate(across(matches("F1450"),\(x) mean(x) ))
+```
+
+In diesem Skript habe ich auf die bisherige 'formula syntax' Schreibweise zurück gegriffen, da aktuell noch die meisten Hilfeseite mit dieser Syntax arbeiten. 
+
+
+## Quarto
+
+[Quarto](https://quarto.org/) ist eine Erweiterung/Weiterentwicklung von RMarkdown. 
+Allerdings erfordert Quarto eine separate Installation, [mehr Infos](https://quarto.org/docs/get-started/).
+
+
+
+## Einführungen in R
+
+Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen: 
+
+[R for Data Science](https://r4ds.had.co.nz/) **das** Standardwerk für Datenanalysen mit `{tidyverse}` - sehr intuitive Einführung, Fokus auf Data Science
+
+[Problemorientiere Einführungen in spezifische Anwendungen "do more with R"](https://www.infoworld.com/article/3411819/do-more-with-r-video-tutorials.html)
+
+[Ten simple rules for teaching yourself R](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372)
+
+[Moderne Datenanalyse mit R](https://link.springer.com/book/10.1007/978-3-658-21587-3): Deutschsprachige Einführung in `{tidyverse}`
+
+[R for the Rest of Us](https://rfortherestofus.com/) bietet viele Tutorials und freie Kurse an, unter anderem auch viele [YouTube](https://www.youtube.com/channel/UCSoUNu8x-HblqqOK_EwdZGw) Videos.
+
+
+[Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
+
+## Beispiel für vollständiges Paper geschrieben mit RMarkdown
+
+[Paper zu einem Beispieldatensatz, komplett in R Markdown geschrieben](https://allisonhorst.github.io/penguins_paper_distill/rjarticle/penguins.html)  
+
+[Hier findet ihr den Source-Code](https://github.com/allisonhorst/penguins_paper_distill/blob/46342ebf450dfdb49741ae9f7059c6e3c266af70/rjarticle/penguins.Rmd)
+
+
+## Cheatsheets
+
+Eine Sammlung an Cheatsheets für eine breite Palette an Anwendungen gibt es [hier](https://www.rstudio.com/resources/cheatsheets/).
+
++ Datenvisualisierung mit [`{ggplot2}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf)
++ Datensätze bearbeiten mit [`{dplyr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf)
++ Datensätze erstellen/reshapen mit [`{tidyr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf)
+
+## `{ggplot2}`
+
+Eine große Stärke von `ggplot2` sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen
+
++ mehrere Grafiken zu kombinieren mit [`{patchwork}`](https://github.com/thomasp85/patchwork#patchwork)
++ Karten zu erstellen mit [sf](https://oliviergimenez.github.io/intro_spatialR/#1), weitere [Link](https://ourcodingclub.github.io/tutorials/dataviz-beautification-synthesis/)
++ fortgeschrittene Textformatierungen zu verwenden mit [`{ggtext}`](https://wilkelab.org/ggtext/)
++ Grafiken als Animation zu erstellen [`{gganimate}`](https://gganimate.com/) - [eine Einführung](https://goodekat.github.io/presentations/2019-isugg-gganimate-spooky/slides.html) oder [hier](https://rpubs.com/bradyrippon/929572)
++ Logos in in `{ggplot2}` einfügen mit [`{ggpath}`](https://mrcaseb.github.io/ggpath/)
+
+Eine Übersicht zu Erweiterungspakteten für `{ggplot2}` findet sich [hier](https://exts.ggplot2.tidyverse.org/gallery/)
+
+Auch [The R Graph Gallery](https://r-graph-gallery.com/) bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für `{ggplot2}`.
+
++ [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/)
+
++ [Session zu intuitiveren Grafiken von Cara Thompson](https://www.youtube.com/watch?v=_indbXPXUw8)
+
+## Fortgeschrittene Anwendung von `lapply()`/`map()` mit selbstgeschriebenen Funktionen  {#purrr}
+
++ Umfangreiche Einführung in loops mit `map()` und weiteren Funktionen aus `{purrr}` [Hendrik van Broekhuizen](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) 
++ Modellserien: [Blog von Tim Tiefenbach](https://tim-tiefenbach.de/post/2023-dplyr-many-models/) zu eleganten Möglichkeiten
+
+## regex
+
+Für die Arbeit mit Textvariablen sind *regular expressions* (regex) eine große Hilfe. 
+Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen durchsuchen, diese ersetzen usw.
+Der [Blog von Joshua C. Fjelstul](https://jfjelstul.github.io/regular-expressions-tutorial/) ist ein guter Einstieg.
+Darüber hinaus gibt es ein hilfreiches Cheatsheet zu [*regex* in R](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf) und das *regex* -Paket [`{stringr}`](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf)
+
+## Weiteres 
+
+[`{easystats}`](https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting) bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem `easystats`-Universum unter anderem [{performance}](https://easystats.github.io/performance/)  und [{effectsize}](https://easystats.github.io/effectsize/index.html) kennengelernt.
+
+[Ereigniszeitmodelle / Event History Modellung / Survival Analysis](https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html)
+
+
+
+
+::: {#refs}
+:::

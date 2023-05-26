@@ -1,0 +1,289 @@
+# RMarkdown
+
+```{r setup, include=FALSE}
+
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+knitr::opts_chunk$set(fig.align = "center")
+```
+
+[{rmarkdown}](https://rmarkdown.rstudio.com/) erlaubt, formatierte Textelemente mit [Markdown](https://www.markdownguide.org/cheat-sheet/) und R code bzw. Output zu kombinieren. 
+Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von [Markdown](https://www.markdownguide.org/cheat-sheet/)-Befehlen formatiert werden kann.
+So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden.
+Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen.
+Diese gesamte Webseite wurde mit [{R Markdown}](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [{Quarto}](www.quarto.org/) erstellt.
+
+Dieses Kapitel kann lediglich eine kleine Einführung in RMarkdown sein.
+Die [Hilfeseiten und Dokumentation für R Markdown](https://rmarkdown.rstudio.com/) ist extrem umfangreich und auch die [Tutorials](https://rmarkdown.rstudio.com/lesson-1.html) und [Cheatsheets](https://rmarkdown.rstudio.com/lesson-15.html) sind hervorragend.
+Daher hier nur eine kleiner Überblick.
+
+Ein RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:
+ 
+````{verbatim, lang = "markdown"}
+---
+title: "Mein erstes RMarkdown-Dokument"
+author: "Mein Name"
+date: "2022-09-11"
+output: pdf_document
+---
+  
+# Überschrift 1
+
+## Unterüberschrift 2
+
+Dies ist ein R Markdown-Dokument. 
+Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. 
+Text kann **fett** und *kursiv* geschrieben werden. 
+
+Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.
+Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. 
+Ein R-Code-Baustein ("chunk") sieht so aus:
+
+```{r cars}
+# hier kommt der R Code hin
+summary(mtcars$qsec)
+```
+
+```` 
+
+```{r, out.width="75%", out.width="75%"}
+#| echo: false
+
+knitr::include_graphics("./pic/115_rmd_demo.png")
+```
+
+## RMarkdown Dokument einrichten
+
+Ein RMarkdown-Dokument können wir entweder einrichten, indem wir über das *Menü File* -> *R Markdown...* das Einrichtungsmenü aufrufen. Hier können wir den Titel, Autorennamen und das Datum sowie das Output-Format angeben:
+
+```{r, out.width="50%", out.width="50%"}
+#| echo: false
+#| layout-ncol: 2
+
+knitr::include_graphics("./pic/115_rmd_step1.png")
+knitr::include_graphics("./pic/115_rmd_step2.png")
+
+```
+
+Alternativ können wir auch rechts unten ein R Skript in RMarkdown-Dokument umformatieren:
+
+```{r, out.width="25%", out.width="30%"}
+#| echo: false
+knitr::include_graphics("./pic/115_rmd_stepX.png")
+```
+
+RMarkdown-Dateien haben die Dateiendung `.rmd`.
+Das Knitten einer RMarkdown-Datei findet in einer neuen Umgebung statt - d.h. hier müssen alle Pakete und Daten geladen werden, auch wenn Sie in der Session bereits geladen sind.
+
+## Wichtige Begriffe
+
+- **Chunk**: Abschnitt mit R-Code innerhalb eines RMarkdown-Dokuments.
+
+````{verbatim, indent="    "}
+```{r}
+# hier kommt der R Code hin
+```
+````
+
+Vor und nach dem Chunk muss eine Leerzeile stehen. Die letzten drei Backticks müssen alleine in der letzten Zeile eines chunks stehen.
+
+
+- **Knit**: Beim  "knitten" eines RMarkdown Dokuments, werden zuerst alle chunks ausgeführt und der jeweilige Output in Markdown konvertiert. Im Anschluss ruft R [pandoc](https://pandoc.org/) auf um, den Markdown-Text in HTML, PDF oder Word zu konvertieren.
+
+Knitten kann entweder über das "Knit"-Symbol oben im Editor mit der Tastenkombination `⌘⇧K` 
+auf macOS
+oder STRG + `⇧` + k in Windows
+
+
+```{r knit-button, echo=FALSE, out.width="30%"}
+knitr::include_graphics("./pic/115_knit-button.png", error = FALSE)
+```
+
+
+## Chunks einfügen
+
+Wir können neue chunks auf zwei Arten erstellen
+
+- Mit `⌘⌥I` auf macOS oder `STRG + alt + I` auf Windows-Rechnern.
+Funktioniert auch, um einen existierenden chunck in zwei Teile zu teilen.
+
+- Mit dem "Insert" Button oben im Editor:
+
+```{r insert-chunk, echo=FALSE, out.width="30%"}
+knitr::include_graphics("./pic/115_insert_chunk.png", error = FALSE)
+```
+
+
+
+## Namen für chunks
+
+Wir können den Abschnitten Namen hinzufügen, um die Navigation innerhalb des Dokument zu erleichtern. 
+Wenn wir in RStudio auf das kleine Dropdown-Menü (mit dem `#`) am unteren Rand des Editors klicken, bekommen wir ein Inhaltsverzeichnis, das alle Überschriften und Abschnitte anzeigt. 
+Wenn wir die Abschnitte benennen, werden sie in der Liste angezeigt. Wenn Sie keinen Namen angeben, wird der Chunk trotzdem angezeigt, aber Sie wissen nicht, was er tut.
+
+```{r chunk-toc, echo=FALSE, out.width="30%"}
+knitr::include_graphics("./pic/115_chunk-toc.png", error = FALSE)
+```
+
+Namen werden direkt nach dem  `{r` in der ersten Zeile des chunks angegeben. 
+Leerzeichen sind in chunk-Namen nicht erlaubt, aber Unterstriche und Bindestriche. 
+**Jeder chunk-Name darf innerhalb eines Dokuments nur einmal vergeben werden.**
+
+````{verbatim}
+```{r chunk_Name}
+# R Code
+```
+````
+
+
+## Chunk-Optionen
+
+Wir haben eine Reihe an Möglichkeiten festzulegen, wie RMarkdown mit Chunks umgehen soll. Eine vollständige Übersicht findest sich im [RMarkdown Reference Guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) oder auf der Webseite von [**knitr**](https://yihui.org/knitr/options/).
+
+Optionen werden in der ersten Zeile eines chunks nach dem `{r}` festgelegt:
+
+````{verbatim}
+```{r name-of-this-chunk, warning=FALSE, message=FALSE}
+# Code goes here
+```
+````
+
+Hier eine kleine Liste der wichtigsten Optionen:
+
+- `fig.width=5` & `fig.height=4`: Größe von Plots
+- `echo=FALSE`: Der chunk wird zwar ausgeführt und das Ergebnis im Zieldokument gezeigt, nicht aber der Code
+- `include=FALSE`: Der chunk wird zwar ausgeführt, aber im Zieldokument werden weder der Code selbst noch das Ergebnis gezeigt
+- `eval=FALSE`: Der chunk wird nicht ausgeführt, aber im Zieldokument gezeigt
+- `message=FALSE`: messages werden ausgeblendet (bspw. alles was beim Laden von Paketen angezeigt wird)
+- `warning=FALSE`: warnings werden ausgeblendet
+
+Außerdem können Optionen auch mit einem Klick auf das Zahnrad rechts oben in einem Chunk gesetzt werden:
+
+```{r chunk-options, echo=FALSE, out.width="70%"}
+knitr::include_graphics("./pic/115_chunk-opts.png", error = FALSE)
+```
+
+## Inline chunks
+
+Eine weitere Stärke von RMarkdown ist, dass Ergebnisse direkt im Text dargestellt werden können. 
+Dazu dienen "inline chunks", um bspw. Kennzahlen aus einer Analyse einzufügen `` `r "\u0060r R Code\u0060"` ``.
+
+So können wir bspw. Werte in einem Chunk berechnen und dann in den Text einfügen.
+
+````{verbatim}
+```{r find-avg-mpg, echo=FALSE}
+median_mpg <- mean(mtcars$mpg)
+```
+Im Median haben die Fahrzeuge einen Verbrauch von `r round(median_mpg, 1)` miles per gallon.
+````
+
+… führt zu folgendem Ergebnis:
+
+> Im Median haben die Fahrzeuge einen Verbrauch von `r round(median(mtcars$mpg), 1)` miles per gallon.
+
+## Output & `yaml`
+
+Als yaml bezeichnet man die Kopfzeile der RMarkdown-Dokumente. Hier können wir allerhand Voreinstellungen festlegen, insbesondere das Zieldateiformat. 
+
+Das erste unter `output` aufgeführte Dateiformat ist der, der erzeugt wird, wenn wir auf die Schaltfläche "knit" klicken oder das Tastaturkürzel
+(⌘⇧K" unter macOS; "
+STRG + Umschalt + K" unter Windows) drücken. 
+
+Die Einrückung im YAML-Abschnitts ist von Bedeutung, insbesondere dann, wenn unter den einzelnen Ausgabetypen verschachtelte Einstellungen vorhanden sind. So könnte ein typischer `Output`-Abschnitt aussehen, unter anderem können wir auch Word-Dokument als Formatierungsvorlage angeben:
+
+
+````{verbatim, lang = "markdown"}
+---
+title: "Mein Worddokument"
+author: "My name"
+date: "13. August 2022"
+output: 
+  word_document: 
+    reference_docx: "Vorlage.docx"
+    toc: yes
+    fig_caption: yes
+    fig_height: 4
+    fig_width: 5
+---
+````
+
+Auch für die anderen Output-Formate gibt es einen YAML-Befehl:
+
+````{verbatim, lang = "markdown"}
+---
+title: "My document"
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
+---
+````
+
+[Eine Übersicht findet zu verschiedenen Optionen findet sich bspw. hier](https://zsmith27.github.io/rmarkdown_crash-course/lesson-4-yaml-headers.html) oder hier für  [Word](https://bookdown.org/yihui/rmarkdown/word-document.html), [HTML](https://bookdown.org/yihui/rmarkdown/html-document.html), [PDF](https://bookdown.org/yihui/rmarkdown/pdf-document.html) oder [Powerpoint](https://bookdown.org/yihui/rmarkdown/powerpoint-presentation.html)
+
+Alternativ lassen sich auch mit den Zahnrad oben neben dem Knit-Button Einstellungen für den YAML-Header festlegen:
+
+```{r output-options, echo=FALSE, out.width="35%"}
+knitr::include_graphics("./pic/115_output-opts.png", error = FALSE)
+```
+
+## Fortgeschrittene Erstellung von Word-Dokumenten mit [`{officedown}`](https://ardata-fr.github.io/officeverse/officedown-for-word.html)
+
+Mit [`{officedown}`](https://ardata-fr.github.io/officeverse/officedown-for-word.html) können wir bspw. Querverweise einbauen:
+```{r, eval = FALSE}
+install.packages("officedown")
+```
+
+
+
+````{verbatim, lang = "markdown"}
+---
+title: "Mein zweites RMarkdown-Dokument"
+author: "Dein Name"
+date: "2022-09-11"
+output:
+  officedown::rdocx_document
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(officedown)
+etbx <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", 
+                         n_max = 2000,
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(ausb = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1 = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
+```{r tab.cap="Eine Tabelle", echo=FALSE,  tab.id='tab2'}
+etbx %>% count(ausb)
+```
+
+Dies ist ein Querverweis auf Tabelle \@ref(tab:tab2).
+
+
+````
+
+
+## Übung
+
++ Verwenden Sie das `14_Markdown.Rmd`-Datei als Vorlage
++ Passen Sie den Verfasser:innen-Namen und Datum an
++ Passen Sie ggf. den Pfad zum Datensatz an. Beachten Sie, dass der Pfad relativ zum Datenspeicherort sein muss
++ Fügen Sie einen chunk mit einer Auszählung von `ausb` ein
++ Fügen Sie einen chunk mit einem `summarise()`-Befehl ein - bspw.:
+```{r}
+#| eval: false
+etbx %>% 
+  group_by(S1,ausb) %>% 
+  summarise(min =  min(F518_SUF,na.rm = T),
+            mean = mean(F518_SUF,na.rm = T),
+            max =  max(F518_SUF,na.rm = T))
+```
+
+
++ Setzen Sie `include`, `echo` usw. nach Wunsch.
+
++ Fügen nach Geschmack auch `{flextable}`-Befehle ein (Denken Sie an `library(flextable)` zu laden)
+
++ Knitten Sie das Dokument zu einer Word-Dokument.

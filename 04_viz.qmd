@@ -1,0 +1,762 @@
+# Visualisierung mit `{ggplot2}`
+
+```{r setup1, echo = F, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+library(haven)
+library(tidyverse)
+library(patchwork)
+knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",cache = T,
+                      out.height= "65%", out.width = "65%", fig.align="center")
+# https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+tab_df <- xtabs(~S1+m1202, data = etb18) %>% data.frame()
+
+theme_set(new = theme_gray(base_size = 15))
+
+# etb18$zpalter[etb18$zpalter>100] <- NA
+# etb18$m1202[etb18$m1202<0] <- NA
+```
+
+
+Neben Kennzahlen/Tabellen können/sollten Verteilungen auch visualisiert werden. 
+Dafür bietet `{ggplot2}` eine riesige Auswahl an Möglichkeiten. 
+
+`{ggplot2}` ist Teil des `{tidyverse}`, d.h. wir können entweder nur `{ggplot2}` oder die gesamte `{tidyverse}`-Sammlung laden:
+```{r}
+#| eval: false
+library(haven) # für datenimport
+library(tidyverse)
+# library(ggplot2) # nicht nötig wenn tidyverse geladen
+```
+
+
+Zunächst sehen wir uns den Weg zu einem Scatterplot an:
+
+```{r, out.height= "80%", out.width= "80%", fig.align="center", echo = F}
+#| warning: false
+etb18 %>%
+  slice(1:100) %>% 
+  mutate(S1_fct = factor(S1, levels = 1:2, labels = c("Männer","Frauen")),
+         zpalter = ifelse(zpalter > 100,NA,zpalter)) %>%
+ggplot(aes(x = zpalter, y = az)) +
+  geom_point(aes(color = S1_fct)) +
+  # facet_grid(~S1_fct) +
+  theme_minimal() +
+  labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
+       x = "Alter") +
+  scale_color_manual(values = c("lightskyblue4","navy"))
+```
+
+Datengrundlage für unsere Graphik ist die ETB18 mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
+```{r}
+#| eval: false
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+```{r}
+etb18 %>% select(az,S1,zpalter) %>% head()
+```
+
+Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
+```{r}
+etb18$zpalter[etb18$zpalter>100] <- NA # missing in zpalter mit NA überschreiben
+etb18_small <- etb18 %>% slice(1:100)
+```
+
+
+## ggplot2 und die grammar of graphics 
+
+`ggplot2` ist die Umsetzung des Konzepts der "layered grammar of graphics" in R. Die Idee dieses Visualisierungssystems ist es, Datenvisualisierung in Parameter zu unterteilen: der zugrundeliegende Datensatz, die darzustellenden Variablen, die Wahl der darzustellenden Formen, das Koordinatensystem, Skalen und statistische Transformationen. Ein Standardbefehl in `ggplot2` sieht ungefähr so aus:
+
+```{r,eval=F}
+ggplot(data = datensatz, aes(x = var1, y = var2, color = var3)) +
+  geom_point() +
+  labs(title= "Titel", subtitle = "Untertitel") +
+  theme_minimal()
+```
+Wir rufen also zunächst mit `ggplot()` eine Darstellung auf. In den weiteren Argumenten werden dann weitere Aspekte festgelegt:  
+
++ Mit `data = ` geben wir den `data.frame` an, den wir darstellen möchten
++ Die Aesthetics `aes()` legen fest, welche Variablen dargestellt werden sollen: hier also `var1` auf der x-Achse, `var2` auf der y-Achse und `var3` soll die Farbgebung festlegen
++ Die Layers `geom_..` geben die Art der Darstellung an, zB. `geom_point()` für Punkt- und `geom_bar()` für Säulendiagramme.
++ Mit `labs` können wir Beschriftungen angeben, zB. einen Titel vergeben oder die Achsenbeschriftungen anpassen
++ Die Themes `theme_...` legen das Design der Graphik fest, zB. schwarz/weiße Achsen- und Hintergrundfarben mit  `theme_bw()`
+
+Wir arbeiten uns also jetzt durch die einzelnen *layer*/Schichten der Grafik:
+
+### `data =`
+
+In `data = ` geben die den `data.frame` an, aus dem die darzustellenden Informationen kommen. Wir starten unseren ggplot also mit:
+```{r}
+ggplot(data = etb18_small)
+```
+
+
+### `aes` 
+
+Diese Werte wollen wir also in einem Scatterplot darstellen, sodass das Alter auf der x-Achse und auf der y-Achse die Wochenarbeitszeit abgetragen ist:
+```{r}
+#| warning: false
+ggplot(data = etb18_small, aes(x = zpalter, y = az))
+```
+
+### `geom`
+Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point()
+```
+Mit `color =` können wir den Punkten auch eine andere Farbe geben:
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
+```
+[Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) findet sich eine Übersicht mit allen Farbnamen, die verstanden werden, es gibt aber noch viel mehr Farben - siehe [Anhang](#farben).
+
+### `aes()` Teil II
+Das sieht soweit schon ganz gut aus, allerdings werden die Punkte noch nicht getrennt nach Geschlecht dargestellt. 
+Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben.
+Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen der `geom_`s angeben - das kann neben der Farbe auch die Form, Größe oder Transparenz sein. [Hier ein Überblick](#aes_list)
+
+Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
+```{r}
+#| error=TRUE
+# ergibt einen Fehler aufgrund der Labels:
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + 
+  geom_point()
+```
+
+Eine numerische Variable für `color =` ergibt einen Farbverlauf, eine `factor`/`character`-Variable ergibt eine diskrete Farbskala:
+```{r}
+#| layout-ncol: 2
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(S1))) + 
+  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+  geom_point()
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.character(S1))) + 
+  geom_point()
+```
+
+Außerdem können wir mit `scale_color_manual`[^2] selbst Farben angeben, eine Liste möglicher Farben findet sich [**hier**](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf).
+
+[^2]: Hätten wir `color` in `aes`  angeben, wäre der entsprechende Befehl `scale_color_manual`.
+```{r}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"))
+```
+
+
+### Beschriftungen
+
+Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
+```{r, out.height= "75%", out.width = "75%", fig.align="center"}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") )
+```
+Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben wir folgende Optionen:
+
++ `title`: Überschrift für die Graphik
++ `subtitle`:  Unterzeile zur Überschrift
++ `caption`: Anmerkung unterhalb der Graphik
++ `x`: x-Achsenbeschriftung
++ `y`: y-Achsenbeschriftung
++ `fill`: Beschriftung für die Legende, wenn `fill` in `aes()` angegeben wurde
++ `color`: Beschriftung für die Legende, wenn `color` in `aes()` angegeben wurde
+
+
+```{r fullplt}
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+  geom_point() + 
+  scale_color_manual(values = c("lightskyblue4","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
+```
+
+
+Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme_minimal()` einen weißen Hintergrund mit grauen Markierungslinien (weitere Beispiele in den Hinweisen unter [Themes](#themes))
+
+## Kombination aus allem
+```{r fllplt1}
+#| out-height: 100%
+#| out-width: 100%
+#| cache: true
+
+etb18_small$m1202[etb18_small$m1202<0] <- NA
+ggplot(data = etb18_small, aes(x = zpalter, y = az, 
+                               color = as.factor(S1),
+                               shape = as.factor(m1202))) + 
+  geom_point(size = 2) + 
+  scale_color_manual(values = c("lightskyblue3","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
+                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  labs(color = "Geschlecht", 
+       shape = "Ausbildung",
+       fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: ETB 2018"
+       ) 
+```
+
+[Übersicht zu shapes](#shape1)
+
+## Grafiken speichern: `ggsave()`
+
+Um eine Grafik dann zu speichern, steht uns `ggsave()` zur Verfügung.
+Wenn wir nichts anderes angeben, wird automatisch die gerade offene Grafik[^plotopen] gespeichert. 
+Besser ist es aber explizit zu sein und die gewünschte Grafik als Objekt abzulegen und dann in `ggsave()` anzugeben:
+
+```{r}
+#| eval: false
+plot_objekt1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, 
+                               color = factor(S1),
+                               shape = factor(m1202))) + 
+  geom_point(size = 2) + 
+  scale_color_manual(values = c("lightskyblue3","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
+  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
+                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  labs(color = "Geschlecht",shape = "Ausbildung", fill = "Geschlecht",
+       y = "Arbeitszeit/Woche",x = "Alter",
+       title = "Arbeitszeit und Alter", subtitle = "Nach Geschlecht",caption = "Quelle: ETB 2018") 
+```
+
+
+```{r}
+#| eval: false
+ggsave(plot = plot_objekt1,filename = "./results/plot1.png",
+       dpi = 800, # auflösung
+       # width = 9, height = 7, # falls angepasst werden soll
+       )
+```
+Die richtige Kombination aus Auflösung, Textgröße und Gesamtgröße des Plots zu finden hat einige Fallstricke. [Hier mehr dazu.](https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/)
+
+
+[^plotopen]: im Panel **Plots** rechts
+
+### [Übung](#pltue1)  {#ue4_01}
+
+## Verteilungen visualisieren
+
+### Boxplot 
+
+Definition der Bestandteile eines Boxplots: 
+
+<!-- + ggf. Ausreißer -->
+<!-- + unterer Whisker: `q1 - 1.5* IQR` -->
+<!-- + untere Grenze: 1. Quartil  -->
+<!-- + mittlere Linie: Median  -->
+<!-- + obere Grenze: 3. Quartil  -->
+<!-- + oberer Whisker: `q3 + 1.5* IQR` -->
+<!-- + ggf. Ausreißer -->
+
+<!-- Die Box enthält also die zentralen 50% des Wertebereichs. -->
+```{r, sw05_boxplot1, echo = F, out.height="45%", out.width="55%", fig.align="center", warning=F,message=F}
+#| cache: true
+ak <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double()),
+                        col_select = c("hs16"))
+
+bp_ann_df <- 
+  filter(ak,hs16>0) %>% 
+  mutate_at(vars(hs16),~ifelse(.<0,NA,.)) %>% 
+  summarise(q25 = quantile(hs16,probs = .25),
+            q50 = quantile(hs16,probs = .5),
+            q75 = quantile(hs16,probs = .75),
+            whis1 = q25 - 1.5*(q75-q25) + .5 ,
+            whis2 = q75 + 1.5*(q75-q25) - .5) %>% 
+  mutate_all(~if_else(. < 0,0,.)) %>% 
+  pivot_longer(cols=everything(), values_to = "hs16") %>% 
+  mutate(xend1 = ifelse(grepl("whis",name),.015,.4),
+         name = case_when(name == "q25" ~ "1. Quartil (25% Grenze)",
+                          name == "q50" ~ "Median (50% Grenze)",
+                          name == "q75" ~ "3. Quartil (75% Grenze)",
+                          name == "whis1" ~ "unterer Whisker: q1 - 1.5*IQR",
+                          name == "whis2" ~ "oberer Whisker: q3 - 1.5*IQR"),
+         x = 1)
+
+bp_ann_ausr <- filter(ak,!between(hs16,146,197),hs16>0) %>% select(hs16) %>% mutate(name="Ausreißer",x=1) %>% 
+  distinct() %>% group_by(aus=hs16>146) %>% 
+  mutate(hs16m=mean(hs16) %>% if_else(.<144,140,.))
+
+  
+ggplot(filter(ak,hs16>0), aes(x = 0, y = hs16)) + 
+  geom_boxplot() + 
+  geom_label(data = bp_ann_df, aes(x = x-.45, y = hs16, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_label(data = bp_ann_ausr, aes(x = x-.45, y = hs16m, label = name), hjust = 0, label.size = .0,fontface="italic", size = 5.25) +
+  geom_segment(data = bp_ann_df, aes(x = x-.451, xend = xend1, yend = hs16, y = hs16), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.025,"npc"), type = "closed")) +
+  geom_segment(data = bp_ann_ausr, aes(x = x-.451, xend = .015, yend = hs16, y = hs16m), color = "#172869",
+               lineend = 'butt', linejoin ='bevel',arrow = arrow(length = unit(.01,"npc"), type = "closed")) +
+  labs(color = "", # legenden-label auf leer
+       y = "", # y-Achse labeln
+       x="")+ # x-Achse labeln
+  theme_void() + 
+  theme(axis.text.x = element_blank()) +
+  expand_limits(x = c(0,1.2))
+
+```
+```{r}
+#| echo: false
+theme_set(new = theme_grey(base_size = 14))
+```
+
+Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
+```{r}
+ggplot(data = etb18_small, aes(y = az)) + geom_boxplot()
+```
+
+So können wir einen Boxplot erstellen, der die Werte für Männer und Frauen getrennt darstellt: 
+```{r}
+ggplot(data = etb18_small, aes(y = az, x = factor(S1))) + geom_boxplot()
+```
+
+### Histogram 
+
+Ebenso können Verteilungen mit einem Histogramm beschrieben werden:
+```{r}
+ggplot(data = etb18_small, aes(x = az)) + 
+  geom_histogram()  
+```
+
+Wenn wir hier die Farbe ändern möchten, dann ist `fill =` anstelle von `color =` die richtige Option:
+```{r}
+ggplot(data = etb18_small, aes(x = az)) + 
+  geom_histogram(fill = "sienna1")  
+```
+
+Möchten wir das Histogramm nach Geschlecht aufsplitten, können wir auch hier wieder `fill` als Aesthetic angeben. Mit `position = position_dodge()` können wir die Balken nebeneinander stellen lassen:
+```{r hist0}
+#| cache: true
+#| layout-ncol: 2
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram() 
+
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram(position = position_dodge()) 
+```
+
+Auch hier funktionieren natürlich wieder die `scale_...manual` Befehle, allerdings hier als `scale_fill_manual` anstelle `scale_color_manual` von oben:
+```{r hist1}
+#| cache: true
+ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+  geom_histogram(position = position_dodge()) +
+  scale_fill_manual(values = c("sienna1","dodgerblue4"),
+                    breaks = 1:2, labels = c("Männer","Frauen")) +
+  labs(fill = "Geschlecht")
+```
+
+
+### [Übung](#pltue2) {#ue4_02}
+
+## Kategoriale Merkmale 
+
+Im Folgenden sehen wir uns eine Möglichkeit an, die Kontingenztabelle aus [Kapitel 2](03_desc.qmd#crosscount) zu visualisieren:
+```{r}
+etb18$m1202[etb18$m1202<0] <- NA # missings ausschließen
+etb18 %>% 
+  count(S1,m1202) %>% 
+  filter(!is.na(m1202))
+```
+
+Da wir mit `count()` einen `data.frame` erhalten, können wir diesen direkt in `ggplot()` schicken und mit `geom_col()` Säulen darstellen:
+```{r colcount}
+#| cache: true
+etb18 %>% 
+  count(S1,m1202) %>% 
+  filter(!is.na(m1202)) %>% 
+  ggplot(data = ., aes(x = m1202, y = n, fill = factor(S1))) +
+  geom_col(position=position_dodge()) 
+```
+
+Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweitern einfach die Pipeline vor `ggplot()` um den `prop.table()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
+```{r scalepct}
+#| cache: true
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(S1,m1202) %>% 
+  group_by(S1) %>% 
+  mutate(pct_gender = prop.table(n)) %>% 
+  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  geom_col(position=position_dodge())  +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) 
+```
+
+
+```{r backup_dotdotdot}
+#| cache: true
+#| layout-ncol: 2
+#| include: false
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1) )) + 
+  geom_bar(  position=position_dodge()) + 
+  labs(title = "Absolute Häufigkeit")
+
+
+ggplot(data = etb18 , 
+       aes(x = m1202, fill = factor(S1),
+           y = ..count../sum(..count..)
+           )) + 
+  geom_bar(  position=position_dodge()) + 
+  labs(title = "Relative Häufigkeit") 
+```
+
+Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
+```{r fullplot}
+#| cache: true
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(S1,m1202) %>% 
+  group_by(S1) %>% 
+  mutate(pct_gender = prop.table(n)) %>% 
+  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  geom_col(position=position_dodge())  +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1))  + 
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
+  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+       subtitle = "Relative Häufigkeiten",
+       caption = "Quelle: ETB 2018",
+       x = "Ausbildung",
+       y = "Relative Häufigkeit",
+       fill = "Geschlecht" ) 
+
+```
+
+
+### [Übung](#pltue3)  {#ue4_03}
+
+## Übungen
+Nutzen Sie für alle Aufgaben die ersten 150 Beobachtungen (`etb18_small`), um den Plot einfach zu halten. Denken Sie daran die fehlenden Werte mit `filter()` auszuschließen, Sie können dazu diesen Befehl verwenden:
+
+```{r}
+#| eval: false
+etb18 <-
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+    col_select = c("h1216d", "S2_j", "S1", "m1202", "F518_SUF", "nt", "gkpol")
+    )
+etb18_small <-
+  etb18 %>% filter(S2_j < 9999, h1216d > 0, F518_SUF < 99998) %>% slice(1:150)
+```
+
+### Übung 1 {#pltue1}
+
++ Erstellen Sie einen Scatterplot für die Variablen Geburtsjahr (`S2_j`, x-Achse) und Dauer der Ausbildung (`h1216d`, y-Achse). 
++ Legen Sie die Farbe so fest, dass Männer und Frauen unterschiedliche Farben gekennzeichnet werden (`S1`)
++ Verändern Sie die Farben auf `goldenrod1` und `dodgerblue4` fest ([oder eine beliebige andere](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf))
++ Beschriften Sie die Achsen und Legende!
+
+[Zurück nach oben](#ue4_01)
+
+
+### Übung 2 {#pltue2}
+
++ Erstellen Sie einen Boxplot oder Histogramm für die Verteilung des Einkommens (`F518_SUF`).
++ Passen Sie diese Grafik so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden. 
++ Wie können Sie auch die Farben nach dem Geschlecht getrennt anlegen? (Denken Sie an `color =` und `fill =`) 
++ Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
+
+[Zurück nach oben](#ue4_02)
+
+### Übung 3 {#pltue3}
+
+
++ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
++ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) getrennt nach der Variable `nt` - färben Sie die Säulen nach `nt`. Die Variable `nt` erfasst, ob die Befragten einer Nebentätigkeit nachgehen (1 = ja/ 0 = nein).
+
+Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
+```{r}
+#| echo: false
+etb18 %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>% 
+  str_remove_all(.," Einwohner") %>% 
+  str_replace_all(.,pattern = "\\.000","k") %>% 
+  str_replace(.,pattern = "unter ","<") %>% 
+  dput()
+```
+```{r}
+#| eval: false
+#| code-fold: true
+scale_x_continuous(breaks = 1:7,
+                   labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
+                              "50k bis <100k", "100k bis <500k", "500k und mehr"))
+
+```
+
+[Zurück nach oben](#ue4_03)
+
+
+## Weitere Optionen für ggplot2 
+
+### Aesthetics {#aes_list}
+
+```{r}
+#| fig-asp: 0.35
+#| echo: false
+#| warning: false
+#| message: false
+eg <- tribble(
+  ~x, ~y, ~size, ~x1,
+  "A", 1, 5, 1,
+  "B", 1, 10, 2,
+  "C", 1, 15, 3
+)
+
+eg_theme <- 
+  theme(axis.text.y = element_blank(),
+        axis.ticks = element_blank(), 
+        # aspect.ratio = .5,
+        plot.title = element_text(size = rel(1.5),hjust = 0.5))
+
+aes_clr <- 
+  ggplot(eg, aes(x = x, y = y, color = x)) +
+    geom_point(size = 5) +
+    guides(color = FALSE) +
+    labs(title = "color (discrete)") +
+    eg_theme   
+
+aes_clrc <- 
+  ggplot(eg, aes(x = x1, y = y, color = x1)) +
+    geom_point(size = 5) +
+    guides(color = FALSE) +
+    coord_cartesian(xlim = c(0.5, 3.5)) +
+    labs(title=  "color (continuous)") +
+    eg_theme
+
+aes_size <- 
+  ggplot(eg, aes(x = x, y = y, size = x)) +
+    geom_point() +
+    scale_size_discrete(range = c(1.5, 10)) +
+    guides(size = FALSE) +
+    labs(title = "size") +
+    eg_theme 
+  
+aes_fill <-   
+  ggplot(eg, aes(x = x, y = y, fill = x)) +
+    geom_point(size = 5, pch = 21, stroke = 1.5) +
+    guides(fill = FALSE) +
+    eg_theme+ 
+  labs(title = "fill")
+
+aes_shape <- 
+  ggplot(eg, aes(x = x, y = y, shape = x)) +
+    geom_point(size = 5) +
+    guides(shape = FALSE) +
+    eg_theme + 
+    labs(title = "shape")
+# Alpha
+
+aes_alpha <- 
+  ggplot(eg, aes(x = x, y = y, alpha = x)) +
+    geom_point(size = 5) +
+    guides(alpha = FALSE) +
+    eg_theme +
+  labs(title="alpha")
+
+
+aes_clr + aes_size + aes_shape
+aes_clrc + aes_fill + aes_alpha
+```
+
+### themes {#themes} 
+
+Mit sog. themes können wir das layout der Grafik verändern. 
+Weitere Themes sind zB: `theme_light()`, `theme_classic()` ider `theme_void()`, eine Liste findet sich [hier](https://ggplot2.tidyverse.org/reference/ggtheme.html). 
+Außerdem bietet das Paket [{ggthemes}](https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes) (`install.packages('ggthemes')`) eine große Auswahl.
+
+
+```{r}
+#| eval: false
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) + 
+  theme_minimal()
+
+ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) +
+  theme_dark()
+```
+
+
+```{r}
+#| layout-ncol: 2
+#| echo: false
+
+p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 2) 
+
+p1 + theme_gray() + labs(title="theme_grey() - Standard") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_bw() + labs(title="theme_bw()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_minimal() + labs(title="theme_minimal()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+p1 + theme_dark() + labs(title="theme_dark()") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
+```
+
+### Farben {#farben}
+
+```{r}
+p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+  geom_point(size = 3) 
+```
+
+
+Neben den im Beispiel verwendeten Farben für `fill` können natürlich auch noch unzählige weitere Farben in `scale_fill_manual`  und `scale_color_manual` verwendet werden:
+
++ [Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) findet sich eine Übersicht mit allen Farbnamen, die verstanden werden
++ Alternativ können auch sog. HEX-Codes angeben werden, die bspw. mit dem [Adobe Color Wheel](https://color.adobe.com/de/create/color-wheel) oder [Color Hex](https://www.color-hex.com/) erstellt werden können.
+
+```{r}
+#| layout-ncol: 2
+p1 +  scale_color_manual(values = c("dodgerblue4","sienna1"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") )
+
+p1 +  scale_color_manual(values = c("#005b96","#6497b1"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen") )
+```
+
+#### ColorBreweR {#brewer}
+
+Alternativ zur manuellen Auswahl der Farben mit `scale_fill_manual` und `scale_color_manual` können mit `scale_fill_brewer()` auch vorgegebene Farbpaletten des *colorbrewer* verwendet werden. Dazu muss lediglich `scale_fill_brewer()` anstelle von `scale_fill_manual` angeben werden und statt `values` eine der Paletten - eine Übersicht findet sich [hier](http://colorbrewer2.org/). Die Farbpaletten von ColorBreweR sind alle in ggplot2 integriert.
+
+```{r}
+p1 +
+  scale_color_brewer(palette = "RdYlBu",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+
+#### viridis {#viridis}
+
+Analog dazu gibt es auch die [{viridis}](https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html)-Paletten, welche durchgängig "colorblind-safe" und ebenfalls in {ggplot2} integriert sind. Allerdings ist hier zu beachten, dass für Farbauswahlen basierend auf einer kategorialen Variable `scale_color_viridis_d()` zu verwenden ist. Soll die Farbe entlang einer numerischen/metrischen Variable bestimmt werden, dann ist `scale_color_viridis_c()` zu verwenden. Außerdem kann mit `begin` und `end` die Breite der Farbskala angepasst werden:
+```{r}
+#| layout-ncol: 2
+p1 +
+  scale_color_viridis_d(option="magma",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+p1 +
+  scale_color_viridis_d(option="magma",begin = .65,end = .85,
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+```{r}
+#| fig-height: 2
+#| echo: false
+knitr::include_graphics("./pic/104_viridis-scales.png")
+```
+
+
+#### Weitere Farbpaletten
+
+Darüber hinaus gibt es unzählige Pakete, die ebenfalls `scale_color_` und `scale_fill_`-Funktionen bieten:
+Hier noch zwei Beispiele mit  [{scico}](https://github.com/thomasp85/scico) und [{MetBrewer}](https://github.com/BlakeRMills/MetBrewer), welches Farben aus Bildern im Metropolitan Museum of Art enthält:
+```{r, eval =F}
+install.packages('scico')
+install.packages("MetBrewer")
+```
+
+[{scico}](https://github.com/thomasp85/scico) Farbpaletten
+```{r}
+#| echo: false
+#| out-height: 60%
+scico::scico_palette_show()
+```
+
+[{MetBrewer}](https://github.com/BlakeRMills/MetBrewer) Farbpaletten
+```{r}
+#| out-width: 100%
+#| echo: false
+knitr::include_graphics("./pic/104_metbrewer.png")
+```
+
+```{r}
+#| layout-ncol: 2
+library(scico)
+p1 +
+  scale_color_scico_d(palette = "oslo",begin = .5,end = .8,
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+
+
+library(MetBrewer)
+p1 +
+  scale_color_met_d(name = "Kandinsky",
+                    breaks = c(1,2), labels = c("Männer", "Frauen") ) 
+```
+
+Vergleichbare Pakete gibt es auch für 
+
++ [{DutchMasters}](https://github.com/EdwinTh/dutchmasters) - Farbpaletten aus Bildern niederländischer Maler
++ [{wesanderson}](https://github.com/karthik/wesanderson) - Farbpaletten basierend auf verschiedenen Filmen von Wes Anderson (The Grand Budapest Hotel usw.)
++ [{ochRe}](https://github.com/hollylkirk/ochRe) - Farbpaletten "inspired by Australian art, landscapes and wildlife"
++ [{paletteer}](https://github.com/EmilHvitfeldt/paletteer) bietet eine riesige Auswahl verschiedenster Farbpaletten
+
+
+### Shapes {#shape1}
+```{r}
+#| echo: false
+#| out-height: 50%
+#| out-width: 50%
+#| fig-align: "center"
+shp_df <- data.frame(shp = factor(1:25), x = rep(1:5,each=5), y = rep(1:5,5))
+ggplot(shp_df,aes(x,y)) +
+  geom_point(shape=shp_df$shp, size = 7, fill = "dodgerblue") +
+  geom_text(aes(label=shp,x = x-.2), size = 6) +
+  theme_void(base_size=15)+
+  scale_y_reverse() +
+  theme(plot.margin = unit(c(2,2,2,2),"lines"))
+```
+
+[**Zusätzlicher Überblick**](https://blog.albertkuo.me/post/point-shape-options-in-ggplot/)
+
+### Linetypes {#line}
+```{r}
+#| echo: false
+#| out-height: 30%
+#| out-width: 50%
+#| fig-align: "center"
+lt_df <- data.frame(x = 0, y = seq(0,.75,.125),
+                    lty = 0:6,
+                     lt = c("0 'blank'"   ,"1 'solid'"   ,"2 'dashed'"  ,"3 'dotted'"  ,"4 'dotdash'" ,"5 'longdash'",  "6 'twodash'" )  )
+ggplot(lt_df, aes(x,y,linetype = factor(lty))) + 
+  geom_segment(aes(xend = 1,yend = y), size = 1) +
+  geom_text(aes(x=-.35,label = lt),hjust= 0, size = 6) +
+  theme_void(base_size=12)+
+  guides(linetype = F) +
+  scale_y_reverse()
+
+```
+
+Übersicht zu Shapes und Linetypes im [R Cookbook](http://www.cookbook-r.com/Graphs/Shapes_and_line_types/)
+
+
+
+## Linksammlung
+
++ [From Data to Viz ](https://www.data-to-viz.com/#explore) bietet einen Entscheidungsbaum für verschiedene Zusammenhänge und Deskriptionen mit Beispiel-Syntax
+
+```{r,echo=FALSE}
+#| out-width: 80%
+#| out-height: 80%
+knitr::include_graphics("./pic/104_decision.png")
+```
+
++ Schriftgröße und -farbe anpassen: [Hier](https://cmdlinetips.com/2021/05/tips-to-customize-text-color-font-size-in-ggplot2-with-element_text/) findet sich eine gute Übersicht, wie die Schriftgröße und -farbe in `{ggplot2}` angepasst werden kann.
+
++ Das [Graph Kapitel des R Cookbooks](www.cookbook-r.com/Graphs/) ist eine hervorragende Quelle für alle möglichen Optionen und eine grundlegende Übersicht - bspw. zur Anpassung der [Legende](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)), [Linien- und Punktvarianten](http://www.cookbook-r.com/Graphs/Shapes_and_line_types) oder den [Achsen](http://www.cookbook-r.com/Graphs/Axes_(ggplot2))
+
+
++ Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
+
++ Für alle, die mehr zu gelungenen (und schönen) Datenvisualisierungen mit `{ggplot2}` erfahren möchten, ist das [Tutorial von Cédric Scherer](https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/) ein hervorragender Einstieg. [Dieser Workshop](https://github.com/z3tt/beyond-bar-and-box-plots/blob/main/README.md#talk-resources) eignet sich sehr gut für eine Vertiefung.
+
++ [Dieser Workshop](https://rstudio-conf-2022.github.io/ggplot2-graphic-design/) bietet weitere Einblicke wie Datenvisualisierungen mit `{ggplot2}` schöner gestaltet werden können.
+
++ [Eine Liste von Erweiterungen für ggplot2](https://albert-rapp.de/posts/ggplot2-tips/12_a_few_gg_packages/12_a_few_gg_packages.html)
+
++ [**Das** Buch zu {ggplot2}](https://ggplot2-book.org/index.html)

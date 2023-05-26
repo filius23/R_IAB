@@ -1,0 +1,46 @@
+
+## tabellen für ausprägungen von F...
+
+```{r}
+etb18 %>% 
+  select(F1450_01,F1450_02,F1450_03) %>% 
+  slice(1:10) %>% 
+  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) %>% 
+  mutate(index = mean(F1450_01+F1450_02+F1450_03,na.rm = T))
+```
+
+
+```{r}
+etb18 %>% 
+  select(F1450_01,F1450_02,F1450_03) %>% 
+  slice(1:10) %>% 
+  mutate(across(dplyr::everything(),.fns = ~ifelse(.x>4,NA,.x))) %>% 
+  rowwise() %>% 
+  mutate(index = mean(c(F1450_01,F1450_02,F1450_03),na.rm = T),
+         n_mis = sum(is.na(c(F1450_01,F1450_02,F1450_03))) )
+```
+
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+vals <- 
+  etb18 %>% select(starts_with("F700")) %>% 
+  map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+  pivot_longer(-var) %>% 
+  pivot_wider(names_from = value,values_from = name) %>% 
+  select(-"NA",-"8") %>% 
+  rename(`8/9`=`9`) %>% 
+  mutate(`8/9` = "t.n.z./k.A.")
+
+
+etb18 %>% select(starts_with("F700")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+  t(.) %>% data.frame() %>% 
+  rownames_to_column(.,var = "var") %>% 
+  left_join(vals) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```

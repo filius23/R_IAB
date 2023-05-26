@@ -1,0 +1,548 @@
+# Regressionsmodelle {#reg}
+
+```{r reg01, include=F}
+# http://hbiostat.org/rmsc/
+
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(patchwork)
+library(tidyverse)
+mark_color <- "grey25"
+color1x =  "#00519E" # uol farbe
+colorhex <- "#FCFCFC" #"#FCF9F0FF"7
+colorhex <- NA #"#FCF9F0FF"7
+library(extrafont)
+windowsFonts(Nunito=windowsFont("Nunito Sans"))
+# Sys.setenv(R_GSCMD = "C:/Program Files/gs/gs9.07/bin/gswin64.exe")
+# embed_fonts("newfont.pdat1")
+
+theme_x <- 
+  theme_minimal(base_family = "Nunito",base_size = 13) +
+  theme(
+    plot.background = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    rect = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    axis.text =  element_text(color = mark_color,face = "plain", size = rel(.75), angle = 0), 
+    axis.title = element_text(color = mark_color,face = "plain", size = rel(1), angle = 0), 
+    axis.title.y = element_text(color = mark_color,face = "plain", angle = 0,vjust = .5), 
+    axis.ticks = element_blank(),
+    axis.line = element_line(size = .1), 
+    panel.grid = element_line(colour = "grey81", linetype = 1, size = .15), 
+    panel.grid.minor.y = element_blank(), 
+    panel.grid.minor.x = element_blank(), 
+    plot.subtitle = element_text(hjust=0),
+    plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
+    plot.margin = unit(c(1, 1, 1, 1), "lines"))
+
+# theme_set(theme_x)
+
+```
+
+Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich fünf Fällen. Mit dem `data.frame` Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2 
+```{r}
+dat1 <- data.frame(id   = 1:8,
+                   var1 = c(2,1,2,5,7, 8, 9,5),
+                   var2 = c(2,2,1,9,7, 4,25,3),
+                   educ = c(3,1,2,2,1, 3, 2,-1),
+                   gend = c(2,1,1,2,1,2,1,2),
+                   x    = c(2,1,2,4,1,NA,NA,NA) )
+dat1
+```
+
+## Regressionsmodelle mit `lm()` {#lm1}
+
+```{r, echo = F}
+m1 <- lm(var2~ var1, data = dat1)  
+```
+
+Regressionsmodelle in R lassen sich mit `lm()` erstellen. 
+Hier geben wir das Merkmal an, dass auf der y-Achse liegt (die *abhängige* Variable) und nach einer `~`  das Merkmal für die x-Achse (*unabhängige* Variable). Die Interpretation des Ergebnisses wird uns die kommenden Wochen beschäftigen. 
+
+```{r}
+lm(var2~ var1, data = dat1)
+```
+
+Der Wert unter `var1` gibt an, um *wieviel sich die Gerade pro "Schritt nach rechts" nach oben/unten verändert*. Die Gerade steigt also pro Einheit von `var1` um `r m1$coefficients[2]`. Die Ergebnisse können wir unter `m1` ablegen:
+```{r}
+m1 <- lm(var2~ var1, data = dat1)  
+```
+
+Mit `summary()` bekommen wir dann eine Regressionstabelle:
+```{r}
+summary(m1)
+```
+
+
+`m1` enthält alle Informationen zum Modell, besonders hilfreich ist `$coefficients`:
+```{r}
+m1$coefficients
+summary(m1)$coefficients
+```
+
+Wir können uns die einzelnen Werte mit `View(m1)` ansehen: 
+
+```{r ols1_str, message=F, out.width="100%", out.height="10%"}
+#| echo: false
+listviewer::jsonedit(m1, mode="view") 
+```
+
+Bspw. finden sich unter `fitted.values` die vorhergesagten Werte für jeden Fall.
+
+## Regressionsgerade und Daten visualisieren
+
+Mit `geom_smooth(method = "lm")` können wir Regressionsgeraden auch in `{ggplot2}` darstellen:
+
+Unser Modell mit `var1` und `var2` können wir so darstellen:
+
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+library(ggplot2)
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_point(size = 2) + 
+  geom_smooth(method = "lm")  
+```
+
+Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensatz ist der schnell gefunden. In größeren Datensätzen hilft uns `geom_text()`:
+```{r graph2}
+#| fig.height: 3
+#| fig.width: 3
+#| fig-align: center
+#| warning: false
+#| message: false
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_point(size = 2) + 
+  geom_smooth(method = "lm")  +
+  geom_text(data = . %>% filter(var2 > 20), aes(y = var2+3, label = id), color = "sienna1")
+```
+
+Wir können nämlich einzelne `geom_` auch nur für ein Subset angeben - dazu vergeben wir `data =` neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl `ggplot()`) und setzen darin einen `filter()`. Außerdem verschieben wir mit `var2+3` das Label etwas über den Punkt.
+
+
+### [Übung](#reg1) 
+
+
+## Modelle nur für manche Fälle berechnen
+
+Wenn wir jetzt das Modell nochmal berechnen wollen, haben wir zwei Möglichkeiten:
+
+### Neuen data.frame erstellen
+
+Wir können in R mehrere `data.frame`-Objekte im Speicher halten. Also können wir leicht einen neuen `data.frame` erstellen, der nur die Beobachtungen mit `var2 < 20` enthält und diesen dann für unseren `lm()`-Befehl verwenden:
+
+```{r ols2}
+dat1_u20 <- dat1 %>% filter(var2<20)
+m2a <- lm(var2~ var1, data = dat1_u20)
+summary(m2a)
+```
+
+### Direkt in `lm()` filtern
+
+Wir können `filter()`-Befehl auch direkt in das `data=`-Argument von `lm()` bauen:
+
+```{r ols2a}
+m2b <- lm(var2~ var1, data = dat1 %>% filter(var2<20))
+summary(m2b)
+```
+
+<!-- ...übrigens: wir können auch in `geom_smooth()` filtern: -->
+<!-- ```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F} -->
+<!-- ggplot(dat1, aes(x = var1, y = var2)) +  -->
+<!--   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  + -->
+<!--   geom_smooth(data = dat1 %>% filter(var2<20), -->
+<!--     method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  + -->
+<!--   geom_point(size = 2)  -->
+<!-- ``` -->
+
+
+## Regressionstabellen
+
+Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle an. 
+
+Es gibt zahlreiche Alternativen zur Erstellung von Regressionstabellen, mein persönlicher Favorit ist `modelsummary()` aus dem gleichnamigen Paket [{modelsummary}](https://vincentarelbundock.github.io/modelsummary/).
+Es kommt mit (nahezu) allen Modellarten zurecht und bietet darüber hinaus eine breite Palette an (u.a. auch [Word-Output](#14_tabellenexport.qmd) - dazu später mehr) und auch Koeffizientenplots (auch dazu kommen wir noch).
+Außerdem ist die [Dokumentation](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html) hervorragend.
+
+```{r}
+#| eval: false
+install.packages("modelsummary")
+```
+
+```{r}
+library(modelsummary)
+modelsummary(list(m1,m2a,m2b))
+```
+
+Wir werden uns noch ein bisschen ausführlicher mit den Anpassungsmöglichkeiten für `{modelsummary}` befassen, hier nur schon mal zwei zentrale Optionen:
+
++ mit `stars = T` können wir uns die Signifikanz mit den gebräuchlichen Sternchen-Codes anzeigen lassen (`*`: p < .05 usw.)
++ mit `gof_omit = "IC|RM|Log"` können wir die Goodness of Fit Statistiken ausblenden die `IC`, `RM` oder `Log` im Namen haben (also `AIC`, `BIC`, `RMSE` und die `LogLikelihood`)
++ mit `"Name" =` in `list()` können wir Namen angeben:
+
+```{r}
+modelsummary(list("m1"=m1,"m2a"=m2a,"m2b"=m2b),stars = T,gof_omit = "IC|RM|Log")
+```
+
+### [Übung](#reg2)
+
+## Kategoriale unabhängige Variablen
+
+Natürlich können wir auch kategoriale unabhängige Variablen in unser Modell mit aufnehmen. 
+Dazu müssen wir aber entsprechende Variable als `factor` definieren - und R so mitteilen, dass die Zahlenwerte nicht numerisch zu interpretieren sind. 
+Wenn wir `educ` aus unserem kleinen Beispiel betrachten - dann steht 1 für einen grundlegenden Bildungsabschluss, 2 für einen mittleren und 3 für einen hohen Bildungsabschluss.
+
+```{r}
+dat1
+m3 <- lm(var2~factor(educ), dat1)
+summary(m3)
+```
+
+Noch schöner ist das aber natürlich, wenn wir `educ` vorher labeln:
+```{r}
+dat1$ed_fct <- factor(dat1$educ, levels = 1:3,
+                        labels = c("basic","medium","high"))
+dat1
+```
+
+Dann verwenden den `factor` im Regressionsbefehl:
+```{r}
+m3 <- lm(var2 ~ ed_fct, dat1)
+summary(m3)
+```
+
+
++ Im Vergleich zu `educ = basic` ist der vorhergesagte Wert für `var2` bei `educ = medium` um `r round(m3$coefficients[2],2)` höher.
+
++ Im Vergleich zu `educ = basic` ist der vorhergesagte Wert für `var2` bei `educ = high` um `r round(m3$coefficients[3],2)` höher.
+
+Wir können die Referenzkategorie auch ändern:
+
+```{r}
+dat1$ed_fct <- relevel(dat1$ed_fct,ref = "medium")
+m3b <- lm(var2 ~ ed_fct, dat1)
+summary(m3b)
+```
++ Im Vergleich zu `educ = medium` ist der vorhergesagte Wert für `var2` bei `educ = basic` um `r round(abs(m3b$coefficients[2]),2)` niedriger.
+
++ Im Vergleich zu `educ = medium` ist der vorhergesagte Wert für `var2` bei `educ = high` um `r round(abs(m3b$coefficients[3]),2)` niedriger.
+
+
+### [Übung](#reg3)
+
+
+## Mehre unabhängige Variablen
+
+Um mehrere unabhängige Variablen in unser Regressionsmodellen aufzunehmen, geben wir sie mit `+` an:
+```{r}
+m4 <- lm(var2 ~ ed_fct  + var1, dat1)
+summary(m4)
+```
+
+
+
+## Koeffizientenplots {#modelplot}
+```{r}
+#| include: false
+theme_set(theme_grey(base_size = 15))  
+```
+
+Neben Regressionstabellen stellt [`{modelsummary}`](https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html) auch die Funktion `modelplot()` zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:
+
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(m4)
+```
+
+Für einen Modellvergleich geben wir einfach die Modelle in einer named `list` an, außerdem können wir mit den üblichen `{ggplot2}`-Befehlen die Grafik weiter anpassen:
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(list("Modell 1"=m1,
+               "Modell 4"=m4))
+```
+
+Mit `coef_map` können wir Labels für die Koeffizienten vergeben (`(Intercept)` bekommt keinen Namen und wird daher weggelassen:
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(list("Modell 1"=m1,
+               "Modell 4"=m4),
+          coef_map = c("var1" = "Name für var1",
+                       "ed_fcthigh"  = "Höhere Bildung",
+                       "ed_fctbasic" = "Grundlegende Bildung"
+                          ))
+```
+
+Außerdem können wir mit den üblichen `{ggplot2}`-Befehlen die Grafik weiter anpassen:
+```{r}
+#| out-width: "50%"
+#| out-height: "50%"
+modelplot(list("Modell 1"=m1,
+               "Modell 4"=m4),
+          coef_map = c("var1" = "Name für var1",
+                       "ed_fcthigh"  = "Höhere Bildung",
+                       "ed_fctbasic" = "Grundlegende\nBildung")) + # \n fügt einen Zeilenumbruch ein
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "grey40") +  # 0-Linie einfügen
+  scale_color_manual(values = c("orange","navy")) +
+  theme_minimal(base_size = 15,base_family = "mono") 
+```
+
+Mit `{broom}` können wir auch einen `data.frame` aus den Regressionsergebnissen erstellen und den `ggplot` ganz selbst erstellen - [siehe Anhang](#broomplt).
+
+### [Übung](#reg4)
+
+
+## Übungen
+
+### Übung 1: Regression {#reg1}
+
+Verwenden Sie folgenden Subdatensatz der ETB2018:
+```{r, echo = T, eval=FALSE}
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+etb_reg1 <- etb18 %>% filter(F518_SUF < 99990,intnr< 200000)
+```
+
++ Erstellen Sie ein Objekt `mod1` mit einem linearen Regressionsmodell (`lm`) mit `F518_SUF` (Monatsbrutto in EUR) als abhängiger und `az` (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe [hier](#lm1))
++ Betrachten Sie Ergebnisse `mod1` - was können Sie zum Zusammenhang zwischen `F518_SUF` und `az` erkennen?
++ Visualisieren Sie Ihr Regressionsmodell mit `{ggplot2}`.
++ Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable `intnr` und `geom_text()`.
+
+### Übung 2 {#reg2}
+
++ Erstellen Sie ein `lm()`-Modell `mod2`, welches nur auf den Beobachtungen mit einem Monatseinkommen unter 20.000 EUR beruht.
++ Erstellen Sie eine Regressionstabelle, welche diese neue Modell `mod2` neben das Modell `mod1` aus Übung 1 stellt.
+
+
+### Übung 3: kat. UVs {#reg3}
+
++ Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (`F518_SUF`) als abhängiger und dem Ausbildungsabschluss der Befragten `m1202` als unabhängiger Variable:
+
+```{r}
+#| echo: false
+#| warning: false
+#| message: false
+library(gt)
+vals1 <- 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1)  %>% 
+  select(starts_with("m1202")) %>% 
+    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+    pivot_longer(-var) %>% 
+    pivot_wider(names_from = value,values_from = name) 
+    
+
+haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1)  %>% 
+  select(starts_with("m1202")) %>% 
+  map_dfr(.,~attributes(.x)$label) %>% 
+      t(.) %>% data.frame() %>% 
+      rownames_to_column(.,var = "var") %>% 
+  left_join(vals1) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+```
+
++ Achten Sie darauf, dass m1202 als `factor` definiert ist. Vergeben Sie für die Levels 1-4 die Labels *ohne*, *dual/schulisch*, *Aufstieg*, *FH/Uni* und legen sie den `factor` als Variable `m1202_fct` in Ihrem `data.frame` ab - siehe Code-Hilfe unten:
+```{r}
+#| code-fold: true
+#| eval: false
+etb_reg1$m1202_fct <-  factor(etb_reg1$m1202,levels = 1:4, labels = c("ohne","dual","Aufstieg","FH/Uni"))
+```
++ Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für `m1202` als unabhängiger Variablen.
++ Ändern Sie die Referenzkategorie auf die Ausprägung *Aufstiegsfortbildung*  (`m1202` = 3) und schätzen Sie das Modell erneut.
+
+
+
+### Übung 4: mehrere UVs & Koeffizientenplot {#reg4}
+
++ Passen Sie das `lm()`-Modell `mod1` (mit allen Fällen aus `etb_reg1`) so an, dass neben der Arbeitszeit zusätzlich die Ausbildungsniveau (`m1202`) als unabhängige Variable mit aufgenommen werden.
++ Erstellen Sie auch eine grafische Gegenüberstellung der beiden Modelle mit und ohne das Ausbildungsniveau.
+
+
+
+<!-- ### Übung 5: Interaktionen {#reg5} -->
+
+
+<!-- ### Übung 6: quad. Terme {#reg6} -->
+
+<!-- + Erstellen Sie ein Modell `m4` mit einem quadratischen Term: -->
+
+<!-- $$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{az} + \beta2 \times \texttt{az}^2 + \varepsilon$$ -->
+
+
+
+
+## Anhang
+```{r}
+dat1 <- dat1 %>% select(-matches("compl"))
+```
+```{r}
+#| include: false
+theme_set(theme_x)
+```
+
+
+### Vorhergesagte Werte {#pred}
+
+Die vorhergesagten Werte von `lm()` finden sich unter `$fitted.values`:
+```{r}
+m1$fitted.values
+```
+Diese vorhergesagten Werte entsprechen einfach der Summe aus dem Wert unter `Intercept` und dem Wert unter `var1` multipliziert mit dem jeweiligen Wert für `var1`. 
+```{r}
+m1
+```
+Für die erste Zeile aus `dat1` ergibt sich also `m1` folgender vorhergesagter Wert: `2.1351+0.5811*1=``r 2.1351+0.5811*1`
+
+Die Werte unter `fitted.values` folgen der Reihenfolge im Datensatz, sodass wir sie einfach als neue Spalte in `dat1` ablegen können:
+```{r}
+dat1$lm_vorhersagen <- m1$fitted.values
+dat1
+```
+Die Grafik zeigt wie Vorhersagen auf Basis von `m1` aussehen: Sie entsprechen den Werten auf der blauen Geraden (der sog. Regressionsgeraden) an den jeweiligen Stellen für `var1`. 
+```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F}
+#| code-fold: true
+ggplot(dat1, aes(x = var1, y = var2)) +
+  geom_point(size = 3) +      
+  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
+  geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3) +
+  expand_limits(x = c(0,8),y=c(0,8)) 
+```
+
+### Residuen {#res2}
+
+Die hellblauen Punkte (also die Vorhersagen von `m1`) liegen in der Nähe der tatsächlichen Punkte. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. 
+Diese Abweichungen zwischen den vorhergesagten und tatsächlichen Werten werden als Residuen bezeichnet:
+$$Residuum = beobachteter\, Wert \; - \; vorhergesagter\,Wert$$
+$$\varepsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}$$
+Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert oder einfach unter `m1$residuals` aufrufen:
+```{r}
+m1$residuals
+```
+Auch die Residuen für `lm` können wir in `dat1` ablegen: 
+```{r}
+dat1$lm_residuen <- m1$residuals
+dat1
+```
+
+Hier sind die Residuen für `lm` hellblau eingezeichnet:
+```{r, fig.height=2.75, fig.width=2.75, fig.align="center" , eval = T, message=F}
+#| code-fold: true
+ggplot(dat1, aes(x = var1, y = var2)) + 
+  geom_smooth(method = "lm", color = "darkblue" , se = FALSE,size =.65) +
+  geom_segment(aes(x = var1, xend = var1, y = var2, yend = lm_vorhersagen), color = "dodgerblue3", size = .65, linetype = 1) +
+  geom_point(size = 3) +
+  geom_point(aes(x = var1, y = lm_vorhersagen), color = "dodgerblue3", size = 3) +
+  expand_limits(x = c(0,8),y=c(0,8)) 
+```
+
+
+### Annahmen checken
+[model dashboard](https://easystats.github.io/easystats/reference/model_dashboard.html)
+
+```{r}
+#| eval: false
+install.packages("performance")
+```
+
+```{r reg02, fig.height=9}
+#| warning: false
+#| message: false
+library(performance)
+
+model_test <- check_model(m4)
+plot(model_test)
+```
+
+
+### Test auf Normalverteilung der Residuen
+
+Grafische Überprüfung: Q-Q-Plot
+```{r}
+#| eval: false
+library(ggfortify)
+autoplot(m1,which = 2)
+```
+```{r, echo = F, fig.align="center", out.width="60%", message=F, warning =F}
+library(ggfortify)
+autoplot(m3,which = 2,ncol = 1,nrow = 1) + theme(aspect.ratio = 1)
+```
+
+Überprüfen lässt sich die NV-Annahme mit dem Shapiro-Wilk-Test & `shapiro.test()`. Dieser testet die $H_0$: "Die Residuen sind normalverteilt" gegen die $H_A$: "Die Residuen weichen signifikant von der Normalverteilung ab"
+```{r}
+shapiro.test(m1$residuals) 
+```
+
+### Test auf Homoskedastizität
+
+Homoskedastizität ist gegeben, wenn die vorhergesagten Werte über den kompletten Wertebereich (ungefähr) gleich weit von den tatsächlichen Werten (`m1\$fitted.values`) entfernt sind. Auch hier gibt es eine graphische Überprüfungsmethode sowie einen Test. Zur graphischen Überprüfung werden die vorhergesagten Werten und die Residuen als Scatterplot dargestellt. Auch hier hilft uns `autoplot()`:
+
+```{r, eval = F}
+autoplot(m1, which = 1)
+```
+```{r, fig.align="center",out.height ="50%", echo=F}
+autoplot(m1, which = 1, ncol = 1, nrow = 1)  + theme(aspect.ratio = 1)
+```
+Der dazugehörige Test ist der `Breusch-Pagan-Test`. Dieser testet die $H_0$ "Homoskedastizität" gegen die $H_A$ "Heteroskedastizität", der p-Wert gibt also an mit welcher Irrtumswahrscheinlichkeit wir die Homoskedastizitäts-Annahme verwerfen müssen. In R können wir dafür `bptest` aus dem Paket `lmtest` verwenden:
+```{r, eval = F}
+install.packages("lmtest")
+```
+```{r, message = F}
+library(lmtest)
+bptest(m3)
+```
+
+
+### Test auf Multikollinearität
+
+```{r, eval= F}
+install.packages("car")
+```
+
+```{r}
+#| message: false
+#| warning: false
+# library(car)
+etb18x <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 300)  %>% filter(F518_SUF < 99998, zpalter < 100)
+mox <- lm(F518_SUF ~ zpalter + az,data=etb18x)
+car::vif(mox)
+```
+Interpretation:
+
+<!-- + Als Daumenregel zur Beurteilung der Toleranz gilt ein Wert von 0,10 (also 10\% eigenständiger Varianzanteil), der nicht unterschritten werden sollte. Häufig wird jedoch ein strikterer Grenzwert von 0,20 bis 0,25 empfohlen. Nach unserer Beispielrechnung oben besteht also kein Problem. -->
++ Ein verbreiteter Schwellenwert des VIF beträgt 10,00. Werte des VIF über 10 deuten auf ein schwerwiegendes Multikollinearitätsproblem, oftmals werden Gegenmaßnahmen schon ab einem strikteren Grenzwert von ca. 5,00 empfohlen. Im konkreten Beispiel ist für alle UVs also nach beiden Grenzwerten alles in Ordnung.
++ Beim Vorliegen von Mulitkollinearität gibt es mehrere Möglichkeiten, das zu beheben: Wir können eine oder mehrere unabh. Variablen aus dem Modell ausschließen. Das ist letztlich eine inhaltliche Frage und kann nicht mit einem Standardrezept gelöst werden. Alternativ können wir die kollinearen unabh. Variablen zu Indexvariablen zusammenfassen. Wir würden also einen gemeinsamen Index, bspw. der Mittelwert über die jeweiligen unabh. Variablen, erstellen.
+
+### Regressionsmodelle vergleichen
+
+Mit dem Paket `{performance}` können wir auch einen umfassenden Modellvergleich bekommen:
+```{r}
+#| eval: false
+install.packages("performance")
+```
+
+
+```{r reg03}
+library(performance)
+compare_performance(m1,m4,metrics = c("R2","R2_adj"))
+```
+
+
+
+### Individuellere Koeffizientenplots mit `{broom}` {#broomplt}
+
+`modelplot()` bietet eine schnelle Art, Koeffizientenplots zu erstellen, allerdings verwende ich häufig [`{broom}` ](https://broom.tidyverse.org/).
+Mit `broom::tidy(..., conf.int = TRUE)` bekommen wir einen `data.frame` mit den Ergebnissen des Regressionsmodells, die wir bspw. in einem `{ggplot2}` weiterverarbeiten können - wenn uns die Standardlösung von [`modelplot()`](09_reg.qmd#modelplot) nicht weiterhilft/gefällt:
+
+```{r mod1_tidy}
+#| out-width: "90%"
+#| out-height: "50%"
+#| fig-align: "center"
+library(broom) ## schon geladen als Teil des tidyverse
+tidy(m3, conf.int = TRUE)
+
+tidy(m3, conf.int = TRUE) %>% 
+  mutate(term = str_replace(term, "ed_fct", "Education: ")) %>% 
+  ggplot(aes(y = term, x = estimate)) +
+  geom_vline(aes(xintercept = 0), linetype = "dashed", color = "navy") +
+  geom_errorbarh(aes(xmin = conf.low, xmax  = conf.high), height = .1) + 
+  geom_point(color = "orange", shape = 17,size = 3) +
+  theme_minimal(base_size = 16)
+```
+

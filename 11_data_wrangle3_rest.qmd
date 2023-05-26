@@ -1,0 +1,83 @@
+
+
+```{r echo=TRUE}
+left_join(x, y, by = "id")
+```
+
+#### Left Join (Extra Rows in y)
+
+> ... If there are multiple matches between `x` and `y`, all combinations of the matches are returned.
+
+```{r left-join-extra}
+source("tidyexplain/left_join_extra.R")
+```
+
+![](images/left-join-extra.gif)
+
+```{r echo=TRUE}
+y_extra # has multiple rows with the key from `x`
+left_join(x, y_extra, by = "id")
+```
+
+#### Right Join
+
+> All rows from y, and all columns from `x` and `y`. Rows in `y` with no match in `x` will have `NA` values in the new columns.
+
+```{r right-join}
+source("tidyexplain/right_join.R")
+```
+
+![](images/right-join.gif)
+
+```{r echo=TRUE}
+right_join(x, y, by = "id")
+```
+
+#### Full Join
+
+> All rows and all columns from both `x` and `y`. Where there are not matching values, returns `NA` for the one missing.
+
+```{r full-join}
+source("tidyexplain/full_join.R")
+```
+
+![](images/full-join.gif)
+
+```{r echo=TRUE}
+full_join(x, y, by = "id")
+```
+
+### Filtering Joins
+
+> Filtering joins match observations in the same way as mutating joins, but affect the observations, not the variables.
+> ... Semi-joins are useful for matching filtered summary tables back to the original rows.
+> ... Anti-joins are useful for diagnosing join mismatches.
+> [R for Data Science: Filtering Joins](http://r4ds.had.co.nz/relational-data.html#filtering-joins)
+
+#### Semi Join
+
+> All rows from `x` where there are matching values in `y`, keeping just columns from `x`.
+
+```{r semi-join}
+source("tidyexplain/semi_join.R")
+```
+
+![](images/semi-join.gif)
+
+```{r echo=TRUE}
+semi_join(x, y, by = "id")
+```
+
+#### Anti Join
+
+> All rows from `x` where there are not matching values in `y`, keeping just columns from `x`.
+
+```{r anti-join}
+source("tidyexplain/anti_join.R")
+```
+
+![](images/anti-join.gif)
+
+```{r echo=TRUE}
+anti_join(x, y, by = "id")
+```

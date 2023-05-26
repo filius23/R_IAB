@@ -1,0 +1,594 @@
+# Einen Überblick erhalten {#tab}
+
+```{r setup03, echo = F, include=FALSE}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
+knitr::opts_chunk$set(collapse = F)
+library(tidyverse)
+ a14 <- readr::read_delim(paste0(path,"allbus_kumuliert.csv"), delim = ";", col_types = cols(.default = col_double())) %>% 
+   filter(year == 2014) # für Gini Illustration
+etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+library(Statamarkdown)
+```
+
+Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:
+```{r}
+#| eval: false
+install.packages("haven") # falls nicht schon installiert 
+```
+
+```{r W04_1, eval=F, echo = T}
+library(haven) # datenimport für stata-datensätze
+library(tidyverse) # tidyverse
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+## Häufigkeitsauszählungen
+
+Uns stehen (mindestens) drei Befehle zur Verfügung, um eine Häufigkeitsauszählung zu erstellen:
+
++ `table()`
++ `xtabs()`
++ `count()` aus `{dplyr}`
+
+
+Einfachster Befehl für die Auszählung von Häufigkeiten ist der `table()` Befehl. Beispielsweise mit der Variable `m1202` zur Ausbildung der Befragten.
+```{r W04_2, include=T, echo = T}
+table(etb18$m1202)
+```
+Die Syntax für `xtabs()` ist etwas anders, aber hier bekommen wir die Variablennamen nochmal angezeigt - der wesentliche Output ist aber der gleiche:
+```{r}
+xtabs(~m1202,data=etb18)
+```
+Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. 
+
+Allerdings werden sowohl für `table()` als auch `xabs()` die labels in der Ausgabe erstmal ignoriert. 
+Mit `val_labels()` aus dem Paket `{labelled}` können wir die Labels aus dem Datensatz abrufen. - bspw. steht `1` dafür, dass der*die Befragte die keine Berufsabschluss besitzt:
+```{r, eval=F}
+#| code-fold: true
+install.packages("labelled") # nur einmal nötig
+library(labelled)
+val_labels(etb18$m1202)
+```
+
+```{r}
+#| echo: false
+library(labelled)
+val_labels(etb18$m1202)
+```
+```{r,echo=FALSE}
+t2 <- xtabs(~m1202,data=etb18)
+```
+
+`r as.numeric(t2[2])` Befragte haben keinen Berufsabschluss, `r as.numeric(t2[4])` Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)
+
+Mit `count()` aus `{dplyr}` bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise [mit der Pipe `%>%`](#pipe):
+```{r}
+etb18 %>% count(m1202)
+```
+
+
+Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:
+```{r W04_3, include=T, echo = T}
+t1 <- xtabs(~m1202,etb18)
+t2 <- etb18 %>% count(m1202)
+```
+
+Wir sehen hier, dass die Tabelle mit `xtabs()` eine neue Objektform ist, ein table. Mit `count()` wird hingegen ein `data.frame` erstellt.
+```{r W04class, include=T, echo = T}
+class(t1)
+class(t2)
+```
+
+## Andere Tabellenwerte
+
+Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:
+
++ `prop.table()`: relative Werte/Anteile
+
+```{r W04_5, include=T, echo = T}
+xtabs(~m1202,data=etb18) %>% prop.table(.) 
+```
+`r sprintf("%2.3f",prop.table(xtabs(~m1202,data=etb18)) [1]*100)`% aller Befragten haben keine Berufsausbildung.
+
++ `cumsum()`: kumulierte Werte
+
+```{r W04_4, include=T, echo = T}
+xtabs(~m1202,data=etb18) %>% cumsum(.)
+```
+```{r, echo = F}
+ct2 <- xtabs(~m1202,data=etb18) %>% cumsum(.)
+```
+
+`r ct2[2]` Befragte haben eine duale Berufsausbildung oder keine Berufsausbildung.
+
+
++ `prop.table()` mit `cumsum()`: kumulierte relative Häufigkeiten
+
+```{r}
+xtabs(~m1202,data=etb18) %>% prop.table() %>% cumsum()
+```
+```{r,echo=FALSE}
+t2x <- cumsum(prop.table(xtabs(~m1202,data=etb18)))
+```
+
+
+`r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten haben eine duale Berufsausbildung oder keine Berufsausbildung.
+
+## Kontingenztabellen
+
+Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir `table()` verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Familienstatus getrennt nach Geschlechtern zeigt:
+```{r, include=T, echo = T}
+table(etb18$S1, etb18$m1202)
+```
+```{r, echo = T}
+xtabs(~S1+m1202, data = etb18)
+```
+
+Wir erkennen aus dieser Tabelle beispielsweise, dass 4926 Befragte weiblich (`S1=2`) und ohne Berufsabschluss (`m1202 = 5`) sind.
+
+Hier ist `xtabs()` informativer als `table()`. Hier werden die Spalten und Zeilen beschriftet. Der Übersichtlichkeit halber verwende ich meistens `xtabs()`, alle Operationen sind aber genauso auch mit `table()` möglich. 
+
+### [Übung](#descue1) {#ue3_1}
+
+## Fehlende Werte in R: `NA` {#NA03}
+
+Um die Werte mit `-1` auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in `etb18` auf `NA` setzen. Dazu rufen wir `etb18$m1202` auf und filtern mit `[]` nur die Werte für `m1202` gleich `-1` heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:
+```{r}
+etb18$m1202[etb18$m1202 == -1] # nur m1202 = -1 aufrufen
+```
+(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)
+
+Wenn wir daran mit `<-` einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für `m1202 == -1` mit `NA`: 
+```{r W04_3miss, include=T, echo = T}
+etb18$m1202[etb18$m1202 == -1]  <- NA
+```
+
+`NA` ist in der R der Code für fehlende Angaben, sie werden dann in `xtabs()` nicht aufgeführt:
+```{r W04_3miss_tab, include=T, echo = T}
+xtabs(~m1202,data=etb18)
+```
+Wir können aber mit der Option `addNA = TRUE` die Auszählung von `NA` explizit anfordern:
+```{r}
+xtabs(~m1202,data=etb18,addNA = T)
+```
+
+In `count()` wird `NA` auch mit ausgezählt:
+```{r}
+etb18 %>% count(m1202)
+```
+Möchten wir das umgehen, nehmen wir wieder `filter()` zu Hilfe - mit `is.na()` können wir `NA` identifizieren. Durch Voranstellen von `!` können wir damit anfordern, dass alle nicht-`NA`-Werte mit `TRUE` behalten werden:
+```{r}
+etb18 %>% filter(!is.na(m1202)) %>% count(m1202)
+```
+
+Mehr zu fehlenden Werten findet sich beispielsweise im [**The missing book**](https://tmb.njtierney.com/) von Nicholas Tierney & Allison Horst.
+
+### [Übung](#descue2) {#ue3_2}
+
+
+## Mehrere Kennzahlen in einer Tabelle
+
+Aus Stata kennen viele sicherlich folgende Ansicht mit `tab m1202`:
+```{stata miss5b, echo = F, collectcode=F}
+set linesize 80
+qui use "D:\Datenspeicher\BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta", clear
+qui mvdecode m1202 F100_kldb2010_BOF F1609_kldb2010_BOF F1610_kldb2010_BOF, mv(-1)
+qui mvdecode F100_wib1, mv(-4/-1)
+tab m1202
+```
+In R hat ein `table()` oder `xtabs()` immer nur eine Art von Kennzahlen. 
+Da wir aber mit `count()` die Auszählungen als `data.frame()` erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen. Dabei hilft uns `mutate()`: mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
+#| echo: false
+knitr::include_graphics("./pic/103_mutate.png")
+
+```
+
+`mutate()` entspricht also `dat1$var <- ....`, das wir im vorherigen Kapitel kennen gelernt hatten. Allerdings können wir mit `mutate()` einfacher in einer Pipe-Kette arbeiten (und außerdem einige weitere Operationen einfacher erledigen - dazu später mehr).
+
+Um also eine neue Spalte `pct`in unseren `data.frame` mit den Auszählungen einzufügen gehen wir wie folgt vor:
+
+```{r W201_9_pipe, echo = T}
+etb18 %>% 
+   count(m1202) # ausgangsbefehl
+
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100) # erweitert um pct
+```
+
+```{r}
+etb18 %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100,
+          Cum = cumsum(pct)) 
+```
+
+Der Punkt `.` steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:
+
+   1. Erstelle die Häufigkeitstablle für `m1202` *und dann (`%>%`)*
+   2. Berechne aus `n` die relativen Häufigkeiten *und dann (`%>%`)*
+   3. Berechne dafür die kumulierten Werte basierend auf `pct` *und dann (`%>%`)*
+   4. Runde das Ergebnis auf 3 Nachkommastellen
+
+Etwas störend ist aber noch das `NA`, die für fehlende Angaben steht und nicht berücksichtigt werden soll.
+Das können wir einfach `!is.na()` in `filter()` ausschließen:
+```{r}
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+   count(m1202) %>% 
+   mutate(pct= prop.table(n)*100,
+          Cum = cumsum(pct)) 
+```
+
+## Kontingenztabellen mit `count()` {#crosscount}
+
+Für eine Kontingenztabelle mit `count()` geben wir einfach die interessierenden Variablen in `count()` an. Das Ergebnis wird immer im "long shape" Format ausgegeben:
+```{r}
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+   count(m1202,S1)
+```
+Auch hier können wir wie oben die relativen und kumulierten relativen Häufigkeiten anfügen:
+```{r}
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+  count(m1202,S1) %>% 
+  mutate(pct= prop.table(n)*100) 
+```
+
+Was aber wenn wir jetzt die Anteile *innerhalb* von Männern und Frauen möchten? 
+Hier hilft uns `group_by()` weiter:
+```{r}
+etb18 %>% 
+   filter(!is.na(m1202)) %>% 
+   count(m1202,S1) %>% 
+   group_by(S1) %>% 
+   mutate(pct_gender = prop.table(n)) 
+```
+
+49.7% der Befragten Frauen haben eine duale oder schule Berufsausbildung. 
+
+
+Wir können dann auch mit einem angehängten `filter()` nur die beiden Zeilen `m1202 == 2` ausgeben lassen:
+```{r}
+etb18 %>% 
+  filter(!is.na(m1202)) %>% 
+   count(m1202,S1) %>% 
+   group_by(S1) %>% 
+   mutate(pct_gender = prop.table(n)) %>% 
+  filter(m1202 == 2)
+```
+
+...wir können diese Ausgaben natürlich immer auch ablegen:
+```{r}
+tab_aus_gender <- 
+      etb18 %>% 
+        filter(!is.na(m1202)) %>% 
+         count(m1202,S1) %>% 
+         group_by(S1) %>% 
+         mutate(pct_gender = prop.table(n))
+class(tab_aus_gender)
+```
+
+...und dann wieder weiterverwenden
+```{r}
+tab_aus_gender %>%  filter(m1202 == 3)
+```
+
+
+
+### [Übung](#descue3) {#ue3_3}
+
+::: callout-tip
+
+Bei langen Tabellen werden nicht alle Werte ausgegeben, sondern nur die ersten Zeilen. Um hier alle Werte zu bekommen, hilft `print(n=Inf)`:
+```{r}
+#| eval: false
+etb18 %>% count(Bula,S1) # wird abgeschnitten
+etb18 %>% count(Bula,S1) %>% print(n=Inf) # alle Werte werden gezeigt
+```
+
+
+:::
+
+##  Lage- & Konzentrationsmaße 
+
+Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das arithmetische Mittel oder der Median. Einen Überblick bietet `summary()`:
+```{r sw5_quant_summary}
+summary(etb18$F518_SUF)
+```
+
+Allerdings gibt es im Datensatz keine Befragten mit einem Bruttoverdienst von 99999 EUR. 
+99999 ist der Zahlencode *keine Angabe* , 99998 für *weiß nicht*. Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit `NA` überschreiben:
+```{r sw5_2, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+etb18$F518_SUF[etb18$F518_SUF %in% 99998:99999] <- NA # missings überschreiben
+```
+
+```{r sw5_quant_summary2}
+summary(etb18$F518_SUF)
+```
+
+
+Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdienste der Befragten zu beschreiben:
+
++ Minimum und Maximum: `min()`, `max()`
++ arithm. Mittel: `mean()`
++ Median: `median()`
++ Quantile: `quantile()`
++ Varianz: `var()`
++ Standardabweichung: `sd()`
++ Gini-Koeffizient: `Gini` aus dem Paket `{ineq}`
+
+
+Wenn eine Variable `NA` enthält, müssen diese explizit ignoriert werden - ansonsten wird nur `NA` ausgegeben:
+```{r sw5_3, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+mean(etb18$F518_SUF)
+```
+Deshalb müssen wir die Option `na.rm = T` angeben:
+```{r sw5_3b, include=T, echo = T, fig.align='center', fig.height=  3.5, fig.width= 3.5}
+mean(etb18$F518_SUF,na.rm = T)
+```
+
+Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass `x`\% der Daten darunter und 100-`x`\% darüber liegen. Mit `quantile()`wir durch Angabe in der Option `probs =` beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:  
+```{r sw5_quant2}
+quantile(etb18$F518_SUF,probs = .4, na.rm = T)
+```
+
+Den [Gini-Koeffizienten](#gini_graph) können wir mit `Gini()` aus dem Paket `ineq` berechnen:
+```{r,eval=F}
+install.packages("ineq") # einmal installieren
+```
+
+```{r}
+library(ineq) # ineq laden
+Gini(etb18$F518_SUF)
+```
+
+
+### Kennzahlentabelle mit `summarise`
+
+Mit Hilfe von `summarise()` aus `{dplyr}` können wir ein eigenes `summary()` bauen:
+
+```{r}
+etb18 %>% summarise(Minimum = min(F518_SUF,na.rm = T),
+                    Median = median(F518_SUF,na.rm = T),
+                    Mittelwert = mean(F518_SUF,na.rm = T),
+                    Maximum = max(F518_SUF,na.rm = T),
+                    Gini = Gini(F518_SUF))
+```
+
+
+Der Vorteil des Ganzen wird im nächsten Schritt klarer.
+
+### Lage- und Streuungsmaße vergleichen
+
+
+Häufig werden diese Kennzahlen erst im Vergleich richtig spannend, dafür hilft uns das `group_by()` Argument und `summarise()`:
+```{r, echo=F}
+nrw_nds <- mean(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) -
+  mean(etb18$F518_SUF[etb18$Bula == 3], na.rm = T) # Niedersachsen
+```
+
+
+```{r}
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+etb18 %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T),
+            median_inc = median(F518_SUF, na.rm = T))
+
+etb18 %>% 
+  filter(Bula %in% c(3,5)) %>% 
+  group_by(Bula) %>% 
+  summarise(mean_inc = mean(F518_SUF, na.rm = T) )
+```
+
+
+
+<!-- ::: callout-tip -->
+
+<!-- Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden: -->
+<!-- ```{r sw5_su_vgl} -->
+<!-- summary(etb18$F518_SUF[etb18$Bula == 5], na.rm = T) - -->
+<!--   summary(etb18$F518_SUF[etb18$Bula == 3], na.rm = T)  -->
+<!-- ``` -->
+
+<!-- ::: -->
+
+<!-- ::: note -->
+
+<!-- [**Häufige Fehlermeldungen**](#rerror) -->
+
+<!-- ::: -->
+
+### [Übung](#descue4) {#ue3_4}
+
+
+## Übungen
+
+<!-- {{< include _03_0_ueb.qmd >}} -->
+Alle Übungen beziehen sich auf die Erwerbstätigenbefragung:
+
+```{r einls, eval=F, echo = T}
+etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+```
+
+[Abschnitt zum Einlesen](02_intro.qmd#import)
+
+
+### Übung 1 {#descue1}
+
+Wir interessieren uns für die Variable `gkpol`, welche die Größe der Wohngemeinde der Befragten enthält:
+```{r}
+#| echo: false
+library(gt)
+etb18 %>% count(gkpol) %>% pull(gkpol) %>% labelled::val_labels() %>% enframe(name = "label") %>% gt() %>% tab_options(  table.font.size = 9)
+# %>% kable(.) %>% 
+#   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F) %>% 
+#   row_spec(0, color = "white",font_size = 0)
+```
+
+
++ Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen, nutzen Sie dafür sowohl `table()`, `xtabs()` als auch `count()` (Denken Sie daran, `{tidyverse}` zu laden für `count()`). 
++ Lassen Sie sich der relativen Häufigkeiten (Anteile) ausgeben (nutzen sie entweder `table()` oder `xtabs()`)
++ Erstellen Sie eine Kontingenztabelle, indem Sie neben `gkpol` auch das Geschlecht `S1` (2 = Frauen, 1 = Männer) mit einbeziehen
++ Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.
+
+[Zurück nach oben](#ue3_1)
+
+### Übung 2 {#descue2}
+
+Wir interessieren uns für die Variable `S3`. Die Variable `S3` erfasst den höchsten allgemeinen Schulabschluss der Befragten. Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten.
+  
+  + Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.
+  + Profi-Aufgabe: Ersetzen Sie ggf. Werte mit `NA` und lassen Sie sich die Tabelle erneut ausgeben. [Siehe hier](#NA03)
+  
+[Zurück nach oben](#ue3_2)
+  
+### Übung 3 {#descue3}
+  
++ Erstellen Sie eine vollständige Häufigkeitstabelle für die Variable `gkpol` und das Geschlecht (`S1`)
+  + Verwenden Sie die Befehle aus Übung 2- was müssen Sie anpassen, um die Tabelle für `gkpol`
+  + Erweitern Sie jetzt die Auszählung um `S1`
+  + Berechnen Sie die Anteile von `gkpol` innerhalb von Männern und Frauen.
+  + Wie viel Prozent der Frauen leben in einer Gemeinde mit unter 2000 Einwohnern?  
+  + Profi-Aufgabe: Wie viel Prozent der Befragten, die in einer Gemeinde mit unter 2000 Einwohnern leben, sind Frauen? (`S1` = 2, `gkpol` = 1)
+  
+[Zurück nach oben](#ue3_3)
+
+### Übung 4 {#descue4}
+
+Beschreiben Sie das Alter der Befragten (`zpalter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.
+
+  + Überschreiben Sie zunächst die Missings mit `NA`: 
+```{r}
+#| eval: false
+etb18$zpalter[etb18$zpalter>100] <- NA
+```
+  
+  + Erstellen Sie einen Überblick mit `summary()`
+  + Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von `summarise()`
+  + Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschieden `gkpol`-Kategorien ausgegeben bekommen.
+
+[Zurück nach oben](#ue3_4)
+
+## Hinweise 
+
+### Runden mit `round()` {#round}
+
+
+Erläuterung: Sie können mit `round(x , 3)` Werte auf eine gewisse Zahl von Ziffern runden. Die zweite Zahl in der Klammer (nach dem Komma) gibt an, wieviele Dezimalstellen wir möchten:
+```{r W04_9, include=T, echo = T}
+round(21.12121123,digits = 3)
+round(21.12121123,digits = 5)
+round(21.12121123,digits = 0)
+```
+
+Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen: 
+```{r}
+xtabs(~S1+m1202, data = etb18) %>% 
+  prop.table(.,margin = 1) %>% 
+  round(.,3)
+```
+
+
+
+### Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?
+
+```{r}
+t4 <- table(etb18$zpalter)
+t4[which(t4 == max(t4))] # Modus
+```
+`r names(t4[which(t4 == max(t4))])` ist mit `r t4[which(t4 == max(t4))]` Befragten die häufigste Ausprägung.
+
+
+
+### Gini-Koeffizient {#gini_graph}
+```{r}
+#| include: false
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(tidyverse)
+```
+
+Zur Beschreibung der Verteilung von Einkommens- und Vermögensdaten wird häufig der Gini-Koeffizient verwendet. Der Gini-Koeffizient beruht auf der Fläche zwischen der Lorenzkurve und der Gleichverteilung. Auf der x-Achse werden die kumulierten Perzentile der Befragten abgetragen, auf der y-Achse die Perzentile des HH-Einkommens:
+
+```{r gini_plot1, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+#| cache: true
+gdf2 <- 
+  data.frame(id = 1:5) %>% 
+  mutate(eq = 1, ineq = id/5*5/3, w = 6-id ) %>% 
+  mutate(across( matches("eq"), ~ cumsum(.x),.names = "{col}_{fn}")) %>% 
+  uncount(w,.id = "x") %>% 
+  mutate(eq2 = ifelse(lead(id)==id | id == 5,NA,eq_1))
+
+  gdf2 %>% 
+  ggplot(.,aes(x = 6-x,y = ineq)) +
+  geom_col(color = "grey25", aes(fill = factor(id,levels=5:1))) +
+  geom_line(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), color = "#EEDA9DFF", size = .5) +
+  geom_point(data = data.frame(x=1:5),  aes(y = 1:5,x=1:5), fill = "#EEDA9DFF", size = 3, shape= 21, color = "grey25", stroke = .25)+
+  geom_text(aes(label = id,y = ineq_1-ineq/2, color = factor(id,levels=5:1) )) + 
+    scale_x_continuous(breaks = 1:5, labels = c("kleinster","2.kleinster","3","zweitgrößter","größter")) +
+    scale_y_continuous(breaks = 0:5, labels = paste0(seq(0,100,20),"%") ) +
+    scale_fill_manual(values = paletteer::palettes_d$dutchmasters$pearl_earring[2:6]) +
+    scale_color_manual(values = c("grey25","grey25","grey98","grey25","grey25")) +
+    guides(fill = "none", color = "none") +
+    labs(y = "Anteil am Gesamtwert", x = "Sortierte Beobachtungen") +
+    theme_minimal(base_size = 11) +
+    theme(panel.grid.major.x = element_blank(),panel.grid.minor.x = element_blank())
+```
+
+```{r dpi = 900, echo=F, warning=F, message=F, out.height="75%", out.width="75%", fig.align="center"}
+#| cache: true
+gdf <- a14 %>% mutate_at(vars(di05),~ifelse(.<0,NA,.)) %>%  
+  select(respid, di05) %>% 
+  na.omit() %>% 
+  arrange(di05) %>% 
+  mutate(pct_id = 1:n()/n(),
+         pct_di05 = cumsum(di05/sum(di05)),
+         sampl = runif(n = nrow(.)))
+
+gini_ann_df <- gdf %>% 
+  filter(sampl<.0151, between(pct_id,.5,.6 ) ) %>% slice(1) %>%
+  mutate(lab_lo = "Lorenzkurve", 
+         labl = paste0("Lorenzkurve (aus Beobachtungen):\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_di05*100,0),"% des gesamten HH-Einkommens\""),
+         labl1 = paste0("(Theoretische) Diagonale:\n\"",
+                       round(pct_id*100,0),"% der Befragten verfügen über\n",
+                       round(pct_id*100,0),"% des gesamten HH-Einkommens\""),
+         labl2 = "Gini Koeffizient:\nFläche zwischen Diagonale und Lorenzkurve\nim Verhältnis zu Fläche unter Lorenzkurve (weiß)\n(0=Gleichverteilung,1=Maximale Konzentration)")
+
+ggplot(gdf, aes(x = pct_id, y = pct_di05)) + 
+  geom_ribbon(aes(ymin = pct_di05, ymax = pct_id, xmin = pct_id, xmax = pct_id), fill = "#1BB6AF" ) +
+  geom_line(aes(y = pct_id), linetype = 2, size = .95, color = "#172869") + # Diagonale
+  geom_line(size = .5, color = "#9ED80B") + # Lorenzkurve
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id , y = 0, yend = pct_id), size = .35, linetype = 2) + # vertikale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = 0 , y = pct_id, yend = pct_id), size = .35, linetype = 2) + # horizonale gestrichelte Linie
+  geom_segment(data = gini_ann_df, aes(xend = pct_id+.0035, x = pct_id+.05 , y = pct_di05- .15, yend = pct_di05-.0075), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # lorenzkurve pfeil
+  geom_label(data = gini_ann_df, aes(label=labl,x = pct_id+.05, y = pct_di05- .15), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey25", fill = alpha("#9ED80B",.75)) + # lorenzkurve label
+  geom_segment(data = gini_ann_df, aes(xend = pct_id, x = pct_id-.05 , y = pct_id + .3, yend = pct_id), arrow = arrow(length = unit(.02,"npc"),type = "closed")) + # diagonale pfeil
+  geom_label(data = gini_ann_df, aes(label=labl1,x = pct_id-.05, y = pct_id + .3), hjust = 1, fontface = "italic", size = 3, 
+             color = "grey95", fill = "#172869") + # diagonale label
+  geom_segment(data = gini_ann_df, aes(y = .62, x = .03, xend = .4, yend = .3)) + # Fläche / Gini Linie
+  geom_point(data = gini_ann_df, aes(y = .3, x = .4), shape = 15, size = 2.75) + # Fläche / Gini -> Rechteck statt Pfeil
+  geom_label(data = gini_ann_df, aes(label=labl2,  y = .62, x = .025), hjust = 0, fontface = "italic", size = 3, 
+             color = "grey15", fill = "#1BB6AF") + # Gini Label
+  geom_point(data= filter(gdf,sampl<= 0.0151), size = 1.5, color = "#FF5300") +
+  scale_x_continuous("Kumulierter Befragtenanteil", labels = scales::percent_format(accuracy = 1L)) +
+  scale_y_continuous("Kumulierter Einkommensanteil", labels = scales::percent_format(accuracy = 1L)) +
+  theme_minimal(base_size = 11) +
+  coord_cartesian(x =c(0,1),y =c(0,1),expand = F)
+```
+
+
+
+
+
+
+
+

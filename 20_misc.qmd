@@ -1,0 +1,7 @@
+https://www.digitalocean.com/community/tutorials/sink-function-in-r
+
+
+```{r}
+effectsize::cramers_v(factor(etb18$gkpol),factor(etb18$m1202),alternative = "two.sided")
+```
+

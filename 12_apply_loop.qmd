@@ -1,0 +1,354 @@
+# Schleifen & Funktionen
+
+```{r apply01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(marginaleffects)
+library(broom)
+```
+
+```{r}
+etb_k12 <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e","Bula")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
+  mutate(m1202_fct = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1_fct = factor(S1,levels = 1:2,labels =c("m","w")))
+```
+
+Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. 
+Stattdessen werden meist Funktionen `function(...)` mit Hilfe von `map()` aus `{purrr}`/`{tidyverse}` [^lapply] über eine Reihe von Werten geschleift.
+
+[^lapply]: in base R gibt es `lapply()`, das ungefähr das gleiche macht.
+
+Die grundlegende Idee ist zunächst die gleiche wie bei klassischen `for()`-Loops: 
+
+1. wir legen fest, was gemacht werden soll (in einer `function()`)
+2. wir erstellen eine Serie an Werten
+3. und wenden die `function()` auf diese an
+
+Grundsätzlich können wir in R solche Schleife auf wirklich alles anwenden: `data.frames()`, Vektoren, `list`s.
+Das macht das Vorgehen sehr flexibel und kann uns beispielsweise helfen, eine Modellserie zu erstellen. 
+
+
+## Verschiedene Modelle auf die gleichen Daten als `function()` mit `map()` anwenden
+
+Wir möchten folgende Modelle alls auf Basis der ETB2018 schätzen:
+
++ Modell 1 = `F518_SUF ~ az`
++ Modell 2 = `F518_SUF ~ az + S1_fct`
++ Modell 3 = `F518_SUF ~ az + S1_fct + m1202_fct`
++ Modell 4 = `F518_SUF ~ az + S1_fct + m1202_fct + zpalter`
+
+Natürlich würde so etwas funktionieren, würde aber vier separate Modelle erstellen:
+```{r}
+#| eval: false
+mod1 <- lm(F518_SUF ~ az, data = etb_k12)
+mod2 <- lm(F518_SUF ~ az + S1, data = etb_k12)
+mod3 <- lm(F518_SUF ~ az + S1 + m1202, data = etb_k12)
+mod4 <- lm(F518_SUF ~ az + S1 + m1202 + zpalter, data = etb_k12)
+```
+
+Wir definieren dann eine `function()`, in der wir angeben, dass das angegebene Argument die Formel für ein `lm()` sein soll - das Ergebnis dieses `lm()` lassen wir uns dann ausgeben.
+
+```{r}
+mod_function <- function(modx){
+  mx <- lm(formula = modx,data = etb_k12)
+  return(mx) 
+}
+```
+
+Als Test können wir `mod_function()` jetzt einmal verwenden:
+```{r}
+mod_function("F518_SUF ~ az") %>% summary() # sieht gut aus
+```
+
+
+Im nächsten Schritt erstellen wir jetzt einen Vektor mit verschiedenen Modellvarianten:
+```{r}
+mdls <- c(
+  "Modell 1" = "F518_SUF ~ az",
+  "Modell 2" = "F518_SUF ~ az + S1_fct",
+  "Modell 3" = "F518_SUF ~ az + S1_fct + m1202_fct",
+  "Modell 4" = "F518_SUF ~ az + S1_fct + m1202_fct + zpalter"
+)
+```
+
+```{r}
+mdls
+```
+Mit `map` wenden wir unsere `mod_function` jetzt auf den Modell-Vektor an:
+```{r}
+mods <- map(mdls,mod_function)
+mods$`Modell 1`
+mods$`Modell 2`
+```
+
+Außerdem können wir uns alle Modelle auch direkt in `modelsummary` ausgeben lassen:
+```{r}
+library(modelsummary)
+modelsummary(mods,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
+```
+
+
+### [Übung](#ue12_01) {#manymod}
+
+## Das gleiche Modell auf verschiedene Datensets anwenden
+
+Der zweite Fall ist das gleiche Modell auf verschiedene Datensätze anzuwenden - wer kennt es nicht: 
+
+> *"Habt ihr das auch mal getrennt für Ost/West gerechnet?"*
+
+
+...dafür hilft uns `nest(.by =)` - damit können wir den Datensatz entlang einer Variable splitten und zusammenfassen:
+```{r}
+etb_k12_ow <- 
+  etb_k12 %>%
+      mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
+      nest(.by=east)
+
+etb_k12_ow
+```
+In der Spalte `data` sind jetzt also die Datensätze für Ost und West enthalten:
+```{r}
+head(etb_k12_ow$data[[1]],n=3)
+head(etb_k12_ow$data[[2]],n=3)
+```
+
+Auf den so gesplitteten Datensatz können wir mit `map()` ein `lm()`-Modell anwenden:
+```{r}
+mod_ow <- 
+  etb_k12 %>%
+    mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
+    nest(.by = east) %>% 
+    mutate(model = map(data, function(data) {
+      lm("F518_SUF ~ az + m1202_fct + zpalter + S1_fct", data = data) # ad-hoc function --> siehe tip)
+    })) 
+```
+
+::: {.callout-tip collapse="true"} 
+# adhoc `function` 
+
+Wir können die Funktion auch im gleichen Zug wie `map()` definieren, indem wir einfach mit `{}` die `function()` anhängen:
+
+```{r}
+#| eval: false
+map(input, function(x) {
+  ... # letzter Schritt in function wird das Ergebnis ausgegeben
+})
+```
+
+:::
+
+Das Ergebnis ist ein `data.frame`/`tibble`, welcher in der Spalte `model` die `lm`-Objekte enthält:
+```{r}
+mod_ow
+mod_ow$model[1]
+```
+
+
+
+```{r}
+modelsummary::modelplot(mod_ow$model,coef_omit = "Intercept") +
+  geom_vline(aes(xintercept = 0), linetype = 2, alpha = .5) +
+  scale_color_manual(values = c("orange","navy")) 
+  
+```
+
+
+```{r}
+modelsummary(mod_ow$model,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
+```
+
+### [Übung](#ue12_02) {#manydata}
+
+## `if` und mehrere Argumente in `function()`
+
+Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if`-Statements[^else] einbauen. 
+
+[^else]: auch `else` ist möglich
+
+Wir könnten beispielsweise noch einen zusätzlichen Schritt in unsere Modell-`function()` einbauen, welcher `tidy()` auf das Modell anwendet und eine vereinfachte Regressionstabelle als `data.frame` erstellt.
+
+```{r}
+mod_function2 <- function(modx){
+  mx <- lm(formula = modx,data = etb_k12)
+  mx <- tidy(mx,conf.int = T)
+  return(mx)
+}
+mod_function2("F518_SUF ~ az")
+```
+Wenn wir jetzt über ein zweites Argument bestimmen wollen, ob der Schritt mit `tidy()` ausgeführt werden soll, hilft uns ein zweites Argument in `function()`:
+
+```{r}
+mod_function3 <- function(modx, dotidy){
+  mx <- lm(formula = modx,data = etb_k12)
+  if(dotidy == T) mx <- tidy(mx,conf.int = T)
+  return(mx)
+}
+mod_function3("F518_SUF ~ az",dotidy=T)
+mod_function3("F518_SUF ~ az",dotidy=F)
+```
+
+
+Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben.
+
+```{r ifelse_default}
+mod_function4 <- function(modx, dotidy = T){
+  mx <- lm(formula = modx,data = etb_k12)
+  if(dotidy == T) mx <- tidy(mx,conf.int = T)
+  return(mx)
+}
+mod_function4("F518_SUF ~ az")
+mod_function4("F518_SUF ~ az",dotidy=F)
+```
+
+
+
+<!-- ## List zu `data.frame` -->
+
+
+
+<!-- Wenn die Einzelbestandteile einer `list` in einen `data.frame` umwandeln, können wir die `data.frame`s mit `bind_rows()` diese zu einem `data.frame` zusammenfügen. -->
+<!-- Mit `.id=""` können wir eine Variable erstellen, welche die Listennamen enthält: -->
+<!-- ```{r} -->
+<!-- mod_l4 <- map(mdls,mod_function4) -->
+<!-- mod_l4$`Modell 1` -->
+<!-- map(mod_l4,class) -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- #| eval: false -->
+<!-- bind_rows(mod_l4,.id="Mod_name") -->
+<!-- # oder in einem Schritt: -->
+<!-- map(mdls,mod_function4) %>% bind_rows(.id="Mod_name") -->
+<!-- # mit map_dfr() aus {purrr} in einem Schritt -->
+<!-- map_dfr(mdls,mod_function4,.id="Mod_name") -->
+<!-- ``` -->
+
+
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- bind_rows(mod_l4,.id="Mod_name") %>%  -->
+<!--   rmarkdown::paged_table() -->
+<!-- ``` -->
+
+
+
+## Übungen
+
+
+### Übung 1 {#manymod}
+```{r}
+etb_ue12 <- 
+  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
+                  col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
+  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>%  # missings raus
+  mutate(m1202_fct = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
+         S1_fct = factor(S1,levels = 1:2,labels =c("m","w"))) %>% # factor setzen
+  haven::zap_labels() %>%  # labels rauswerfen um Probleme zu vermeiden
+  haven::zap_label()
+
+```
+
++ Erstellen Sie eine Funktion, welche den `data.frame` `etb_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel:   
+`az ~ S1 + ausb + zpalter` (Denken Sie daran, die Formula in `""` zu setzen).
+
++ Erstellen Sie eine Liste mit folgenden Modellen:
+    +  Modell 1 `"az ~ S1",`
+    +  Modell 2 `"az ~ S1 + m1202_fct",`
+    +  Modell 3 `"az ~ S1 + m1202_fct + zpalter"`
+
++ Verwenden Sie `map()` und die erstellte Funktion, um die Modelle zu schätzen und in `modelsummary()` anzuzeigen
+
+[Zurück nach oben](#ue12_01)
+
+### Übung 2 {#manydata}
+
+Berechnen Sie das Modell `"az ~ m1202_fct + zpalter + I(zpalter^2)"` getrennt für Männer und Frauen `S1_fct`.
+
+[Zurück nach oben](#ue12_02)
+
+## [Mehr zu `map()`](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html)
+
+##  Anhang 
+
+### `.x` in `map()`
+
+Im `{tidyverse}` stellt das Paket `{purrr}` `map()` zur Verfügung, das `function(x) { ... x}` auf  `~` und `.x` abkürzen lässt:
+
+```{r}
+mods <- map(mdls,~lm(formula = .x,data = etb_k12))
+```
+
+Wer mehr über `{purrr}` und `map()` erfahren möchte, findet [hier](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) eine hervorragende Einführung. 
+
+
+### weitere Beispiele für `function()`   
+
+#### alle Datensätze aus einem Verzeichnis einzulesen
+```{r}
+#| eval: false
+
+# Namen aller csv-Dateien aus einem Verzeichnis
+files <- list.files(path = "/pfad/...", pattern = ".csv$",full.names = T)
+
+daten_list <- 
+  map(files, function(x){
+    read.csv(x,header = T,sep = ";")
+  })
+```
+
+#### Grafiken für unterschiedliche Jahre/Untergruppen zu erstellen
+
+```{r,out.height="45%", out.width="55%", fig.align="center"}
+#| warning: false
+#| message: false
+#| layout-ncol: 2
+
+plots_nach_Bula <- 
+  map(1:16, function(bl){
+    plot_data <- etb_k12 %>% filter(Bula == bl) # daten für Bundesland auswählen
+    title_var <- as_factor(unique(plot_data$Bula)) # Titel aus Bula-Variable 
+      # eigentlicher plot
+    plot_data %>% 
+      ggplot(aes(x=az,y=F518_SUF, color = S1_fct)) +
+      geom_point(size = 1.5) +
+      scale_color_manual(values = c("darkkhaki","deepskyblue3")) + 
+      labs(title = title_var, color = "Geschlecht") +
+      theme_minimal(base_size = 12)
+  })
+
+plots_nach_Bula[[3]]
+plots_nach_Bula[[12]]
+```
+
+
+### Loop mit `for`
+
+
+```{r}
+for(i in 1:8){
+  print(i)
+}
+```
+
+### loop über Variablen
+
+Möchten wir über Variablen loopen, müssen wir R explizit mitteilen, dass die mitgegebenen strings als Variablen zu verstehen sind: 
+
+```{r}
+#| error: true
+for(v in c("m1202_fct","S1","F1605e")){
+  etb_k12 %>% count(v) %>% print()
+}
+```
+
+Das können wir mit `!!rlang::sym(v)`:
+
+```{r}
+for(v in c("m1202_fct","S1","F1605e")){
+  etb_k12 %>% count(!!rlang::sym(v)) %>% print()
+}
+```
+

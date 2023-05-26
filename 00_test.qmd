@@ -1,0 +1,30 @@
+---
+title: "example"
+format: 
+  html
+---
+
+```{r reg01, include=F}
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(kableExtra)
+```
+
+```{r,echo=F}
+options(knitr.kable.NA = '')
+readxl::read_xlsx(path = "02_readin.xlsx",sheet = 2) %>% 
+  kbl(caption = "Exportbefehle", booktabs = T,escape = F,format = "html") %>% 
+  kable_material(html_font = "Roboto") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F, font_size = 12) %>% 
+  column_spec(2:3,monospace = TRUE)
+```
+
+
+```{r,eval=F,echo=F}
+data.frame(Function = "`read_delim()`",
+           Function = "[`read_delim()`](www.google.com)",
+           Formula = "$\\leftarrow\\alpha$",
+           Break = "this continues on a<br>new line",
+           Link = "[Google](www.google.com)") |>
+  kbl(format = "markdown") 
+```

@@ -1,0 +1,32 @@
+
+### `fct_expand()`: neue `levels()` hinzufügen
+Wenn wir ein neues `level` hinzufügen möchten, muss das im `factor` hinterlegt werden. Eine sehr große Hilfe für solche Operationen ist [{forcats}](https://forcats.tidyverse.org/) aus dem [{tidyverse}](https://www.tidyverse.org/). 
+
+```{r}
+library(forcats) ## nicht nötig wenn bereits tidyverse geladen
+levels(tab_ausb$m1202_fct)
+tab_ausb$m1202_fct <- fct_expand(tab_ausb$m1202_fct,"duale/schul. Berufsausb.") # neues level hinzufügen
+levels(tab_ausb$m1202_fct)
+tab_ausb$m1202_fct <- fct_relevel(tab_ausb$m1202_fct,"duale/schul. Berufsausb.",after = 1)
+levels(tab_ausb$m1202_fct)
+```
+
+Jetzt können wir *"duale/schul. Berufsausb."* hinzufügen:
+```{r}
+tab_ausb
+tab_ausb$m1202_fct[2] <- "duale/schul. Berufsausb."
+tab_ausb
+```
+
+Allerdings haben wir jetzt 6 statt bisher 5 `levels`:
+```{r}
+levels(tab_ausb$m1202_fct)
+length(levels(tab_ausb$m1202_fct))
+```
+
+`fct_drop()` aus `{forcats}` löscht alle nicht verwendeten `factor`-`levels`:
+```{r}
+tab_ausb$m1202_fct <- fct_drop(tab_ausb$m1202_fct)
+levels(tab_ausb$m1202_fct)
+length(levels(tab_ausb$m1202_fct))
+```
