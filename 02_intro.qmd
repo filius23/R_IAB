@@ -833,6 +833,12 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 
 [Zurück nach oben](#ue_4)
 
+------
+* Datensatz speichern `.Rdata`
+* Datensatz
+------
+
+
 ## Anhang
 
 ### Alternativen zu R-Projekten {#setwd}
