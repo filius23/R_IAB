@@ -28,7 +28,7 @@ Klingt gut, oder?
 
 
 -   Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. `colnames()`, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable oder ein Datensatz sein 
--  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: `read.csv(datei.csv, header = T, sep = ",")`
+-  Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für `.dta`-Dateien: `read_dta(datensatz.dta, n_max = 100)`
 -  Zeilenumbrüche werden von R ignoriert, d.h. wir können einen Befehl über mehre Zeilen schreiben - bspw. um es etwas übersichtlicher zu halten:
 ```{r}
 #| eval: false
@@ -45,7 +45,7 @@ funktion(objektname1,
 
 Ein paar allgemeine Aspekte, in denen sich das Arbeiten mit R von dem mit einigen anderen Programmen unterscheidet:
 
-~~- R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. *Aber:* RStudio stoppt ab [Version 2022.07](https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357) bei einem Syntaxfehler.~~
+- ~~R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. *Aber:* RStudio stoppt ab [Version 2022.07](https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357) bei einem Syntaxfehler.~~
 
 - Für alle Stata-Nutzenden: kein `variable xyz already defined` mehr. Wir können alles überschreiben, ohne `, replace` oder ähnliches.
 
@@ -404,29 +404,8 @@ dat1 <- select(dat1, !profs) # alles außer profs
 
 `select()` hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.
 
--   `starts_with()`: Variablenname beginnt mit ..., bspw. `select(dat1,starts_with("p"))`
--   `ends_with()`: Variablenname endet mit ..., bspw. `select(dat1,ends_with("p"))`
--   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(dat1,matches("_"))`: alle Variablen mit `_` im Namen.
--   `num_range()`: Variablen mit Zahlenbereiche: `select(etb,num_range("F",1:220))`
--   `last_col()`: Letzte Variable, für die 4.letzte Variable bspw. `last_col(4)`
--   `any_of()` um eine Auswahl auf Basis eines `character`-Vektors zu treffen
-
-
-
-```{r}
-#| code-fold: true
-#| eval: false
-# Spalten eines `data.frame`s auf Basis der `colnames` eines data.frames auswählen möchten:
-col_auswahl <- colnames(dat1_orig)
-col_auswahl
-select(dat1, any_of(col_auswahl) )
-
-
-# Oder wir wollen alle Variablen, die mit "s" beginnen:
-select(dat1,starts_with("s"))
-select(dat1,matches("^s")) # gleiches Ergebnis mit regex
-select(dat1,matches("s$")) # alle Spalten, die mit s enden
-```
+-   `contains("b")`: Variablenname enthält `...`, bspw. `select(dat1,contains("b"))`
+-   `matches()`: Variablenauswahl mit einer [*regular expression*](https://jfjelstul.github.io/regular-expressions-tutorial/), bspw. `select(dat1,matches("b$"))`: alle Variablen mit `b` am Ende des Namens.
 
 
 Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung `?select_helpers`.
@@ -473,51 +452,51 @@ dat1 %>% filter(studs < 10000) %>% select(uni)
 
 
 
-## Variablentyp III: `factor` - eigene Reihenfolgen festlegen
+<!-- ## Variablentyp III: `factor` - eigene Reihenfolgen festlegen -->
 
 
-Ein weitere häufige Aufgabe in der Datenanalyse ist das Sortieren von Datensätzen. Dazu haben wir `arrange()` zur Verfügung:
+<!-- Ein weitere häufige Aufgabe in der Datenanalyse ist das Sortieren von Datensätzen. Dazu haben wir `arrange()` zur Verfügung: -->
 
-```{r}
-dat1 %>% arrange(studs)
-```
+<!-- ```{r} -->
+<!-- dat1 %>% arrange(studs) -->
+<!-- ``` -->
 
-Das funktioniert auch für `string`-Variablen:
-```{r}
-dat1 %>% arrange(uni)
-```
+<!-- Das funktioniert auch für `string`-Variablen: -->
+<!-- ```{r} -->
+<!-- dat1 %>% arrange(uni) -->
+<!-- ``` -->
 
-Was aber, wenn wir eine fixe Ordnung vergeben möchten, die nicht der numerischen oder alphabetischen Ordnung entspricht?
-Hier bspw. wenn wir die Unis in folgende Ordnung bringen möchten: 1) Uni Oldenburg, 2) Uni Bremen und 3) Uni Vechta.
-Dabei hilft uns ein dritter Variablentyp: `factor`. 
+<!-- Was aber, wenn wir eine fixe Ordnung vergeben möchten, die nicht der numerischen oder alphabetischen Ordnung entspricht? -->
+<!-- Hier bspw. wenn wir die Unis in folgende Ordnung bringen möchten: 1) Uni Oldenburg, 2) Uni Bremen und 3) Uni Vechta. -->
+<!-- Dabei hilft uns ein dritter Variablentyp: `factor`.  -->
 
-Mit dem Argument `levels =` können wir eine Reihenfolge festlegen:
+<!-- Mit dem Argument `levels =` können wir eine Reihenfolge festlegen: -->
 
-```{r}
-factor(dat1$uni, levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta"))
+<!-- ```{r} -->
+<!-- factor(dat1$uni, levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta")) -->
 
-dat1$uni_fct <- factor(dat1$uni, 
-                       levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta"))
-```
+<!-- dat1$uni_fct <- factor(dat1$uni,  -->
+<!--                        levels = c("Uni Oldenburg", "Uni Bremen", "Uni Vechta")) -->
+<!-- ``` -->
 
-Wenn wir nun nach `uni_fct` sortieren, dann wird die Reihenfolge der `levels` berücksichtigt:
-```{r}
-class(dat1$uni_fct)
-dat1 %>% arrange(uni_fct)
-```
+<!-- Wenn wir nun nach `uni_fct` sortieren, dann wird die Reihenfolge der `levels` berücksichtigt: -->
+<!-- ```{r} -->
+<!-- class(dat1$uni_fct) -->
+<!-- dat1 %>% arrange(uni_fct) -->
+<!-- ``` -->
 
-Mit `desc()` können wir in umgekehrter Reihenfolge sortieren:
-```{r}
-dat1 %>% arrange(desc(uni_fct))
-```
+<!-- Mit `desc()` können wir in umgekehrter Reihenfolge sortieren: -->
+<!-- ```{r} -->
+<!-- dat1 %>% arrange(desc(uni_fct)) -->
+<!-- ``` -->
 
-Das mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen.
+<!-- Das mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen. -->
 
-Natürlich können wir auch nach mehreren Variablen sortieren, dazu fügen wir einfach weitere in `arrange()` ein:
-```{r}
-dat1 %>% arrange(desc(uni_fct), gegr, studs) 
-```
-(Macht in diesem Beispiel aber wenig Sinn)
+<!-- Natürlich können wir auch nach mehreren Variablen sortieren, dazu fügen wir einfach weitere in `arrange()` ein: -->
+<!-- ```{r} -->
+<!-- dat1 %>% arrange(desc(uni_fct), gegr, studs)  -->
+<!-- ``` -->
+<!-- (Macht in diesem Beispiel aber wenig Sinn) -->
 
 ### [Übung](#data3) {#ue_3}
 
@@ -576,10 +555,11 @@ rstudioapi::initializeProject(path = "D:/Kurse/R-Kurs")
 
 Jetzt können wir den eigentlichen Einlesebefehl `read.table` verwenden. Für den Pfad können wir nach `file =` lediglich die Anführungszeichen angeben und innerhalb dieser die Tab-Taste drücken. Dann bekommen wir alle Unterverzeichnisse und Tabellen im Projektordner angezeigt.[^2]
 
-[^2]: Manchmal kann der Datensatz aber nicht im Unterordner des Projekts liegen, dann kann natürlich auch der gesamte Pfad in `read.table()` angegeben werden: `etb <- read.table(file = "D:/Kurse/R-Kurs/data/BIBBBAuA_2018_small.csv", sep = ";", header = T)`
+[^2]: Manchmal kann der Datensatz aber nicht im Unterordner des Projekts liegen, dann kann natürlich auch der gesamte Pfad in `read_dta()` angegeben werden: `pend <- read_dta(file = "D:/Kurse/R-Kurs/data/PENDDAT_cf_W13.dta")`
 
 ```{r}
-pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") 
+library(haven)
+pend <- read_dta("./orig/PENDDAT_cf_W13.dta") 
 ```
 
 Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `pend` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read_dta()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. 
@@ -620,7 +600,7 @@ pend06$palter
 ```
 
 
-Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `zpalter` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
+Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen im PASS als `palter` und nicht alle haben so aussagekräftige Namen - z.B. `PD0400`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
 Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - mehr zu labels später.
 
 
@@ -766,6 +746,9 @@ knitr::include_graphics("./pic/102_dplyr_vignette.png")
 ```
 
 
+### [Übung](#data5) {#ue_5}
+
+
 ## Übungen
 ### Übung 1 {#data1}
 
@@ -808,10 +791,10 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 
 -   Verwenden Sie weiterhin den Datensatz aus Übung 1 & 2.
 -   Lassen Sie sich nur Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden - und für diese Fälle nur den Namen und das Gründungsjahr.
--   Sortieren Sie den Datensatz entsprechend dieser Reihenfolge. (Legen Sie dazu eine `factor`-Variable an, welche die entsprechende Reihenfolge festlegt.)
-```{r,eval =F}
-c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
-```
+<!-- -   Sortieren Sie den Datensatz entsprechend dieser Reihenfolge. (Legen Sie dazu eine `factor`-Variable an, welche die entsprechende Reihenfolge festlegt.) -->
+<!-- ```{r,eval =F} -->
+<!-- c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg") -->
+<!-- ``` -->
 
 [Zurück nach oben](#ue_3)
 
@@ -821,22 +804,26 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 
 -   Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein [R-Projekt](#rproj)
 -   Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner *data* ab.
--   Lesen Sie den Datensatz `BIBBBAuA_2018_small.csv` [wie oben gezeigt](#import) in R ein und legen Sie den Datensatz unter dem Objektnamen `etb_small` ab.
+-   Lesen Sie den Datensatz `PENDDAT_cf_W13.dta` [wie oben gezeigt](#import) in R ein und legen Sie den Datensatz unter dem Objektnamen `pend` ab.
 -   Nutzen Sie `head()` und `View()`, um sich einen Überblick über den Datensatz zu verschaffen.
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
--   Lassen Sie sich die Variablennamen von `etb_small` mit `names()` anzeigen!
--   Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte\*n mit der `intnr` 2781 enthält?
--   Wie alt ist der/die Befragte mit der `intnr` 2781?
--   Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable `S2_j` abgelegt.)
+-   Lassen Sie sich die Variablennamen von `pend` mit `names()` anzeigen!
+-   Wie können Sie sich die Zeilen anzeigen lassen, welche den/die Befragte\*n mit der `pnr` 1000908201 enthält?
+-   Erstellen Sie eine kompaktere Version des Datensatzes (bspw. als `pend_small`) mit lediglich den Variablen `pnr`, `hnr`, `welle`, `pintjahr` und `palter`.
+-   Wie alt ist der/die Befragte mit der `pnr` 1000908201 in `welle` 10 (im `pintjahr` 2016)?
+-   Erstellen Sie eine neue Variable mit dem Geburtsjahr der Befragten (basierend auf dem Alter `palter` und dem Interviewjahr `pintjahr`).
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen?
 
 [Zurück nach oben](#ue_4)
 
-------
-* Datensatz speichern `.Rdata`
-* Datensatz
-------
+### Übung 5 {#data5}
+
+-  Exportieren Sie den `data.frame` mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (`pend_small`) als `.Rdata`-Datei.
+-  Laden Sie die eben exportierte `.Rdata`-Datei unter einem beliebigen Namen, bspw. `pend_neu`. 
+-  Vergleichen Sie das neu gelandene mit dem ursprünglichen Objekt: `identical(pend_1_small,pend_neu)`
+
+[Zurück nach oben](#ue_5)
 
 
 ## Anhang
