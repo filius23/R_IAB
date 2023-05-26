@@ -1,4 +1,4 @@
-# Arbeiten mit Datensätzen in R
+# Arbeiten mit Datensätzen
 
 ```{r setup02, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")

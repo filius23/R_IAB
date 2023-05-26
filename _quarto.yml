@@ -28,7 +28,7 @@ book:
     # - 17_errors.qmd
     - references.qmd
   language: de-DE
-  downloads: [pdf]
+  # downloads: [pdf]
   page-footer:
    left: |
       Alle Kursinhalte {{< fa brands creative-commons >}} 2023 von [Andreas Filser](https://afilser.netlify.app/)<br>
