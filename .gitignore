@@ -8,12 +8,13 @@ nul
 /_site/
 /_book/
 /data/
+/orig/
 /präs/
 /vorlagen/
+/log/
+
 *Zeitplan*
 /prog/
-BIBB_BAuA - Verknüpfung.lnk
-/log/
 *.zip
 ~$*
 *.xlsx
