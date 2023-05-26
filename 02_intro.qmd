@@ -45,7 +45,7 @@ funktion(objektname1,
 
 Ein paar allgemeine Aspekte, in denen sich das Arbeiten mit R von dem mit einigen anderen Programmen unterscheidet:
 
-- R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. *Aber:* RStudio stoppt ab [Version 2022.07](https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357) bei einem Syntaxfehler.
+~~- R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. *Aber:* RStudio stoppt ab [Version 2022.07](https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357) bei einem Syntaxfehler.~~
 
 - Für alle Stata-Nutzenden: kein `variable xyz already defined` mehr. Wir können alles überschreiben, ohne `, replace` oder ähnliches.
 
@@ -197,10 +197,10 @@ knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
 :::{.callout-caution}
-# `install.packages()` im BIBB-Netzwerk
+# `install.packages()` im IAB-Netzwerk
 
 
-Aufgrund der VPN-Einstellungen im BIBB muss in R folgende Option gesetzt werden, damit Downloads möglich sind:  
+Aufgrund der VPN-Einstellungen im IAB muss in R folgende Option gesetzt werden, damit Downloads möglich sind:  
 
 `options(download.file.method = "wininet")`  
 
@@ -525,18 +525,7 @@ dat1 %>% arrange(desc(uni_fct), gegr, studs)
 
 In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
 
-Wir werden hier vor allem den Import von csv-Dateien verwenden. csv [^02_intro-1] bezeichnet ein verbreitetes Dateiformat zur Speicherung oder zum Austausch einfach strukturierter Daten. Wesentlich für unsere Zwecke hier ist, dass in csv-Dateien die Spalten eines Datensatzes mit einem Trennzeichen gekennzeichnet sind. Verbreitete Trennzeichen sind Komma, Doppelpunkt oder Semikolon. Für alle weiteren Dateien, die wir im Lauf dieser Veranstaltung verwenden werden, ist das Semikolon als Trennzeichen gesetzt. Unser Datensatz `dat1` sieht im csv-Format so aus:
-
-[^02_intro-1]: Abkürzung für comma-separated values
-
-```{r,echo = F, out.height="50%",out.width="50%"}
-#| fig-align: center
-# knitr::include_graphics(paste0(path,"images/102_csvdatei.png"))
-```
-
-![](./pic/102_csvdatei.png)
-
-In diesem Seminar werden wir mit Daten aus BIBB/BAuA-Erwerbstätigenbefragung 2018 arbeiten. Die BIBB/BAuA ist eine Repräsentativbefragung von in Deutschland zu Arbeit und Beruf im Wandel und Erwerb und Verwertung beruflicher Qualifikation. Nun wollen wir also eine csv-Datei einlesen, zunächst eine reduzierte Version der ETB 2018.
+In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.
 
 Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurs/" lauten:
 
@@ -545,16 +534,6 @@ Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeic
 ```{r,echo = F, out.height="45%",out.width="45%", fig.align="center"}
 knitr::include_graphics("./pic/102_dateipfad_datei.png")
 ```
-
-Um den Pfad des Ordners herauszufinden, klicken Sie bei Windows in die obere Adresszeile im Explorerfenster.
-
-```{r,echo = F, out.height="40%",out.width="40%", fig.align="center"}
-knitr::include_graphics("./pic/101_Dateipfad_WIN.png")
-```
-
-::: note
-In iOS (Mac) finden Sie den Pfad, indem Sie einmal mit der rechten Maustaste auf die Datei klicken und dann die ALT-Taste gedrückt halten. Dann sollte die Option "...als Pfadname kopieren" erscheinen. [**Youtube Anleitung**](https://www.youtube.com/watch?v=zcb3D6Xdv4s)
-:::
 
 Diesen Dateipfad müssen wir also R mitteilen.
 
@@ -600,10 +579,10 @@ Jetzt können wir den eigentlichen Einlesebefehl `read.table` verwenden. Für de
 [^2]: Manchmal kann der Datensatz aber nicht im Unterordner des Projekts liegen, dann kann natürlich auch der gesamte Pfad in `read.table()` angegeben werden: `etb <- read.table(file = "D:/Kurse/R-Kurs/data/BIBBBAuA_2018_small.csv", sep = ";", header = T)`
 
 ```{r}
-etb <- read.table(file = "./data/BIBBBAuA_2018_small.csv", sep = ";", header = T)
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") 
 ```
 
-Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `etb` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read.table()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. Darüber hinaus teilen wir R mit `sep` mit, dass ; als Trennzeichen gesetzt wurde und mit `header = T` (`T` steht für `TRUE`) teilen wir R zudem mit, dass die erste Zeile aus dem Datensatz als Spaltennamen verwendet werden soll.
+Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `pend` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read_dta()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. 
 
 ::: important
 Leider nutzen Windows-Systeme `\` in den Dateipfaden - das führt in R zu Problemen. Daher müssen Dateipfade immer mit `/` oder alternativ mit `\\` angegeben werden. RStudio kann zumindest etwas unterstützen, dem mit der *STRG + F* die Suchen & Ersetzen Funktion verwendet wird.
@@ -612,33 +591,34 @@ Leider nutzen Windows-Systeme `\` in den Dateipfaden - das führt in R zu Proble
 Würden hier jetzt einfach `etb` eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir `head` verwenden:
 
 ```{r}
-head(etb)
+head(pend)
 ```
 
-Mit `nrow` und `ncol` können wir kontrollieren, ob das geklappt hat. Der Datensatz sollte `r nrow(etb)` Zeilen und `r ncol(etb)` Spalten haben:
+Mit `nrow` und `ncol` können wir kontrollieren, ob das geklappt hat. Der Datensatz sollte `r nrow(pend)` Zeilen und `r ncol(pend)` Spalten haben:
 
 ```{r}
-nrow(etb)
-ncol(etb)
+nrow(pend)
+ncol(pend)
 ```
 
-Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Befragten auswählen, die vor 1940 geboren sind und diese unter `senior` ablegen:
+Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Daten aus dem Jahr 2006 auswählen und diese unter `pend06` ablegen:
 
 ```{r}
-senior <- etb %>% filter(S2_j < 1940)
+pend06 <- pend %>% filter(pintjahr == 2006)
 ```
 
-Möchten wir die genauen Altersangaben der Befragten aus `senior` sehen, können wir die entsprechende Spalte mit `senior$age` aufrufen:
+Außerdem hat `pend06` natürlich deutlich weniger Zeilen als `pend`:
 
 ```{r}
-senior$zpalter
+nrow(pend06)
 ```
 
-Außerdem hat `senior` natürlich deutlich weniger Zeilen als `etb`:
+Möchten wir die genauen Altersangaben der Befragten aus `pend06` sehen, können wir die entsprechende Spalte mit `pend06$palter` aufrufen:
 
 ```{r}
-nrow(senior)
+pend06$palter
 ```
+
 
 Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als `zpalter` und nicht alle haben so aussagekräftige Namen - z.B. `gkpol`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
 Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - mehr zu labels später.
@@ -862,7 +842,7 @@ Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setz
 Zum Setzen des Arbeitsverzeichnis mit `setwd()` setzen wir in die Klammern den Pfad des Ordners ein. Wichtig dabei ist dass Sie ggf. alle `\` durch `/`ersetzen müssen:
 
 ```{r, eval= F}
-setwd("D:/Kurse/R_BIBB")
+setwd("D:/Kurse/R_IAB")
 ```
 
 Mit `getwd()` lässt sich überprüfen, ob das funktioniert hat:
@@ -876,7 +856,7 @@ Hier sollte der mit `setwd()` gesetzte Pfad erscheinen.
 Alternativ können wir auch in `read.table()` den vollen Pfad angeben:
 
 ```{r,eval= F}
-etb <- read.table("C:/Kurse/R_BIBB/data/BIBBBAuA_2018_small.csv", sep = ";", header = T, stringsAsFactors = F)
+pend <- haven::read_dta("C:/Kurse/R_IAB/orig/PENDDAT_cf_W13.dta")
 ```
 
 ### Zeilen & Spaltenauswahl ohne `{dplyr}` {#selfiltbase}

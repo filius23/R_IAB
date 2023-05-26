@@ -12,7 +12,7 @@ book:
   chapters:
     - index.qmd
     - 01_intro.qmd
-    # - 02_intro.qmd
+    - 02_intro.qmd
     # - 03_desc.qmd
     # - 04_viz.qmd
     # - 05_data_wrangle1.qmd

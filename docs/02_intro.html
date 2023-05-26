@@ -1,0 +1,1611 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.38">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am IAB - 2&nbsp; Arbeiten mit Datensätzen in R</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./01_intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+    <div class="container-fluid d-flex justify-content-between">
+      <h1 class="quarto-secondary-nav-title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></h1>
+      <button type="button" class="quarto-btn-toggle btn" aria-label="Show secondary navigation">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am IAB</a> 
+        <div class="sidebar-tools-main">
+    <a href="./R-am-IAB.pdf" title="Download PDF" class="sidebar-tool px-1"><i class="bi bi-file-pdf"></i></a>
+</div>
+    </div>
+      </div>
+      <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+      </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">Willkommen</a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link active"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">Links &amp; Weiterführendes</a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#datenstrukturen-in-r-data.frame" id="toc-datenstrukturen-in-r-data.frame" class="nav-link active" data-scroll-target="#datenstrukturen-in-r-data.frame"> <span class="header-section-number">2.1</span> Datenstrukturen in R: <code>data.frame</code></a></li>
+  <li><a href="#variablentypen" id="toc-variablentypen" class="nav-link" data-scroll-target="#variablentypen"> <span class="header-section-number">2.2</span> Variablentypen</a>
+  <ul class="collapse">
+  <li><a href="#ue_1" id="toc-ue_1" class="nav-link" data-scroll-target="#ue_1"> <span class="header-section-number">2.2.1</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages"> <span class="header-section-number">2.3</span> Pakete in R</a></li>
+  <li><a href="#tidyverse" id="toc-tidyverse" class="nav-link" data-scroll-target="#tidyverse"> <span class="header-section-number">2.4</span> <code>{tidyverse}</code></a></li>
+  <li><a href="#zeilen-auswählen-mit-slice" id="toc-zeilen-auswählen-mit-slice" class="nav-link" data-scroll-target="#zeilen-auswählen-mit-slice"> <span class="header-section-number">2.5</span> Zeilen auswählen mit <code>slice()</code></a></li>
+  <li><a href="#filter" id="toc-filter" class="nav-link" data-scroll-target="#filter"> <span class="header-section-number">2.6</span> Beobachtungen auswählen mit <code>filter()</code></a>
+  <ul class="collapse">
+  <li><a href="#auswahloperatoren" id="toc-auswahloperatoren" class="nav-link" data-scroll-target="#auswahloperatoren"> <span class="header-section-number">2.6.1</span> Auswahloperatoren</a></li>
+  </ul></li>
+  <li><a href="#variablentypen-ii-logical" id="toc-variablentypen-ii-logical" class="nav-link" data-scroll-target="#variablentypen-ii-logical"> <span class="header-section-number">2.7</span> Variablentypen II: logical</a></li>
+  <li><a href="#select" id="toc-select" class="nav-link" data-scroll-target="#select"> <span class="header-section-number">2.8</span> Variablen auswählen mit <code>select()</code></a>
+  <ul class="collapse">
+  <li><a href="#selecthelpers" id="toc-selecthelpers" class="nav-link" data-scroll-target="#selecthelpers"> <span class="header-section-number">2.8.1</span> Hilfsfunktionen</a></li>
+  <li><a href="#ue_2" id="toc-ue_2" class="nav-link" data-scroll-target="#ue_2"> <span class="header-section-number">2.8.2</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#pipe" id="toc-pipe" class="nav-link" data-scroll-target="#pipe"> <span class="header-section-number">2.9</span> Arbeiten mit der Pipe: <code>filter()</code> und <code>select()</code> kombinieren</a></li>
+  <li><a href="#variablentyp-iii-factor---eigene-reihenfolgen-festlegen" id="toc-variablentyp-iii-factor---eigene-reihenfolgen-festlegen" class="nav-link" data-scroll-target="#variablentyp-iii-factor---eigene-reihenfolgen-festlegen"> <span class="header-section-number">2.10</span> Variablentyp III: <code>factor</code> - eigene Reihenfolgen festlegen</a>
+  <ul class="collapse">
+  <li><a href="#ue_3" id="toc-ue_3" class="nav-link" data-scroll-target="#ue_3"> <span class="header-section-number">2.10.1</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import"> <span class="header-section-number">2.11</span> Datensätze einlesen</a>
+  <ul class="collapse">
+  <li><a href="#rproj" id="toc-rproj" class="nav-link" data-scroll-target="#rproj"> <span class="header-section-number">2.11.1</span> Projekt einrichten</a></li>
+  <li><a href="#der-einlesebefehl" id="toc-der-einlesebefehl" class="nav-link" data-scroll-target="#der-einlesebefehl"> <span class="header-section-number">2.11.2</span> Der Einlesebefehl</a></li>
+  <li><a href="#ue_4" id="toc-ue_4" class="nav-link" data-scroll-target="#ue_4"> <span class="header-section-number">2.11.3</span> <span>Übung</span></a></li>
+  </ul></li>
+  <li><a href="#überblick-einlesen-und-exportieren" id="toc-überblick-einlesen-und-exportieren" class="nav-link" data-scroll-target="#überblick-einlesen-und-exportieren"> <span class="header-section-number">2.12</span> Überblick: Einlesen und Exportieren</a>
+  <ul class="collapse">
+  <li><a href="#datensätze-einlesen" id="toc-datensätze-einlesen" class="nav-link" data-scroll-target="#datensätze-einlesen"> <span class="header-section-number">2.12.1</span> Datensätze einlesen</a></li>
+  <li><a href="#datensätze-exportieren" id="toc-datensätze-exportieren" class="nav-link" data-scroll-target="#datensätze-exportieren"> <span class="header-section-number">2.12.2</span> Datensätze exportieren</a></li>
+  <li><a href="#objekte-exportieren" id="toc-objekte-exportieren" class="nav-link" data-scroll-target="#objekte-exportieren"> <span class="header-section-number">2.12.3</span> Objekte exportieren</a></li>
+  </ul></li>
+  <li><a href="#hilfe-zu-paketen-und-funktionen" id="toc-hilfe-zu-paketen-und-funktionen" class="nav-link" data-scroll-target="#hilfe-zu-paketen-und-funktionen"> <span class="header-section-number">2.13</span> Hilfe zu Paketen und Funktionen</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"> <span class="header-section-number">2.14</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#data1" id="toc-data1" class="nav-link" data-scroll-target="#data1"> <span class="header-section-number">2.14.1</span> Übung 1</a></li>
+  <li><a href="#data2" id="toc-data2" class="nav-link" data-scroll-target="#data2"> <span class="header-section-number">2.14.2</span> Übung 2</a></li>
+  <li><a href="#data3" id="toc-data3" class="nav-link" data-scroll-target="#data3"> <span class="header-section-number">2.14.3</span> Übung 3</a></li>
+  <li><a href="#data4" id="toc-data4" class="nav-link" data-scroll-target="#data4"> <span class="header-section-number">2.14.4</span> Übung 4</a></li>
+  </ul></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"> <span class="header-section-number">2.15</span> Anhang</a>
+  <ul class="collapse">
+  <li><a href="#setwd" id="toc-setwd" class="nav-link" data-scroll-target="#setwd"> <span class="header-section-number">2.15.1</span> Alternativen zu R-Projekten</a></li>
+  <li><a href="#selfiltbase" id="toc-selfiltbase" class="nav-link" data-scroll-target="#selfiltbase"> <span class="header-section-number">2.15.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></a></li>
+  <li><a href="#select-vs" id="toc-select-vs" class="nav-link" data-scroll-target="#select-vs"> <span class="header-section-number">2.15.3</span> <code>select()</code> vs <code>$</code></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen in R</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    
+  </div>
+  
+
+</header>
+
+<p><strong>(Spätes) Vorwort zu R und der Befehlsstruktur</strong></p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ol type="1">
+<li>Alles ist ein Objekt.</li>
+<li>Alles hat einen Namen.</li>
+<li>Alles was wir tun basiert auf Funktionen.</li>
+<li>Funktionen kommen aus “packages”<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, aber wir werden auch eigene Funktionen schreiben.</li>
+</ol>
+<p>Punkt 1. und 2. wird als <a href="https://de.wikipedia.org/wiki/Objektorientierte_Programmierung">Objektorientierte Programmierung (object-orientated programming, OOP)</a> bezeichnet. Wir werden in diesem Kurs also objektorientierte Programmierung lernen.</p>
+</div>
+</div>
+<p>Klingt gut, oder?</p>
+<ul>
+<li>Funktionen sind (fast) immer Verben gefolgt von einer Klammer, bspw. <code>colnames()</code>, in welcher das zu bearbeitende Objekt angegeben wird. Das kann bspw. eine Variable oder ein Datensatz sein</li>
+<li>Außerdem werden in den Klammern auch ggf. Optionen angegeben - bspw. sehen wir unten den Einlesebefehl für .csv-Dateien: <code>read.csv(datei.csv, header = T, sep = ",")</code></li>
+<li>Zeilenumbrüche werden von R ignoriert, d.h. wir können einen Befehl über mehre Zeilen schreiben - bspw. um es etwas übersichtlicher zu halten:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">funktion</span>(objektname1,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>         <span class="at">option1 =</span> sehr_lange_Auswahl_die_sehr_lang_ist,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>         <span class="at">option2 =</span> noch_eine_Auswahl_Option2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Wenn wir eine Funktion durchführen mit <code>funktion(objektname, option1 = TRUE, option2 = FALSE)</code> bekommen wir das Ergebnis in der Konsole ausgegeben.</li>
+<li>Soll das Ergebnis einer Berechnung oder Operation nicht nur angezeigt werden, sondern für weitere Schritte behalten werden, muss mit <code>name &lt;- ...</code> das Ergebnis unter <code>name</code> abgelegt werden. Das Ausgangsobjekt bleibt unverändert - außer wir überschreiben das Ausgangsobjekt explizit <code>name &lt;- funktion(name)</code>. Hier im Skript werde ich sehr häufig den Schritt des Ablegens weglassen, weil wir ja direkt sehen wollen, was passiert. Wenn wir aber mit bisherigen Operationen weiterarbeiten wollen, dann müssen wir sie in R unter einem Objektnamen ablegen.</li>
+<li>Optionen innerhalb einer <code>()</code> können auch einfach auf Basis der Reihenfolge angegeben werden</li>
+<li>Mit <code>?funktion()</code> ist die Hilfe aufrufbar, bspw. <code>?colnames()</code></li>
+</ul>
+<p>Ein paar allgemeine Aspekte, in denen sich das Arbeiten mit R von dem mit einigen anderen Programmen unterscheidet:</p>
+<p><del>- R stoppt nicht notwendigerweise bei einem Syntaxfehler, sondern versucht den Rest der Befehle auszuführen. <em>Aber:</em> RStudio stoppt ab <a href="https://stackoverflow.com/questions/73567974/how-to-make-r-by-default-not-stopping-when-an-error-is-encountered-while-running/73641357#73641357">Version 2022.07</a> bei einem Syntaxfehler.</del></p>
+<ul>
+<li><p>Für alle Stata-Nutzenden: kein <code>variable xyz already defined</code> mehr. Wir können alles überschreiben, ohne <code>, replace</code> oder ähnliches.</p></li>
+<li><p>Durch die Objektorientierung haben wir die Möglichkeit mehrere Datensätze gleichzeitig geöffnet zu haben - das erhöht die Flexibilität.</p></li>
+</ul>
+<p>In der ersten Session haben wir einige Schritte mit der Taschenrechnerfunktion in R unternommen. Die wirkliche Stärke von R ist aber die Verarbeitung von Daten - los geht’s.</p>
+<section id="datenstrukturen-in-r-data.frame" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="datenstrukturen-in-r-data.frame"><span class="header-section-number">2.1</span> Datenstrukturen in R: <code>data.frame</code></h2>
+<p>Im vorherigen Kapitel haben wir die Studierendenzahlen der Uni Bremen (19173), Uni Vechta (5333) und Uni Oldenburg (15643) zusammen unter <code>studs</code> abgelegt und mit den in <code>profs</code> abgelegten Professurenzahlen ins Verhältnis gesetzt. Das funktioniert soweit gut, allerdings ist es übersichtlicher, zusammengehörige Werte auch zusammen ablegen. Dafür gibt es in R <code>data.frame</code>. Wir können dazu die beiden Objekte in einem Datensatz ablegen, indem wir sie in <code>data.frame</code> eintragen und das neue Objekt unter <code>dat1</code> ablegen. Wenn wir <code>dat1</code> aufrufen sehen wir, dass die Werte zeilenweise zusammengefügt wurden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>studs <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">19173</span>,<span class="dv">5333</span>,<span class="dv">15643</span>)    <span class="co"># Studierendenzahlen unter "studs" ablegen </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>profs       <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">322</span>,<span class="dv">67</span>,<span class="dv">210</span>)    <span class="co"># Prof-Zahlen unter "profs" ablegen</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>dat1_orig <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(studs, profs)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>dat1_orig</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs
+1 19173   322
+2  5333    67
+3 15643   210</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">studs =</span> <span class="fu">c</span>(<span class="dv">19173</span>,<span class="dv">5333</span>,<span class="dv">15643</span>), </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">profs =</span> <span class="fu">c</span>(<span class="dv">322</span>,<span class="dv">67</span>,<span class="dv">210</span>),</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">gegr  =</span> <span class="fu">c</span>(<span class="dv">1971</span>,<span class="dv">1830</span>,<span class="dv">1973</span>)) <span class="co"># ohne zwischen-Objekte</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>dat1    <span class="co"># zeigt den kompletten Datensatz an</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr
+1 19173   322 1971
+2  5333    67 1830
+3 15643   210 1973</code></pre>
+</div>
+</div>
+<p>In der ersten Zeile stehen also die Werte der Uni Bremen, in der zweiten Zeile die Werte der Uni Vechta usw. Die Werte können wir dann mit <code>datensatzname$variablenname</code> aufrufen. So können wir die Spalte <code>profs</code> anzeigen lassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>profs </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 322  67 210</code></pre>
+</div>
+</div>
+<p>Mit <code>colnames()</code>/<code>names()</code> können wir die Variablen-/Spaltennamen des Datensatzes anzeigen lassen, zudem können wir mit <code>nrow</code> und <code>ncol</code> die Zahl der Zeilen bzw. Spalten aufrufen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(dat1) <span class="do">## Variablen-/Spaltennamen anzeigen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "studs" "profs" "gegr" </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat1) <span class="do">## Variablen-/Spaltennamen anzeigen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "studs" "profs" "gegr" </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(dat1) <span class="do">## Anzahl der Spalten/Variablen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(dat1) <span class="do">## Anzahl der Zeilen/Fälle</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3</code></pre>
+</div>
+</div>
+<p>Neue zusätzliche Variablen können durch <code>datensatzname$neuevariable</code> in den Datensatz eingefügt werden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>stu_prof <span class="ot">&lt;-</span> dat1<span class="sc">$</span>studs<span class="sc">/</span>dat1<span class="sc">$</span>profs</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="do">## dat1 hat also nun eine Spalte mehr:</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(dat1) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof
+1 19173   322 1971 59.54348
+2  5333    67 1830 79.59701
+3 15643   210 1973 74.49048</code></pre>
+</div>
+</div>
+<p>Wir können auch ein oder mehrere Wörter in einer Variable ablegen, jedoch müssen Buchstaben/Wörter immer in <code>""</code> gesetzt werden.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>uni <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Uni Bremen"</span>,<span class="st">"Uni Vechta"</span>, <span class="st">"Uni Oldenburg"</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1 19173   322 1971 59.54348    Uni Bremen
+2  5333    67 1830 79.59701    Uni Vechta
+3 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+</div>
+<p>Mit <code>View(dat1)</code> öffnet sich zudem ein neues Fenster, in dem wir den gesamten Datensatz ansehen können:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">View</span>(dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_View.png" style="width:45.0%;height:35.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="variablentypen" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="variablentypen"><span class="header-section-number">2.2</span> Variablentypen</h2>
+<p>Damit haben wir bisher zwei Variablentypen kennen gelernt: numeric (enthält Zahlen) und character (enthält Text oder Zahlen, die als Text verstanden werden sollen). Darüber hinaus gibt es noch weitere Typen, die besprechen wir wenn sie nötig sind, zB. gibt es factor-Variablen, die eine vorgegebene Sortierung und Werteuniversum umfassen oder logische Variablen. Vorerst fokussieren wir uns auf character und numeric Variablen. Mit <code>class()</code> kann die Art der Variable untersucht werden oder mit <code>is.numeric()</code> bzw. <code>is.character()</code> können wir abfragen ob eine Variable diesem Typ entspricht:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.numeric</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">is.character</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<p>Mit <code>as.character()</code> bzw. <code>as.numeric()</code> können wir einen Typenwechsel erzwingen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.character</span>(dat1<span class="sc">$</span>profs) <span class="do">## die "" zeigen an, dass die Variable als character definiert ist</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "322" "67"  "210"</code></pre>
+</div>
+</div>
+<p>Das ändert erstmal nichts an der Ausgangsvariable <code>dat1$profs</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>Wenn wir diese Umwandlung für <code>dat1$profs</code> behalten wollen, dann müssen wir die Variable überschreiben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>profs <span class="ot">&lt;-</span> <span class="fu">as.character</span>(dat1<span class="sc">$</span>profs)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>profs </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "322" "67"  "210"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>Mit <code>character</code>-Variablen kann nicht gerechnet werden, auch wenn sie Zahlen enthalten:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>profs <span class="sc">/</span> <span class="dv">2</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-error">
+<pre><code>Error in dat1$profs/2: nicht-numerisches Argument für binären Operator</code></pre>
+</div>
+</div>
+<p>Wir können aber natürlich <code>dat1$profs</code> spontan mit <code>as.numeric</code> umwandeln, um mit den Zahlenwerten zu rechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(dat1<span class="sc">$</span>profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 322  67 210</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(dat1<span class="sc">$</span>profs) <span class="sc">/</span> <span class="dv">2</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 161.0  33.5 105.0</code></pre>
+</div>
+</div>
+<p>Wenn wir Textvariablen in numerische Variablen umwandeln, bekommen wir <code>NA</code>s ausgegeben. <code>NA</code> steht in R für fehlende Werte:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">as.numeric</span>(dat1<span class="sc">$</span>uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: NAs durch Umwandlung erzeugt</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA NA NA</code></pre>
+</div>
+</div>
+<p>R weiß (verständlicherweise) also nicht, wie die Uni-Namen in Zahlen umgewandelt werden sollen.</p>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentypen zurückzuführen.</p>
+</div>
+</div>
+<section id="ue_1" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="ue_1"><span class="header-section-number">2.2.1</span> <a href="#data1">Übung</a></h3>
+</section>
+</section>
+<section id="packages" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="packages"><span class="header-section-number">2.3</span> Pakete in R</h2>
+<p>Im nächsten Schritt möchten wir jetzt nur einige Zeilen (Fälle) und/oder Spalten (Variablen) auswählen. Dazu verwenden wir das Paket <code>{dplyr}</code><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<p>Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. <!-- Wir haben in diesem Kapitel schon einige Beispiele kennen gelernt: mit `{dplyr}` steht uns ein komfortablerer [`filter()`](#filter) zur Verfügung und Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen.  --> Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. <code>install.packages()</code> leistet die Installation, mit <code>library()</code> werden die Pakete geladen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"Paket"</span>) <span class="co"># auf eurem PC nur einmal nötig</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(Paket) <span class="co"># nach jedem Neustart nötig</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Häufig werden bei <code>install.packages()</code> nicht nur das angegebene Paket, sondern auch eine Reihe weiterer Pakete heruntergeladen, die sog. “dependencies”. Das sind Pakete, welche im Hintergrund verwendet werden, um die Funktionen des eigentlich gewünschten Pakets zu ermöglichen. Also nicht erschrecken, wenn die Installation etwas umfangreicher ausfällt.</p>
+<p>Mit <code>install.packages()</code> schrauben wir sozusagen die Glühbirne in R, mit <code>library()</code> betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit <code>library()</code> wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/104_install-packages.jpg" style="width:53.0%;height:53.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout-caution callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+<code>install.packages()</code> im IAB-Netzwerk
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Aufgrund der VPN-Einstellungen im IAB muss in R folgende Option gesetzt werden, damit Downloads möglich sind:</p>
+<p><code>options(download.file.method = "wininet")</code></p>
+<p>Dazu bieten sich zwei Möglichkeiten:</p>
+<ol type="1">
+<li>nach jedem Neustart von RStudio vor <code>install.packages()</code> mit setzen:</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">download.file.method =</span> <span class="st">"wininet"</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ol start="2" type="1">
+<li>diese Option permanent “verankern”: wer den Befehl nicht zu Beginn jeden R-Scripts aufführen möchte, kann ihn in die <code>Rprofile</code>-Datei (<code>Rprofile.site</code>) mit globalen Einstellungen aufnehmen. Diese Datei liegt beim BIBB Arbeitsgerät unter folgendem Pfad: <code>C:\RforWindows_4_2_1\etc</code> <a href="https://support.posit.co/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf"><strong>Mehr zu RProfile</strong></a></li>
+</ol>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Pakete einmalig laden
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Neben <code>library()</code> gibt es auch die Möglichkeit, Funktionen aus Paketen mit <code>::</code> aufzurufen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>paket<span class="sc">::</span><span class="cf">function</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Diese Option wird häufig verwendet, wenn lediglich eine Funktion aus einem Paket einmalig verwendet wird und oder um deutlich zu machen, aus welchem Paket die verwendete Funktion kommt. Das kann auch bei Problemen mit einem Befehl hilfreich sein: evtl. wurde ein weiteres Paket mit einem gleichnamigen Befehl geladen - dann wird der erste Befehl überschrieben (meist mit einer Warnung), die bespielweise so aussehen kann:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>Die folgenden Objekte sind maskiert von ‘package<span class="sc">:</span>dplyr’<span class="sc">:</span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>    between, first, last</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>Das folgende Objekt ist maskiert ‘package<span class="sc">:</span>purrr’<span class="sc">:</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    transpose</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Das kann umgangen werden, wenn gewisse Pakte gar nicht vollständig geladen, sondern lediglich die nötigen Funktionen mit <code>::</code> aufgerufen werden.</p>
+</div>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-5-contents" aria-controls="callout-5" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Wenn keine Internetverbindung besteht
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-5" class="callout-5-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Unter <a href="https://cran.r-project.org/web/packages/available_packages_by_name.html">R Packages</a> können die benötigten Pakete heruntergeladen werden. Nachdem wir das Paket als .zip-Datei gespeichert haben, wir mit folgendem Befehl das Paket in der R-Umgebung installieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Installation von Paket "XML"</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"E:/XML_3.98-1.3.zip"</span>, <span class="at">repos =</span> <span class="cn">NULL</span>, <span class="at">type =</span> <span class="st">"source"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="tidyverse" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="tidyverse"><span class="header-section-number">2.4</span> <code>{tidyverse}</code></h2>
+<p>Wir werden in diesem Kurs vor allem mit Paketen aus dem <a href="www.tidyverse.org/"><code>{tidyverse}</code></a> arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>werden folgende Pakete installiert:</p>
+<p>broom, conflicted, cli, dbplyr, dplyr, dtplyr, forcats, ggplot2, googledrive, googlesheets4, haven, hms, httr, jsonlite, lubridate, magrittr, modelr, pillar, purrr, ragg, readr, readxl, reprex, rlang, rstudioapi, rvest, stringr, tibble, tidyr, xml2, tidyverse</p>
+<p>Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste ist <code>{dplyr}</code>, welches unter anderem die Auswahl von Fällen und Variablen erleichtert:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/103_dplyr.png" style="width:80.0%;height:80.0%" class="figure-img"></p>
+<p></p><figcaption class="figure-caption">Darstellung basierend auf dem <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdat1"><code>{dplyr}</code> Cheatsheet</a></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"tidyverse"</span>) </span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co"># installiert die komplette Paketsammlung des tidyverse</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="zeilen-auswählen-mit-slice" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="zeilen-auswählen-mit-slice"><span class="header-section-number">2.5</span> Zeilen auswählen mit <code>slice()</code></h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># nach einmaligem install.packages("tidyverse")</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Eine erste Funktion aus dem <code>{tidyverse}</code> ist <code>slice()</code>, mit welcher wir Zeilen auswählen können:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(dat1,<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof        uni
+1 19173   322 1971 59.54348 Uni Bremen</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="dv">2</span><span class="sc">:</span><span class="dv">3</span> <span class="co"># ergibt eine Zahlenfolge</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2 3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(dat1,<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1  5333    67 1830 79.59701    Uni Vechta
+2 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>) <span class="co"># Vektor mit Werten</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1 3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">slice</span>(dat1,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1 19173   322 1971 59.54348    Uni Bremen
+2 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+</div>
+</section>
+<section id="filter" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="filter"><span class="header-section-number">2.6</span> Beobachtungen auswählen mit <code>filter()</code></h2>
+<p>Nachdem wir zunächst das Paket für <code>filter()</code> installiert haben (das ist <code>{dplyr}</code>) müssen wir das Paket noch mit <code>library()</code> laden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1,uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span>, studs <span class="sc">&gt;</span> <span class="dv">1000</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+</div>
+<p>Die Auswahl ändert das Ausgangsobjekt <code>dat1</code> aber nicht:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1 19173   322 1971 59.54348    Uni Bremen
+2  5333    67 1830 79.59701    Uni Vechta
+3 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+</div>
+<p>Möchten wir das Ergebnis unserer Auswahl mit <code>filter()</code> für weitere Schritte behalten, können wir unser Ergebnis in einem neuen <code>data.frame</code>-Objekt ablegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>ueber_10tsd <span class="ot">&lt;-</span> <span class="fu">filter</span>(dat1, studs <span class="sc">&gt;</span> <span class="dv">10000</span>)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>ueber_10tsd</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni
+1 19173   322 1971 59.54348    Uni Bremen
+2 15643   210 1973 74.49048 Uni Oldenburg</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(ueber_10tsd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+</div>
+<section id="auswahloperatoren" class="level3" data-number="2.6.1">
+<h3 data-number="2.6.1" class="anchored" data-anchor-id="auswahloperatoren"><span class="header-section-number">2.6.1</span> Auswahloperatoren</h3>
+<p>R und <code>{dplyr}</code> stellen uns einige weitere Operatoren zur Auswahl von Zeilen zu Verfügung:</p>
+<ul>
+<li><code>&lt;=</code> und <code>&gt;=</code></li>
+<li><code>|</code> oder</li>
+<li><code>%in%</code> “eines von”</li>
+<li><code>between()</code> ist eine Hilfsfunktion aus <code>{dplyr}</code> für Wertebereiche</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1, studs <span class="sc">&gt;=</span> <span class="dv">10000</span>)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1, studs <span class="sc">&lt;=</span> <span class="dv">10000</span>)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1,studs <span class="sc">&gt;</span> <span class="dv">10000</span> <span class="sc">|</span> profs <span class="sc">&lt;</span> <span class="dv">200</span>) <span class="co"># mehr als 10.000 Studierende *oder* weniger als 200 Professuren</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1, gegr <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1971</span>,<span class="dv">1830</span>)) <span class="co"># gegründet 1971 oder 1830</span></span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1, <span class="fu">between</span>(gegr,<span class="dv">1971</span>,<span class="dv">1830</span>)) <span class="co"># gegründet zwischen 1971 und 1830 (einschließlich)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<!-- Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()` -->
+<!-- ```{r, eval =F } -->
+<!-- etb18 %>% filter(if_any(matches("^F"), ~ .x < 10)) -->
+<!-- ``` -->
+</section>
+</section>
+<section id="variablentypen-ii-logical" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="variablentypen-ii-logical"><span class="header-section-number">2.7</span> Variablentypen II: logical</h2>
+<p>Diese Auswahl basiert auf einem dritten Variablentyp: ‘logical’, also logische Werte mit <code>TRUE</code> oder <code>FALSE</code>. Wenn wir mit <code>==</code>, <code>&gt;</code> oder <code>&lt;</code> eine Bedingung formulieren, dann erstellen wir eigentlich einen logischen Vektor in der selben Länge wie die Daten:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>studs <span class="sc">&gt;</span> <span class="dv">10000</span> <span class="co"># ist die Studi-Zahl größer 10000?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1]  TRUE FALSE  TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>more10k <span class="ot">&lt;-</span>  dat1<span class="sc">$</span>studs <span class="sc">&gt;</span> <span class="dv">10000</span> <span class="co"># ist die Studi-Zahl größer 10000?</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k
+1 19173   322 1971 59.54348    Uni Bremen    TRUE
+2  5333    67 1830 79.59701    Uni Vechta   FALSE
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE</code></pre>
+</div>
+</div>
+<p>Wir könnten dann auch auf Basis dieser Variable filtern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1,more10k)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k
+1 19173   322 1971 59.54348    Uni Bremen    TRUE
+2 15643   210 1973 74.49048 Uni Oldenburg    TRUE</code></pre>
+</div>
+</div>
+</section>
+<section id="select" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="select"><span class="header-section-number">2.8</span> Variablen auswählen mit <code>select()</code></h2>
+<p>Mit <code>select()</code> enthält <code>{dplyr}</code> auch einen Befehl zu Auswahl von Spalten/Variablen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k
+1 19173   322 1971 59.54348    Uni Bremen    TRUE
+2  5333    67 1830 79.59701    Uni Vechta   FALSE
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1, studs,profs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs
+1 19173   322
+2  5333    67
+3 15643   210</code></pre>
+</div>
+</div>
+<p>Wir können auch hier einige Operatoren verwenden: <code>:</code> um einen Bereich auszuwählen oder <code>!</code> als “nicht”-Operator:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) <span class="co"># Spalte 1-3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr
+1 19173   322 1971
+2  5333    67 1830
+3 15643   210 1973</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1, <span class="sc">!</span>profs) <span class="co"># alles außer profs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs gegr stu_prof           uni more10k
+1 19173 1971 59.54348    Uni Bremen    TRUE
+2  5333 1830 79.59701    Uni Vechta   FALSE
+3 15643 1973 74.49048 Uni Oldenburg    TRUE</code></pre>
+</div>
+</div>
+<p>Auch hier gilt: wenn wir die Veränderungen auch weiter verwenden wollen, müssen wir sie in einem neuen Objekt ablegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>dat_ohne_profs <span class="ot">&lt;-</span> <span class="fu">select</span>(dat1, <span class="sc">!</span>profs) </span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>dat_ohne_profs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs gegr stu_prof           uni more10k
+1 19173 1971 59.54348    Uni Bremen    TRUE
+2  5333 1830 79.59701    Uni Vechta   FALSE
+3 15643 1973 74.49048 Uni Oldenburg    TRUE</code></pre>
+</div>
+</div>
+<p>…oder das alte überschreiben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">select</span>(dat1, <span class="sc">!</span>profs) <span class="co"># alles außer profs</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="selecthelpers" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="selecthelpers"><span class="header-section-number">2.8.1</span> Hilfsfunktionen</h3>
+<p><code>select()</code> hat außerdem einige Hilfsfunktionen, welche die Variablenauswahl auf Basis der Variablennamen einfacher machen.</p>
+<ul>
+<li><code>starts_with()</code>: Variablenname beginnt mit …, bspw. <code>select(dat1,starts_with("p"))</code></li>
+<li><code>ends_with()</code>: Variablenname endet mit …, bspw. <code>select(dat1,ends_with("p"))</code></li>
+<li><code>matches()</code>: Variablenauswahl mit einer <a href="https://jfjelstul.github.io/regular-expressions-tutorial/"><em>regular expression</em></a>, bspw. <code>select(dat1,matches("_"))</code>: alle Variablen mit <code>_</code> im Namen.</li>
+<li><code>num_range()</code>: Variablen mit Zahlenbereiche: <code>select(etb,num_range("F",1:220))</code></li>
+<li><code>last_col()</code>: Letzte Variable, für die 4.letzte Variable bspw. <code>last_col(4)</code></li>
+<li><code>any_of()</code> um eine Auswahl auf Basis eines <code>character</code>-Vektors zu treffen</li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spalten eines `data.frame`s auf Basis der `colnames` eines data.frames auswählen möchten:</span></span>
+<span id="cb93-2"><a href="#cb93-2" aria-hidden="true" tabindex="-1"></a>col_auswahl <span class="ot">&lt;-</span> <span class="fu">colnames</span>(dat1_orig)</span>
+<span id="cb93-3"><a href="#cb93-3" aria-hidden="true" tabindex="-1"></a>col_auswahl</span>
+<span id="cb93-4"><a href="#cb93-4" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1, <span class="fu">any_of</span>(col_auswahl) )</span>
+<span id="cb93-5"><a href="#cb93-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-6"><a href="#cb93-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb93-7"><a href="#cb93-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Oder wir wollen alle Variablen, die mit "s" beginnen:</span></span>
+<span id="cb93-8"><a href="#cb93-8" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1,<span class="fu">starts_with</span>(<span class="st">"s"</span>))</span>
+<span id="cb93-9"><a href="#cb93-9" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1,<span class="fu">matches</span>(<span class="st">"^s"</span>)) <span class="co"># gleiches Ergebnis mit regex</span></span>
+<span id="cb93-10"><a href="#cb93-10" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(dat1,<span class="fu">matches</span>(<span class="st">"s$"</span>)) <span class="co"># alle Spalten, die mit s enden</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>Es gibt noch einige weitere Hilfsfunktionen, für eine vollständige Auflistung <code>?select_helpers</code>.</p>
+</section>
+<section id="ue_2" class="level3" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="ue_2"><span class="header-section-number">2.8.2</span> <a href="#data2">Übung</a></h3>
+</section>
+</section>
+<section id="pipe" class="level2" data-number="2.9">
+<h2 data-number="2.9" class="anchored" data-anchor-id="pipe"><span class="header-section-number">2.9</span> Arbeiten mit der Pipe: <code>filter()</code> und <code>select()</code> kombinieren</h2>
+<p>Wenn wir jetzt aber einige Zeilen <strong>und</strong> einige Spalten auswählen möchten, dann können wir <code>filter()</code> und <code>select()</code> kombinieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">select</span>(<span class="fu">filter</span>(dat1,studs <span class="sc">&lt;</span> <span class="dv">10000</span>),uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         uni
+1 Uni Vechta</code></pre>
+</div>
+</div>
+<p>Diese Befehlsschachtel können wir mit der sog. Pipe <code>%&gt;%</code> auflösen. <code>%&gt;%</code> steht einfach für “und dann”. Die Pipe kommt aus dem Paket <code>{magrittr}</code>, welches wiederum Teil des tidyverse ist und automatisch mit <code>{dplyr}</code> geladen wird.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">filter</span>(dat1,studs <span class="sc">&lt;</span> <span class="dv">10000</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         uni
+1 Uni Vechta</code></pre>
+</div>
+</div>
+<p>Häufig wird die Pipe dann so verwendet, dass zu Beginn lediglich der zu bearbeitende Datensatz steht und sich dann die Schritte anschließen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(.,studs <span class="sc">&lt;</span> <span class="dv">10000</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(.,uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         uni
+1 Uni Vechta</code></pre>
+</div>
+</div>
+<p>Der Punkt <code>.</code> steht jeweils für das Ergebnis des vorherigen Schritts. Hier also:</p>
+<ol type="1">
+<li>Rufe <code>dat1</code> auf <em>und dann (<code>%&gt;%</code>)</em></li>
+<li>Wähle nur Zeilen aus in denen <code>studs</code> &lt; 10000 <em>und dann (<code>%&gt;%</code>)</em></li>
+<li>Behalte nur die Spalte <code>uni</code></li>
+</ol>
+<p>Dan Punkt können wir auch weglassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(studs <span class="sc">&lt;</span> <span class="dv">10000</span>) <span class="sc">%&gt;%</span> <span class="fu">select</span>(uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         uni
+1 Uni Vechta</code></pre>
+</div>
+</div>
+<div class="callout-tip callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>%&gt;%</code> kann mit STRG+SHIFT+m (cmd+shift+m für Mac) eingefügt werden.</p>
+</div>
+</div>
+</section>
+<section id="variablentyp-iii-factor---eigene-reihenfolgen-festlegen" class="level2" data-number="2.10">
+<h2 data-number="2.10" class="anchored" data-anchor-id="variablentyp-iii-factor---eigene-reihenfolgen-festlegen"><span class="header-section-number">2.10</span> Variablentyp III: <code>factor</code> - eigene Reihenfolgen festlegen</h2>
+<p>Ein weitere häufige Aufgabe in der Datenanalyse ist das Sortieren von Datensätzen. Dazu haben wir <code>arrange()</code> zur Verfügung:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(studs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k
+1  5333    67 1830 79.59701    Uni Vechta   FALSE
+2 15643   210 1973 74.49048 Uni Oldenburg    TRUE
+3 19173   322 1971 59.54348    Uni Bremen    TRUE</code></pre>
+</div>
+</div>
+<p>Das funktioniert auch für <code>string</code>-Variablen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(uni)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k
+1 19173   322 1971 59.54348    Uni Bremen    TRUE
+2 15643   210 1973 74.49048 Uni Oldenburg    TRUE
+3  5333    67 1830 79.59701    Uni Vechta   FALSE</code></pre>
+</div>
+</div>
+<p>Was aber, wenn wir eine fixe Ordnung vergeben möchten, die nicht der numerischen oder alphabetischen Ordnung entspricht? Hier bspw. wenn wir die Unis in folgende Ordnung bringen möchten: 1) Uni Oldenburg, 2) Uni Bremen und 3) Uni Vechta. Dabei hilft uns ein dritter Variablentyp: <code>factor</code>.</p>
+<p>Mit dem Argument <code>levels =</code> können wir eine Reihenfolge festlegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">factor</span>(dat1<span class="sc">$</span>uni, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Uni Oldenburg"</span>, <span class="st">"Uni Bremen"</span>, <span class="st">"Uni Vechta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] Uni Bremen    Uni Vechta    Uni Oldenburg
+Levels: Uni Oldenburg Uni Bremen Uni Vechta</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>uni_fct <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat1<span class="sc">$</span>uni, </span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a>                       <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Uni Oldenburg"</span>, <span class="st">"Uni Bremen"</span>, <span class="st">"Uni Vechta"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wenn wir nun nach <code>uni_fct</code> sortieren, dann wird die Reihenfolge der <code>levels</code> berücksichtigt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>uni_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "factor"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(uni_fct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k       uni_fct
+1 15643   210 1973 74.49048 Uni Oldenburg    TRUE Uni Oldenburg
+2 19173   322 1971 59.54348    Uni Bremen    TRUE    Uni Bremen
+3  5333    67 1830 79.59701    Uni Vechta   FALSE    Uni Vechta</code></pre>
+</div>
+</div>
+<p>Mit <code>desc()</code> können wir in umgekehrter Reihenfolge sortieren:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(uni_fct))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k       uni_fct
+1  5333    67 1830 79.59701    Uni Vechta   FALSE    Uni Vechta
+2 19173   322 1971 59.54348    Uni Bremen    TRUE    Uni Bremen
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE Uni Oldenburg</code></pre>
+</div>
+</div>
+<p>Das mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen.</p>
+<p>Natürlich können wir auch nach mehreren Variablen sortieren, dazu fügen wir einfach weitere in <code>arrange()</code> ein:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">arrange</span>(<span class="fu">desc</span>(uni_fct), gegr, studs) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k       uni_fct
+1  5333    67 1830 79.59701    Uni Vechta   FALSE    Uni Vechta
+2 19173   322 1971 59.54348    Uni Bremen    TRUE    Uni Bremen
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE Uni Oldenburg</code></pre>
+</div>
+</div>
+<p>(Macht in diesem Beispiel aber wenig Sinn)</p>
+<section id="ue_3" class="level3" data-number="2.10.1">
+<h3 data-number="2.10.1" class="anchored" data-anchor-id="ue_3"><span class="header-section-number">2.10.1</span> <a href="#data3">Übung</a></h3>
+</section>
+</section>
+<section id="import" class="level2" data-number="2.11">
+<h2 data-number="2.11" class="anchored" data-anchor-id="import"><span class="header-section-number">2.11</span> Datensätze einlesen</h2>
+<p>In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.</p>
+<p>In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.</p>
+<p>Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall “D:/Kurse/R-Kurs/” lauten:</p>
+<p>Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_dateipfad_datei.png" style="width:45.0%;height:45.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Diesen Dateipfad müssen wir also R mitteilen.</p>
+<section id="rproj" class="level3" data-number="2.11.1">
+<h3 data-number="2.11.1" class="anchored" data-anchor-id="rproj"><span class="header-section-number">2.11.1</span> Projekt einrichten</h3>
+<p>Grundsätzlich lohnt es sich, in RStudio Projekte einzurichten. Projekte sind <code>.Rproj</code>-Dateien <img src="./pic/rproj-icon.png" class="img-fluid" width="30">, die automatisch Arbeitsverzeichnis auf den Ort setzen, an dem sie gespeichert sind. Das erleichtert das kollaborative Arbeiten: egal wer und auf welchem Gerät gerade an einem Projekt arbeitet - durch die Projektdatei sind alle Pfade immer relativ zum Projektverzeichnis. Im weiteren können auch Versionkontrolle via git, bspw. <a href="www.github.com">github</a> und weitere Funktionen in der Projektdatei hinterlegt werden und so für alle Nutzenden gleich gesetzt werden. Außerdem bleiben die zuletzt geöffneten Scripte geöffnet, was ein Arbeiten an mehreren Projekten erleichtert.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_Rproj.png" style="width:65.0%;height:55.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Mit <code>getwd()</code> lässt sich überprüfen, ob das funktioniert hat:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "D:/Kurse/R-Kurs"</code></pre>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_Rproj2.png" style="width:75.0%;height:70.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Alternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen (hier ein Beispiel für den <a href="#packages">Aufruf eines Pakets mit <code>::</code></a>):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">initializeProject</span>(<span class="at">path =</span> <span class="st">"D:/Kurse/R-Kurs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+
+</div>
+</section>
+<section id="der-einlesebefehl" class="level3" data-number="2.11.2">
+<h3 data-number="2.11.2" class="anchored" data-anchor-id="der-einlesebefehl"><span class="header-section-number">2.11.2</span> Der Einlesebefehl</h3>
+<p>Jetzt können wir den eigentlichen Einlesebefehl <code>read.table</code> verwenden. Für den Pfad können wir nach <code>file =</code> lediglich die Anführungszeichen angeben und innerhalb dieser die Tab-Taste drücken. Dann bekommen wir alle Unterverzeichnisse und Tabellen im Projektordner angezeigt.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>pend <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit <code>pend</code> den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem <code>&lt;-</code> steht dann der eigentliche Befehl <code>read_dta()</code>, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung.</p>
+<div class="important">
+<p>Leider nutzen Windows-Systeme <code>\</code> in den Dateipfaden - das führt in R zu Problemen. Daher müssen Dateipfade immer mit <code>/</code> oder alternativ mit <code>\\</code> angegeben werden. RStudio kann zumindest etwas unterstützen, dem mit der <em>STRG + F</em> die Suchen &amp; Ersetzen Funktion verwendet wird.</p>
+</div>
+<p>Würden hier jetzt einfach <code>etb</code> eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir <code>head</code> verwenden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(pend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 123
+     pnr    hnr welle   pintj…¹ pintmon pintmod  zpsex   palter PD0400    PA0100
+   &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl+l&gt; &lt;dbl+l&gt; &lt;dbl+l&gt; &lt;dbl+lb&gt; &lt;dbl+l&gt; &lt;dbl+&gt; &lt;dbl+lbl&gt; &lt;dbl+&gt;
+1 1.00e9 1.00e7 1 [Wel… 2007    5 [Mai]  1 [CAP… 2 [Wei… 36       2 [Ehe… 8     
+2 1.00e9 1.00e7 1 [Wel… 2007    5 [Mai] NA       1 [Mae… 39       2 [Ehe… 8     
+3 1.00e9 1.00e7 3 [Wel… 2009    3 [Mae…  1 [CAP… 2 [Wei… 38      -9 [Ite… 9     
+4 1.00e9 1.00e7 1 [Wel… 2007    4 [Apr…  1 [CAP… 1 [Mae… 66     -10 [Ite… 8     
+5 1.00e9 1.00e7 1 [Wel… 2007    4 [Apr…  1 [CAP… 2 [Wei… 61       3 [Ehe… 2     
+6 1.00e9 1.00e7 2 [Wel… 2008    5 [Mai]  1 [CAP… 2 [Wei… 62       3 [Ehe… 2     
+# … with 113 more variables: PA0200 &lt;dbl+lbl&gt;, PA0300 &lt;dbl+lbl&gt;,
+#   PA0445 &lt;dbl+lbl&gt;, PA0800 &lt;dbl+lbl&gt;, PA0900 &lt;dbl+lbl&gt;, PA1000 &lt;dbl+lbl&gt;,
+#   PSM0100 &lt;dbl+lbl&gt;, PEO0100a &lt;dbl+lbl&gt;, PEO0100b &lt;dbl+lbl&gt;,
+#   PEO0100c &lt;dbl+lbl&gt;, PEO0100d &lt;dbl+lbl&gt;, PEO0100e &lt;dbl+lbl&gt;,
+#   PEO0200a &lt;dbl+lbl&gt;, PEO0200b &lt;dbl+lbl&gt;, PEO0200c &lt;dbl+lbl&gt;,
+#   PEO0200d &lt;dbl+lbl&gt;, PEO0300a &lt;dbl+lbl&gt;, PEO0300b &lt;dbl+lbl&gt;,
+#   PEO0300c &lt;dbl+lbl&gt;, PEO0300d &lt;dbl+lbl&gt;, PEO0300e &lt;dbl+lbl&gt;, …</code></pre>
+</div>
+</div>
+<p>Mit <code>nrow</code> und <code>ncol</code> können wir kontrollieren, ob das geklappt hat. Der Datensatz sollte 28424 Zeilen und 123 Spalten haben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 28424</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ncol</span>(pend)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 123</code></pre>
+</div>
+</div>
+<p>Natürlich können wir wie oben auch aus diesem, viel größeren, Datensatz Zeilen und Spalten auswählen. Zum Beispiel können wir die Daten aus dem Jahr 2006 auswählen und diese unter <code>pend06</code> ablegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>pend06 <span class="ot">&lt;-</span> pend <span class="sc">%&gt;%</span> <span class="fu">filter</span>(pintjahr <span class="sc">==</span> <span class="dv">2006</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Außerdem hat <code>pend06</code> natürlich deutlich weniger Zeilen als <code>pend</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pend06)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 168</code></pre>
+</div>
+</div>
+<p>Möchten wir die genauen Altersangaben der Befragten aus <code>pend06</code> sehen, können wir die entsprechende Spalte mit <code>pend06$palter</code> aufrufen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a>pend06<span class="sc">$</span>palter</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;labelled&lt;double&gt;[168]&gt;: Alter (Welle 1: gen. aus P1; ab Welle 2: beste Inf.), generiert
+  [1] 71 66 64 64 63 51 64 65 26 38 41 63 58 58 69 45 59 37 28 63 56 29 29 49 47
+ [26] 66 34 22 21 37 36 58 56 80 44 65 61 66 40 53 34 70 69 54 65 62 58 54 51 57
+ [51] 72 52 25 34 55 44 68 73 46 87 74 83 46 40 62 58 66 41 53 71 66 79 54 42 68
+ [76] 68 81 92 70 66 68 77 44 66 66 67 62 43 35 35 52 54 20 48 48 20 41 24 22 33
+[101] 55 41 50 36 19 52 25 36 37 29 37 36 43 49 16 59 28 19 43 44 30 43 50 50 53
+[126] 52 71 43 58 58 58 38 49 30 27 50 58 26 36 44 28 19 42 44 23 20 33 24 31 32
+[151] 31 44 50 58 45 57 37 62 46 52 50 47 40 62 40 19 28 35
+
+Labels:
+ value                                   label
+   -10 Item in Fragebogenversion nicht erhoben
+    -9             Item in Welle nicht erhoben
+    -8                       Unplausibler Wert
+    -4        Frage irrtuemlich nicht gestellt
+    -3                Trifft nicht zu (Filter)
+    -2                            Keine Angabe
+    -1                             Weiss nicht</code></pre>
+</div>
+</div>
+<p>Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen in der ETB als <code>zpalter</code> und nicht alle haben so aussagekräftige Namen - z.B. <code>gkpol</code>. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch. Außerdem können wir auf die <code>attributes()</code> einer Variable zurückgreifen - mehr zu labels später.</p>
+</section>
+<section id="ue_4" class="level3" data-number="2.11.3">
+<h3 data-number="2.11.3" class="anchored" data-anchor-id="ue_4"><span class="header-section-number">2.11.3</span> <a href="#data4">Übung</a></h3>
+</section>
+</section>
+<section id="überblick-einlesen-und-exportieren" class="level2" data-number="2.12">
+<h2 data-number="2.12" class="anchored" data-anchor-id="überblick-einlesen-und-exportieren"><span class="header-section-number">2.12</span> Überblick: Einlesen und Exportieren</h2>
+<section id="datensätze-einlesen" class="level3" data-number="2.12.1">
+<h3 data-number="2.12.1" class="anchored" data-anchor-id="datensätze-einlesen"><span class="header-section-number">2.12.1</span> Datensätze einlesen</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Überblick</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-material table table-striped table-hover table-condensed" style="font-family: Roboto; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Dateityp </th>
+   <th style="text-align:left;"> R Funktion </th>
+   <th style="text-align:left;"> R Paket </th>
+   <th style="text-align:left;"> Anmerkung </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> .csv </td>
+   <td style="text-align:left;font-family: monospace;"> read.table() </td>
+   <td style="text-align:left;font-family: monospace;"> - </td>
+   <td style="text-align:left;"> mit `sep = ";"` Trennzeichen angeben </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .Rdata (R format) </td>
+   <td style="text-align:left;font-family: monospace;"> readRDS </td>
+   <td style="text-align:left;font-family: monospace;"> - </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> große .csv </td>
+   <td style="text-align:left;font-family: monospace;"> vroom() </td>
+   <td style="text-align:left;font-family: monospace;"> {vroom} </td>
+   <td style="text-align:left;"> mit `delim = ";"` Trennzeichen angeben </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .dta (Stata) </td>
+   <td style="text-align:left;font-family: monospace;"> read_dta() </td>
+   <td style="text-align:left;font-family: monospace;"> {haven} </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .dat (SPSS) </td>
+   <td style="text-align:left;font-family: monospace;"> read_spss() </td>
+   <td style="text-align:left;font-family: monospace;"> {haven} </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .xlsx (Excel) </td>
+   <td style="text-align:left;font-family: monospace;"> read_xlsx() </td>
+   <td style="text-align:left;font-family: monospace;"> {readxl} </td>
+   <td style="text-align:left;"> mit `sheet = 1` Tabellenblatt angeben (funktioniert auch mit Namen) </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a><span class="co"># csv Datei</span></span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read.table</span>(<span class="at">file =</span> <span class="st">"Dateiname.csv"</span>,<span class="at">sep =</span> <span class="st">";"</span>)</span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Rdata</span></span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="at">file =</span> <span class="st">"Dateiname.Rdata"</span>)</span>
+<span id="cb132-5"><a href="#cb132-5" aria-hidden="true" tabindex="-1"></a><span class="co"># große csv</span></span>
+<span id="cb132-6"><a href="#cb132-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vroom)</span>
+<span id="cb132-7"><a href="#cb132-7" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">vroom</span>(<span class="at">file =</span> <span class="st">"Dateiname.csv"</span>,<span class="at">delim =</span> <span class="st">";"</span>)</span>
+<span id="cb132-8"><a href="#cb132-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Stata dta</span></span>
+<span id="cb132-9"><a href="#cb132-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb132-10"><a href="#cb132-10" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="at">file =</span> <span class="st">"Dateiname.dta"</span>)</span>
+<span id="cb132-11"><a href="#cb132-11" aria-hidden="true" tabindex="-1"></a><span class="co"># SPSS sav</span></span>
+<span id="cb132-12"><a href="#cb132-12" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="at">file =</span> <span class="st">"Dateiname.sav"</span>)</span>
+<span id="cb132-13"><a href="#cb132-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Excel</span></span>
+<span id="cb132-14"><a href="#cb132-14" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="at">path =</span> <span class="st">"Dateiname.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"1"</span>)</span>
+<span id="cb132-15"><a href="#cb132-15" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_xlsx</span>(<span class="at">path =</span> <span class="st">"Dateiname.xlsx"</span>, <span class="at">sheet =</span> <span class="st">"Tabellenblatt1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="datensätze-exportieren" class="level3" data-number="2.12.2">
+<h3 data-number="2.12.2" class="anchored" data-anchor-id="datensätze-exportieren"><span class="header-section-number">2.12.2</span> Datensätze exportieren</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Überblick</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Code</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<div class="cell">
+<div class="cell-output-display">
+
+<table class=" lightable-material table table-striped table-hover table-condensed" style="font-family: Roboto; margin-left: auto; margin-right: auto; font-size: 12px; width: auto !important; margin-left: auto; margin-right: auto;">
+ <thead>
+  <tr>
+   <th style="text-align:left;"> Dateityp </th>
+   <th style="text-align:left;"> R Funktion </th>
+   <th style="text-align:left;"> R Paket </th>
+   <th style="text-align:left;"> Anmerkung </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> .Rdata (R format) </td>
+   <td style="text-align:left;font-family: monospace;"> saveRDS() </td>
+   <td style="text-align:left;font-family: monospace;"> - </td>
+   <td style="text-align:left;"> alle Variableneigenschaften bleiben erhalten </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .csv </td>
+   <td style="text-align:left;font-family: monospace;"> write.table() </td>
+   <td style="text-align:left;font-family: monospace;"> - </td>
+   <td style="text-align:left;"> mit `sep = ";"` Trennzeichen angeben<br>mit row.names= F Zeilennummerierung unterdrücken </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .dta (Stata) </td>
+   <td style="text-align:left;font-family: monospace;"> write_dta() </td>
+   <td style="text-align:left;font-family: monospace;"> {haven} </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .dat (SPSS) </td>
+   <td style="text-align:left;font-family: monospace;"> write_spss() </td>
+   <td style="text-align:left;font-family: monospace;"> {haven} </td>
+   <td style="text-align:left;">  </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> .xlsx (Excel) </td>
+   <td style="text-align:left;font-family: monospace;"> write.xlsx() </td>
+   <td style="text-align:left;font-family: monospace;"> {xlsx} </td>
+   <td style="text-align:left;"> mit `sheetName` ggf. Tabellenblattname angeben </td>
+  </tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Rdata</span></span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat1,<span class="at">file =</span> <span class="st">"Dateiname.Rdata"</span>)</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a><span class="co"># csv</span></span>
+<span id="cb133-4"><a href="#cb133-4" aria-hidden="true" tabindex="-1"></a><span class="fu">write.table</span>(dat1,<span class="at">file =</span> <span class="st">"Dateiname.csv"</span>,<span class="at">sep =</span> <span class="st">";"</span>,<span class="at">row.names =</span> F)</span>
+<span id="cb133-5"><a href="#cb133-5" aria-hidden="true" tabindex="-1"></a><span class="co"># dta</span></span>
+<span id="cb133-6"><a href="#cb133-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb133-7"><a href="#cb133-7" aria-hidden="true" tabindex="-1"></a><span class="fu">write_dta</span>(dat1,<span class="at">path =</span> <span class="st">"Dateiname.dta"</span>)</span>
+<span id="cb133-8"><a href="#cb133-8" aria-hidden="true" tabindex="-1"></a><span class="co"># sav</span></span>
+<span id="cb133-9"><a href="#cb133-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb133-10"><a href="#cb133-10" aria-hidden="true" tabindex="-1"></a><span class="fu">write_sav</span>(dat1,<span class="at">path =</span> <span class="st">"Dateiname.sav"</span>)</span>
+<span id="cb133-11"><a href="#cb133-11" aria-hidden="true" tabindex="-1"></a><span class="co"># xlsx</span></span>
+<span id="cb133-12"><a href="#cb133-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(xlsx)</span>
+<span id="cb133-13"><a href="#cb133-13" aria-hidden="true" tabindex="-1"></a><span class="fu">write.xlsx</span>(dat1,<span class="at">file =</span> <span class="st">"Dateiname.xlsx"</span>, <span class="at">sheetName =</span> <span class="st">"Tabellenblatt 1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="objekte-exportieren" class="level3" data-number="2.12.3">
+<h3 data-number="2.12.3" class="anchored" data-anchor-id="objekte-exportieren"><span class="header-section-number">2.12.3</span> Objekte exportieren</h3>
+<p>Wir können aber auch einzelne oder mehrere Objekte exportieren und später wieder einlesen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb134"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(studs, <span class="at">file =</span> <span class="st">"./data/stud_vektor.RData"</span>)</span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(studs)</span>
+<span id="cb134-3"><a href="#cb134-3" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">"./data/stud_vektor.RData"</span>) <span class="co"># studs wieder mit selbem Namen zurück im environment</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mehrere Objekte:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a><span class="fu">save</span>(studs,profs, <span class="at">file =</span> <span class="st">"./data/meine_vektoren.RData"</span>)</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rm</span>(studs,profs)</span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a><span class="fu">load</span>(<span class="at">file =</span> <span class="st">"./data/meine_vektoren.RData"</span>) <span class="co"># studs &amp; profs mit selbem Namen zurück im environment</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Der Begriff <em>speichern</em> kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - Ergebnisse/Werte innerhalb von R in einem Objekt abzulegen)</p>
+</div>
+</div>
+</section>
+</section>
+<section id="hilfe-zu-paketen-und-funktionen" class="level2" data-number="2.13">
+<h2 data-number="2.13" class="anchored" data-anchor-id="hilfe-zu-paketen-und-funktionen"><span class="header-section-number">2.13</span> Hilfe zu Paketen und Funktionen</h2>
+<p>R Pakete kommen (häufig) mit sehr ausführlichen Hilfeseiten, die entweder direkt aus RStudio abgerufen werden können:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb136"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hilfe zu Paketen</span></span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">"dplyr"</span>)</span>
+<span id="cb136-3"><a href="#cb136-3" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="at">package =</span> <span class="st">"dplyr"</span>)</span>
+<span id="cb136-4"><a href="#cb136-4" aria-hidden="true" tabindex="-1"></a><span class="fu">vignette</span>(<span class="st">"rowwise"</span>)</span>
+<span id="cb136-5"><a href="#cb136-5" aria-hidden="true" tabindex="-1"></a><span class="fu">help</span>(<span class="st">"dplyr"</span>)</span>
+<span id="cb136-6"><a href="#cb136-6" aria-hidden="true" tabindex="-1"></a><span class="fu">help</span>(<span class="at">package =</span> <span class="st">"dplyr"</span>)</span>
+<span id="cb136-7"><a href="#cb136-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb136-8"><a href="#cb136-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb136-9"><a href="#cb136-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Hilfe zu Funktionen</span></span>
+<span id="cb136-10"><a href="#cb136-10" aria-hidden="true" tabindex="-1"></a>?<span class="fu">select</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Alternativ führt aber Google auch zum Ziel, bspw. <a href="https://www.google.de/search?q=R+dplyr+select()"><strong>R dplyr select()</strong></a></p>
+<p>Oder auf CRAN (woher auch <code>install.packages()</code> die Pakete bezieht):</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_dplyr_vignette.png" style="height:30.0%" width="488" class="figure-img"></p>
+<p></p><figcaption class="figure-caption"><a href="https://cran.r-project.org/web/packages/dplyr/index.html">CRAN-Seite für {dplyr}</a></figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="übungen" class="level2" data-number="2.14">
+<h2 data-number="2.14" class="anchored" data-anchor-id="übungen"><span class="header-section-number">2.14</span> Übungen</h2>
+<section id="data1" class="level3" data-number="2.14.1">
+<h3 data-number="2.14.1" class="anchored" data-anchor-id="data1"><span class="header-section-number">2.14.1</span> Übung 1</h3>
+<ul>
+<li>Erstellen Sie den Datensatz mit den Studierenden- &amp; Prof-Zahlen wie gezeigt:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">studs =</span> <span class="fu">c</span>(<span class="dv">14954</span>,<span class="dv">47269</span> ,<span class="dv">23659</span>,<span class="dv">9415</span> ,<span class="dv">38079</span>), </span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">profs =</span> <span class="fu">c</span>(<span class="dv">250</span>,<span class="dv">553</span>,<span class="dv">438</span> ,<span class="dv">150</span>,<span class="dv">636</span>),</span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">prom_recht =</span> <span class="fu">c</span>(<span class="cn">FALSE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span>,<span class="cn">TRUE</span>,<span class="cn">FALSE</span>),</span>
+<span id="cb137-4"><a href="#cb137-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">gegr  =</span> <span class="fu">c</span>(<span class="dv">1971</span>,<span class="dv">1870</span>,<span class="dv">1457</span>,<span class="dv">1818</span>,<span class="dv">1995</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Sehen Sie den <code>dat2</code> in Ihrem Environment?</li>
+<li>Lassen Sie sich <code>dat2</code> in der Console ausgeben.</li>
+<li>Fügen Sie die Namen der Unis als neue Spalte in den Datensatz ein. Diese sind in dieser Reihenfolge:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"FH Aachen"</span>,<span class="st">"RWTH Aachen"</span>,<span class="st">"Uni Freiburg"</span>,<span class="st">"Uni Bonn"</span>,<span class="st">"FH Bonn-Rhein-Sieg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Lassen Sie sich <code>dat2</code> anzeigen - in der Console oder mit <code>View()</code></li>
+<li>Berechnen Sie das Verhältnis Studierende pro Professur und legen Sie die Ergebnisse in einer neuen Variable an. Sehen Sie sich das Ergebnis an.</li>
+</ul>
+<p><a href="#ue_1">Zurück nach oben</a></p>
+</section>
+<section id="data2" class="level3" data-number="2.14.2">
+<h3 data-number="2.14.2" class="anchored" data-anchor-id="data2"><span class="header-section-number">2.14.2</span> Übung 2</h3>
+<ul>
+<li><del>Installieren Sie die Pakete des tidyverse mit <code>install.packages("tidyverse")</code></del></li>
+<li>Verwenden Sie wieder den <code>data.frame</code> <code>dat2</code> aus Übung 1</li>
+<li>Nutzen Sie <code>filter</code>, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, <code>{tidyverse}</code> zu installieren und mit <code>library()</code> zu laden)</li>
+<li>Lassen Sie sich nur die dritte Zeile von <code>dat2</code> anzeigen.</li>
+<li>Lassen Sie sich nur die Spalte <code>gegr</code> anzeigen.</li>
+<li>Lassen Sie sich nur Zeilen der Hochschulen mit Promotionsrecht (<code>prom_recht</code>) anzeigen.</li>
+</ul>
+<p><a href="#ue_2">Zurück nach oben</a></p>
+</section>
+<section id="data3" class="level3" data-number="2.14.3">
+<h3 data-number="2.14.3" class="anchored" data-anchor-id="data3"><span class="header-section-number">2.14.3</span> Übung 3</h3>
+<ul>
+<li>Verwenden Sie weiterhin den Datensatz aus Übung 1 &amp; 2.</li>
+<li>Lassen Sie sich nur Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden - und für diese Fälle nur den Namen und das Gründungsjahr.</li>
+<li>Sortieren Sie den Datensatz entsprechend dieser Reihenfolge. (Legen Sie dazu eine <code>factor</code>-Variable an, welche die entsprechende Reihenfolge festlegt.)</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="st">"RWTH Aachen"</span>,<span class="st">"Uni Freiburg"</span>,<span class="st">"Uni Bonn"</span>,<span class="st">"FH Aachen"</span>,<span class="st">"FH Bonn-Rhein-Sieg"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><a href="#ue_3">Zurück nach oben</a></p>
+</section>
+<section id="data4" class="level3" data-number="2.14.4">
+<h3 data-number="2.14.4" class="anchored" data-anchor-id="data4"><span class="header-section-number">2.14.4</span> Übung 4</h3>
+<ul>
+<li>Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein <a href="#rproj">R-Projekt</a></li>
+<li>Legen Sie die Erwerbstätigenbefragung in Ihrem Verzeichnis im Unterordner <em>data</em> ab.</li>
+<li>Lesen Sie den Datensatz <code>BIBBBAuA_2018_small.csv</code> <a href="#import">wie oben gezeigt</a> in R ein und legen Sie den Datensatz unter dem Objektnamen <code>etb_small</code> ab.</li>
+<li>Nutzen Sie <code>head()</code> und <code>View()</code>, um sich einen Überblick über den Datensatz zu verschaffen.</li>
+<li>Wie viele Befragte (Zeilen) enthält der Datensatz?</li>
+<li>Lassen Sie sich die Variablennamen von <code>etb_small</code> mit <code>names()</code> anzeigen!</li>
+<li>Wie können Sie sich die Zeile anzeigen lassen, welche den/die Befragte*n mit der <code>intnr</code> 2781 enthält?</li>
+<li>Wie alt ist der/die Befragte mit der <code>intnr</code> 2781?</li>
+<li>Erstellen Sie eine neue Variable mit dem Alter der Befragten im Jahr 2022! (Das Geburtsjahr ist in der Variable <code>S2_j</code> abgelegt.)</li>
+<li>Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter <code>nach_1960</code> ab.</li>
+<li>Wie viele Spalten hat <code>nach_1960</code>? Wie viele Zeilen?</li>
+</ul>
+<p><a href="#ue_4">Zurück nach oben</a></p>
+</section>
+</section>
+<section id="anhang" class="level2" data-number="2.15">
+<h2 data-number="2.15" class="anchored" data-anchor-id="anhang"><span class="header-section-number">2.15</span> Anhang</h2>
+<section id="setwd" class="level3" data-number="2.15.1">
+<h3 data-number="2.15.1" class="anchored" data-anchor-id="setwd"><span class="header-section-number">2.15.1</span> Alternativen zu R-Projekten</h3>
+<p>Neben dem Einrichten eines Projekts können wir den Pfad auch mit <code>setwd()</code> setzen oder direkt in <code>read.table()</code> angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die <code>.Rproj</code>-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.</p>
+<p>Zum Setzen des Arbeitsverzeichnis mit <code>setwd()</code> setzen wir in die Klammern den Pfad des Ordners ein. Wichtig dabei ist dass Sie ggf. alle <code>\</code> durch <code>/</code>ersetzen müssen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb140"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="fu">setwd</span>(<span class="st">"D:/Kurse/R_IAB"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit <code>getwd()</code> lässt sich überprüfen, ob das funktioniert hat:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getwd</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Hier sollte der mit <code>setwd()</code> gesetzte Pfad erscheinen.</p>
+<p>Alternativ können wir auch in <code>read.table()</code> den vollen Pfad angeben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb142"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a>pend <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"C:/Kurse/R_IAB/orig/PENDDAT_cf_W13.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="selfiltbase" class="level3" data-number="2.15.2">
+<h3 data-number="2.15.2" class="anchored" data-anchor-id="selfiltbase"><span class="header-section-number">2.15.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></h3>
+<p>Natürlich kann auch base R (also R ohne Erweiterungen wie <code>{dplyr}</code> Datensätze filtern usw.), dazu wird [ ] verwendet:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a>dat1[<span class="dv">1</span>,<span class="dv">1</span>] <span class="co"># erste Zeile, erste Spalte</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19173</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb145"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb145-1"><a href="#cb145-1" aria-hidden="true" tabindex="-1"></a>dat1[<span class="dv">1</span>,]  <span class="co"># erste Zeile, alle Spalten</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof        uni more10k    uni_fct
+1 19173   322 1971 59.54348 Uni Bremen    TRUE Uni Bremen</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb147"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb147-1"><a href="#cb147-1" aria-hidden="true" tabindex="-1"></a>dat1[,<span class="dv">1</span>]  <span class="co"># alle Zeilen, erste Spalte (entspricht hier dat1$studs)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19173  5333 15643</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb149"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb149-1"><a href="#cb149-1" aria-hidden="true" tabindex="-1"></a>dat1[,<span class="st">"studs"</span>] <span class="co"># alle Zeilen, Spalte mit Namen studs -&gt; achtung: ""</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19173  5333 15643</code></pre>
+</div>
+</div>
+<p>Natürlich können wir auch mehrere Zeilen oder Spalten auswählen. Dafür müssen wir wieder auf <code>c( )</code> zurückgreifen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb151"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb151-1"><a href="#cb151-1" aria-hidden="true" tabindex="-1"></a>dat1[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>),]  <span class="do">## 1. &amp; 2. Zeile, alle Spalten</span></span>
+<span id="cb151-2"><a href="#cb151-2" aria-hidden="true" tabindex="-1"></a>dat1[,<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)]  <span class="do">## alle Zeilen, 1. &amp; 3. Spalte (entspricht dat1$studs &amp; dat1$stu_prof)</span></span>
+<span id="cb151-3"><a href="#cb151-3" aria-hidden="true" tabindex="-1"></a>dat1[,<span class="fu">c</span>(<span class="st">"studs"</span>,<span class="st">"uni"</span>)] <span class="do">## alle Zeilen, Spalten mit Namen studs und uni</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus <code>dat1</code> zu treffen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="co"># vollständiger Datensatz</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k       uni_fct
+1 19173   322 1971 59.54348    Uni Bremen    TRUE    Uni Bremen
+2  5333    67 1830 79.59701    Uni Vechta   FALSE    Uni Vechta
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE Uni Oldenburg</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>dat1[dat1<span class="sc">$</span>uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span>, ] <span class="co"># Zeilen in denen uni gleich "Uni Oldenburg", alle Spalten</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs profs gegr stu_prof           uni more10k       uni_fct
+3 15643   210 1973 74.49048 Uni Oldenburg    TRUE Uni Oldenburg</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb156"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>studs[dat1<span class="sc">$</span>uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span> ] <span class="co"># Nur Studi-Zahl nachsehen: kein Komma </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 15643</code></pre>
+</div>
+</div>
+<p>Das funktioniert soweit wie gewünscht und wir können das Ganze jetzt erweitern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a>dat1[dat1<span class="sc">$</span>uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span> <span class="sc">&amp;</span> dat1<span class="sc">$</span>studs <span class="sc">&gt;</span> <span class="dv">10000</span>, ] <span class="co"># &amp; bedeutet UND</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wir können auch hier einen ODER-Operator verwenden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb159"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb159-1"><a href="#cb159-1" aria-hidden="true" tabindex="-1"></a>dat1[dat1<span class="sc">$</span>uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span> <span class="sc">|</span> dat1<span class="sc">$</span>studs <span class="sc">&gt;</span> <span class="dv">10000</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="select-vs" class="level3" data-number="2.15.3">
+<h3 data-number="2.15.3" class="anchored" data-anchor-id="select-vs"><span class="header-section-number">2.15.3</span> <code>select()</code> vs <code>$</code></h3>
+<p>Wenn wir mit <code>select()</code> eine spezifische Variable auswählen, wird trotzdem die Datenstruktur als <code>data.frame()</code> erhalten, während die Auswahl <code>dat1$variablenname</code> die Spalte als Vektor (also Wertereihe) ausgibt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb160"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>studs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 19173  5333 15643</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb162"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat1<span class="sc">$</span>studs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb164"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>studs<span class="sc">/</span> <span class="dv">20</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 958.65 266.65 782.15</code></pre>
+</div>
+</div>
+<p><code>select()</code> erhält die Werte als Spalte eines <code>data.frame</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb166"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(studs)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  studs
+1 19173
+2  5333
+3 15643</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb168"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(studs) <span class="sc">%&gt;%</span> <span class="fu">class</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "data.frame"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb170"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(studs)<span class="sc">/</span><span class="dv">20</span> </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   studs
+1 958.65
+2 266.65
+3 782.15</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
+<section class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1" role="doc-endnote"><p>In vielen anderen Programmiersprachen ist auch von Bibliotheken/“libraries” die Rede.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>Es hat sich in der R-Community etabliert, Pakete mit <code>{}</code> zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention.<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Manchmal kann der Datensatz aber nicht im Unterordner des Projekts liegen, dann kann natürlich auch der gesamte Pfad in <code>read.table()</code> angegeben werden: <code>etb &lt;- read.table(file = "D:/Kurse/R-Kurs/data/BIBBBAuA_2018_small.csv", sep = ";", header = T)</code><a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./01_intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">Links &amp; Weiterführendes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/R_IAB">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
+  </div>
+</footer>
+
+
+
+</body></html>
