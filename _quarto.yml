@@ -13,7 +13,7 @@ book:
     - index.qmd
     - 01_intro.qmd
     - 02_intro.qmd
-    # - 03_desc.qmd
+    - 03_desc.qmd
     # - 04_viz.qmd
     # - 05_data_wrangle1.qmd
     # - 06_data_wrangle2.qmd
@@ -30,7 +30,7 @@ book:
   language: de-DE
   # downloads: [pdf]
   page-footer:
-   left: |
+   center: |
       Alle Kursinhalte {{< fa brands creative-commons >}} 2023 von [Andreas Filser](https://afilser.netlify.app/)<br>
       [CC Lizenz mit Namensnennung {{< fa brands creative-commons >}}
       {{< fa brands creative-commons-by >}} {{< fa brands creative-commons-nc >}}](https://creativecommons.org/licenses/by-nc/4.0/)<br>

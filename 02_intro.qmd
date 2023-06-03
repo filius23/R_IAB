@@ -113,9 +113,66 @@ View(dat1)
 knitr::include_graphics("./pic/102_View.png")
 ```
 
-## Variablentypen
+## Datentypen in R
 
-Damit haben wir bisher zwei Variablentypen kennen gelernt: numeric (enthält Zahlen) und character (enthält Text oder Zahlen, die als Text verstanden werden sollen). Darüber hinaus gibt es noch weitere Typen, die besprechen wir wenn sie nötig sind, zB. gibt es factor-Variablen, die eine vorgegebene Sortierung und Werteuniversum umfassen oder logische Variablen. Vorerst fokussieren wir uns auf character und numeric Variablen. Mit `class()` kann die Art der Variable untersucht werden oder mit `is.numeric()` bzw. `is.character()` können wir abfragen ob eine Variable diesem Typ entspricht:
+Damit haben wir bisher zwei Variablentypen kennen gelernt: numeric (enthält Zahlen) und character (enthält Text oder Zahlen, die als Text verstanden werden sollen). Zudem haben wir eine Organisationsmöglichkeit kennengelernt: `data.frame`.
+
+Für uns sind es folgende Variablentypen in R wichtig:[^vec_types]
+
+
+```{r}
+#| echo: false
+
+library(gt)
+data.frame(class = c("integer <br> double",
+  "character",
+  "factor",
+  "logical"
+  ),
+  Beschreibung = 
+    c("Numerische Werte (`numeric`)",
+      "Text (oder als Text verstandende Zahlen)",
+      "Text oder als Text verstandende Zahlen mit vorgegebener Sortierung und fixem Werteuniversum",
+      "`TRUE` oder `FALSE` - meist das Ergebnis eines Vergleichs (größer/kleiner/gleich)"
+    )
+  ) %>% 
+  gt() %>% 
+  fmt_markdown(columns = everything()) |>
+  tab_header(
+    title = md("Vektoren")
+  ) %>% 
+  tab_options(column_labels.hidden = TRUE)
+
+data.frame(class = c(
+  "data.frame <br> tibble",
+  "list"
+  ),
+  Beschreibung = 
+    c(
+      "Zweidimensionale Datenstruktur, die in Tabellenform organisiert ist -  tibble sind eine Weiterentwicklung des data.frame im tidyverse (mehr dazu [gleich](#tidyverse))",
+      "Geordnete Sammlung von Vektoren unterschiedlicher Typen - kann andere Wertetypen, `data.frame` oder sogar andere Listen enthalten"
+    )
+  ) %>% 
+  gt() %>% 
+  fmt_markdown(columns = everything()) |>
+  tab_header(
+    title = md("Zusammengefasste Vektoren")
+  ) %>% 
+  tab_options(column_labels.hidden = TRUE)
+
+
+
+```
+
+  
+[^vec_types]: Es gibt noch weitere und diese Aufzählung ignoriert die technischen Hintergründe - für eine [fortgeschrittene Einführung zu Vektoren in R hier entlang](https://r4ds.had.co.nz/vectors.html)
+
+
+
+Vorerst fokussieren wir uns auf character und numerische Variablen. 
+Die weiteren Typen, besprechen wir wenn sie nötig sind. 
+Mit `class()` kann die Art der Variable untersucht werden oder mit `is.numeric()` bzw. `is.character()` können wir abfragen ob eine Variable diesem Typ entspricht:
+
 
 ```{r vecclass, include=T, echo = T}
 class(dat1$profs)
@@ -171,15 +228,42 @@ Nicht selten ist ein Problem bei einer Berechnung auf den falschen Variablentype
 
 
 
+## Zeilen & Spalten auswählen 
+
+Eine typische Aufgabe in der Arbeit mit Datensätzen ist die Auswahl von Zeilen ("Fällen") und Spalten ("Variablen").  
+
+Dazu stellt uns R in der Basisversion[^baseR] eine Auswahlmöglichkeit zur Verfügung, welche  \[ \] verwendet. Die grundlegende Struktur ist dabei `[Zeilenauswahl, Spaltenauswahl]`. Lassen wir den Part vor oder nach dem Komma leer, werden alle Zeilen/Spalten ausgewählt. Achtung: das vergessene Komma ist wohl einer *der* Fehlerquellen in R.
+
+[^baseR]: Wir werden [gleich](#packages) sehen, wie sehr Erweiterungen ("Pakete") uns das Arbeiten in R erleichtern.
+
+```{r , eval = F, echo = T}
+dat1 # vollständiger Datensatz
+dat1[1,1] # erste Zeile, erste Spalte
+dat1[1,]  # erste Zeile, alle Spalten
+dat1[,1]  # alle Zeilen, erste Spalte (entspricht hier dat1$studs)
+dat1[,"studs"] # alle Zeilen, Spalte mit Namen studs -> achtung: ""
+```
+
+In diese eckigen Klammern können wir auch Bedingungen schreiben, um so Auswahlen aus `dat1` zu treffen.
+
+```{r , include=T, echo = T}
+dat1[dat1$studs > 10000, ] # Zeilen in denen studs größer 10000, alle Spalten
+dat1[dat1$studs > 10000 & dat1$profs < 300, ] # & bedeutet UND
+dat1$profs[dat1$studs > 10000] # Nur Prof-Zahl nachsehen: kein Komma 
+```
+
+
+
 ### [Übung](#data1) {#ue_1}
+
+Die Wiederholung des Datensatznamens in den `[ ]` macht die Syntax aber recht lang und etwas schreibintensiv. Daher gibt es eine bessere/bequemere Lösung.
+Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1]. 
+
+[^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention. 
 
 
 ## Pakete in R {#packages}
 
-Im nächsten Schritt möchten wir jetzt nur einige Zeilen (Fälle) und/oder Spalten (Variablen) auswählen. 
-Dazu verwenden wir das Paket `{dplyr}`[^04_intro-1]. 
-
-[^04_intro-1]: Es hat sich in der R-Community etabliert, Pakete mit `{}` zu schreiben um sie deutlicher von Funktionen zu unterscheiden. Ich folge in diesem Skript dieser Konvention. 
 
 Pakete sind Erweiterungen für R, die zusätzliche Funktionen beinhalten. <!-- Wir haben in diesem Kapitel schon einige Beispiele kennen gelernt: mit `{dplyr}` steht uns ein komfortablerer [`filter()`](#filter) zur Verfügung und Stata- oder SPSS-Dateien können wir mit Hilfe des Pakets `haven` einlesen und erstellen.  --> Pakete müssen einmalig installiert werden und dann vor der Verwendung in einer neuen Session (also nach jedem Neustart von R/RStudio) geladen werden. `install.packages()` leistet die Installation, mit `library()` werden die Pakete geladen:
 
@@ -259,7 +343,7 @@ install.packages("E:/XML_3.98-1.3.zip", repos = NULL, type = "source")
 :::
 
 
-## `{tidyverse}`
+## `{tidyverse}` {#tidyverse}
 
 Wir werden in diesem Kurs vor allem mit Paketen aus dem [`{tidyverse}`](www.tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
 ```{r,eval =FALSE}
@@ -281,29 +365,27 @@ install.packages("tidyverse")
 # installiert die komplette Paketsammlung des tidyverse
 ```
 
-## Zeilen auswählen mit `slice()`
-
+Eine Installation ist aber nur der erste Schritt, jetzt müssen wir mit `library()` noch das Paket laden:
 ```{r}
 library(tidyverse) # nach einmaligem install.packages("tidyverse")
 ```
 
+## Zeilen auswählen mit `slice()`
+
+
 Eine erste Funktion aus dem `{tidyverse}` ist `slice()`, mit welcher wir Zeilen auswählen können:
 
 ```{r}
-slice(dat1,1)
-2:3 # ergibt eine Zahlenfolge
-slice(dat1,2:3)
-c(1,3) # Vektor mit Werten
-slice(dat1,c(1,3))
+#| eval: false
+slice(dat1,1) # erste Zeile
+slice(dat1,2:3) # Zeile 2-3
+slice(dat1,c(1,3)) # Zeile 1 und 3
 ```
 
 
 ## Beobachtungen auswählen mit `filter()` {#filter}
 
-Nachdem wir zunächst das Paket für `filter()` installiert haben (das ist `{dplyr}`) müssen wir das Paket noch mit `library()` laden:
-
-
-
+Mit `filter()` können wir Zeilen aus `dat1` mit Hilfe von Bedingungen auswählen:
 ```{r}
 filter(dat1,uni == "Uni Oldenburg", studs > 1000)
 ```
@@ -319,7 +401,6 @@ Möchten wir das Ergebnis unserer Auswahl mit `filter()` für weitere Schritte b
 ```{r}
 ueber_10tsd <- filter(dat1, studs > 10000)
 ueber_10tsd
-class(ueber_10tsd)
 ```
 
 ### Auswahloperatoren
@@ -346,29 +427,29 @@ filter(dat1, between(gegr,1971,1830)) # gegründet zwischen 1971 und 1830 (einsc
 <!-- Erweiterte Hilfsfunktionen für `filter()`:  `if_any()` or `if_all()` -->
 
 <!-- ```{r, eval =F } -->
-<!-- etb18 %>% filter(if_any(matches("^F"), ~ .x < 10)) -->
+<!-- pend18 %>% filter(if_any(matches("^F"), ~ .x < 10)) -->
 <!-- ``` -->
 
 
 
-## Variablentypen II: logical
+<!-- ## Variablentypen II: logical -->
 
-Diese Auswahl basiert auf einem dritten Variablentyp: 'logical', also logische Werte mit `TRUE` oder `FALSE`. Wenn wir mit `==`, `>` oder `<` eine Bedingung formulieren, dann erstellen wir eigentlich einen logischen Vektor in der selben Länge wie die Daten:
+<!-- Diese Auswahl basiert auf einem dritten Variablentyp: 'logical', also logische Werte mit `TRUE` oder `FALSE`. Wenn wir mit `==`, `>` oder `<` eine Bedingung formulieren, dann erstellen wir eigentlich einen logischen Vektor in der selben Länge wie die Daten: -->
 
-```{r}
-dat1$studs > 10000 # ist die Studi-Zahl größer 10000?
-dat1$more10k <-  dat1$studs > 10000 # ist die Studi-Zahl größer 10000?
-```
+<!-- ```{r} -->
+<!-- dat1$studs > 10000 # ist die Studi-Zahl größer 10000? -->
+<!-- dat1$more10k <-  dat1$studs > 10000 # ist die Studi-Zahl größer 10000? -->
+<!-- ``` -->
 
-```{r}
-dat1
-```
+<!-- ```{r} -->
+<!-- dat1 -->
+<!-- ``` -->
 
-Wir könnten dann auch auf Basis dieser Variable filtern:
+<!-- Wir könnten dann auch auf Basis dieser Variable filtern: -->
 
-```{r}
-filter(dat1,more10k)
-```
+<!-- ```{r} -->
+<!-- filter(dat1,more10k) -->
+<!-- ``` -->
 
 ## Variablen auswählen mit `select()` {#select}
 
@@ -391,13 +472,7 @@ Auch hier gilt: wenn wir die Veränderungen auch weiter verwenden wollen, müsse
 ```{r}
 dat_ohne_profs <- select(dat1, !profs) 
 dat_ohne_profs
-```
-
-...oder das alte überschreiben:
-
-```{r}
-#| eval: false
-dat1 <- select(dat1, !profs) # alles außer profs
+dat1 # unverändert
 ```
 
 ### Hilfsfunktionen {#selecthelpers}
@@ -564,11 +639,22 @@ pend <- read_dta("./orig/PENDDAT_cf_W13.dta")
 
 Der Einlesevorgang besteht aus zwei Teilen: zuerst geben wir mit `pend` den Objektnamen an, unter dem R den Datensatz ablegt. Nach dem `<-` steht dann der eigentliche Befehl `read_dta()`, der wiederum mehrere Optionen enthält. Als erstes geben wir den genauen Datensatznamen an - inklusive der Dateiendung. 
 
-::: important
-Leider nutzen Windows-Systeme `\` in den Dateipfaden - das führt in R zu Problemen. Daher müssen Dateipfade immer mit `/` oder alternativ mit `\\` angegeben werden. RStudio kann zumindest etwas unterstützen, dem mit der *STRG + F* die Suchen & Ersetzen Funktion verwendet wird.
+:::{.callout-important collapse="true"}
+# R hat Probleme mit Windows-typischen `\` in Datenpfaden
+Leider nutzen Windows-Systeme `\` in den Dateipfaden - das führt in R zu Problemen. Daher müssen Dateipfade immer mit `/` oder alternativ mit `\\` angegeben werden. RStudio kann zumindest mit der *STRG + F*/der Suchen & Ersetzen Funktion etwas unterstützen.
 :::
 
-Würden hier jetzt einfach `etb` eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir `head` verwenden:
+Das so erstellte Objekt ist ein `data.frame`:
+```{r}
+class(pend)
+```
+
+Genau genommen handelt es sich um ein `tibble` - das ist eine Weiterentwicklung von `data.frame`s im `tidyverse`, welcher u.a. Labels enthält und außerdem in der Darstellung einige zusätzliche Informationen enthält - in der ersten Zeile stehen bspw. die Variablenklassen.
+
+
+Würden hier jetzt einfach `pend` eintippen bekämen wir den kompletten Datensatz angezeigt. Für einen Überblick können wir `head` verwenden:
+
+
 
 ```{r}
 head(pend)
@@ -603,8 +689,54 @@ pend06$palter
 Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen im PASS als `palter` und nicht alle haben so aussagekräftige Namen - z.B. `PD0400`. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch.
 Außerdem können wir auf die `attributes()` einer Variable zurückgreifen - mehr zu labels später.
 
-
 ### [Übung](#data4) {#ue_4}
+
+## Objekte exportieren
+
+::: callout-note
+#
+
+Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder (2) lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (Fall 1: in eine Datei schreiben) oder ablegen (Fall 2: Ergebnisse/Werte innerhalb von R in einem Objekt ablegen)
+:::
+
+Wir können `data.frame`s exportieren und später wieder einlesen, das R-eigene Format dafür ist `.RData`:
+```{r}
+#| error: true
+#| eval: true
+saveRDS(pend06, file = "./data/pend06.RData")
+rm(pend06)
+
+pend06_neu <- readRDS(file = "./data/pend06.RData")
+head(pend06) # gibt es nicht mehr
+head(pend06_neu) # das gibt es
+```
+
+Auch andere Objekte können wir exportieren und dann wieder einlesen - hier wird aber der Objektname wiederhergestellt:
+```{r}
+#| eval: false
+#| error: true
+save(studs, file = "./data/stud_vektor.RData")
+rm(studs)
+studs
+load(file = "./data/stud_vektor.RData") # studs wieder mit selbem Namen zurück im environment
+studs
+```
+
+Das funktioniert auch für mehrere Objekte:
+```{r}
+#| eval: false
+#| error: true
+save(studs,profs, file = "./data/meine_vektoren.RData")
+rm(studs,profs)
+studs
+profs
+load(file = "./data/meine_vektoren.RData") # studs & profs mit selbem Namen zurück im environment
+studs
+profs
+```
+
+### [Übung](#data5) {#ue_5}
+
 
 ## Überblick: Einlesen und Exportieren
 
@@ -693,29 +825,6 @@ write.xlsx(dat1,file = "Dateiname.xlsx", sheetName = "Tabellenblatt 1")
 ```
 :::
 
-### Objekte exportieren
-
-Wir können aber auch einzelne oder mehrere Objekte exportieren und später wieder einlesen:
-```{r}
-#| eval: false
-save(studs, file = "./data/stud_vektor.RData")
-rm(studs)
-load(file = "./data/stud_vektor.RData") # studs wieder mit selbem Namen zurück im environment
-```
-
-Mehrere Objekte:
-```{r}
-#| eval: false
-save(studs,profs, file = "./data/meine_vektoren.RData")
-rm(studs,profs)
-load(file = "./data/meine_vektoren.RData") # studs & profs mit selbem Namen zurück im environment
-```
-
-::: callout-note
-#
-
-Der Begriff *speichern* kann in R bisweilen zu Missverständnissen führen: Ist gemeint, einen Datensatz o.ä. (1) auf der Festplatte als .csv, .dta, .sav für andere Programme zugänglich abzulegen oder lediglich die Ergebnisse intern in R unter einem Objektnamen abzulegen? Ich vermeide daher das Wort speichern und spreche entweder von exportieren (im Fall 1 - in eine Datei schreiben) oder ablegen (Fall 2 - Ergebnisse/Werte innerhalb von R in einem Objekt abzulegen)
-:::
 
 
 ## Hilfe zu Paketen und Funktionen
@@ -746,9 +855,6 @@ knitr::include_graphics("./pic/102_dplyr_vignette.png")
 ```
 
 
-### [Übung](#data5) {#ue_5}
-
-
 ## Übungen
 ### Übung 1 {#data1}
 
@@ -772,15 +878,17 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 
 -  Lassen Sie sich `dat2` anzeigen - in der Console oder mit `View()`
 -  Berechnen Sie das Verhältnis Studierende pro Professur und legen Sie die Ergebnisse in einer neuen Variable an. Sehen Sie sich das Ergebnis an.
+-  Lassen Sie sich nur die dritte Zeile von `dat2` anzeigen.
+-  Lassen Sie sich nur die dritte Spalte von `dat2` anzeigen.
+-  Lassen Sie sich nur die Unis mit unter 10000 Studierenden anzeigen.
 
 [Zurück nach oben](#ue_1)
 
 ### Übung 2 {#data2}
 
--   ~~Installieren Sie die Pakete des tidyverse mit `install.packages("tidyverse")`~~
+-   Installieren Sie die Pakete des tidyverse mit `fdz_install("tidyverse")`, nachdem Sie die `.Rprofile`-Datei in unter **PFAD** abgelegt haben.
 -   Verwenden Sie wieder den `data.frame` `dat2` aus Übung 1
 -   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{tidyverse}` zu installieren und mit `library()` zu laden)
--   Lassen Sie sich nur die dritte Zeile von `dat2` anzeigen.
 -   Lassen Sie sich nur die Spalte `gegr` anzeigen.
 -   Lassen Sie sich nur Zeilen der Hochschulen mit Promotionsrecht (`prom_recht`) anzeigen.
 
@@ -809,19 +917,21 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
 -   Lassen Sie sich die Variablennamen von `pend` mit `names()` anzeigen!
 -   Wie können Sie sich die Zeilen anzeigen lassen, welche den/die Befragte\*n mit der `pnr` 1000908201 enthält?
--   Erstellen Sie eine kompaktere Version des Datensatzes (bspw. als `pend_small`) mit lediglich den Variablen `pnr`, `hnr`, `welle`, `pintjahr` und `palter`.
--   Wie alt ist der/die Befragte mit der `pnr` 1000908201 in `welle` 10 (im `pintjahr` 2016)?
--   Erstellen Sie eine neue Variable mit dem Geburtsjahr der Befragten (basierend auf dem Alter `palter` und dem Interviewjahr `pintjahr`).
 -   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
+-   Wie müssen Sie den Befehl anpassen, sodass `nach_1960` nur die Variablen `pnr`, `hnr`, `welle`, `pintjahr` und `palter` enthält?
 -   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen?
 
+*Bonusübungen*: 
+    - Wie alt ist der/die Befragte mit der `pnr` 1000908201 in `welle` 10 (im `pintjahr` 2016)?
+    - Erstellen Sie eine neue Variable mit dem Geburtsjahr der Befragten (basierend auf dem Alter `palter` und dem Interviewjahr `pintjahr`).
+    
 [Zurück nach oben](#ue_4)
 
 ### Übung 5 {#data5}
 
--  Exportieren Sie den `data.frame` mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (`pend_small`) als `.Rdata`-Datei.
--  Laden Sie die eben exportierte `.Rdata`-Datei unter einem beliebigen Namen, bspw. `pend_neu`. 
--  Vergleichen Sie das neu gelandene mit dem ursprünglichen Objekt: `identical(pend_1_small,pend_neu)`
+-  Exportieren Sie den `data.frame` mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (`nach_1960`) als `.Rdata`-Datei.
+-  Laden Sie die eben exportierte `.Rdata`-Datei unter einem beliebigen Namen, bspw. `nach_1960_neu`. 
+-  Hat alles geklappt? Vergleichen Sie das neu geladene mit dem ursprünglichen Objekt: `identical(nach_1960,nach_1960_neu)` - sind beide Objekte identisch?
 
 [Zurück nach oben](#ue_5)
 
@@ -830,7 +940,7 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 
 ### Alternativen zu R-Projekten {#setwd}
 
-Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setzen oder direkt in `read.table()` angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die `.Rproj`-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.
+Neben dem Einrichten eines Projekts können wir den Pfad auch mit `setwd()` setzen oder direkt in `read_dta()` bzw. anderen `read...()`-Befehlen angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die `.Rproj`-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.
 
 Zum Setzen des Arbeitsverzeichnis mit `setwd()` setzen wir in die Klammern den Pfad des Ordners ein. Wichtig dabei ist dass Sie ggf. alle `\` durch `/`ersetzen müssen:
 
@@ -846,7 +956,7 @@ getwd()
 
 Hier sollte der mit `setwd()` gesetzte Pfad erscheinen.
 
-Alternativ können wir auch in `read.table()` den vollen Pfad angeben:
+Alternativ können wir auch in `read_dta()` den vollen Pfad angeben:
 
 ```{r,eval= F}
 pend <- haven::read_dta("C:/Kurse/R_IAB/orig/PENDDAT_cf_W13.dta")

@@ -24,11 +24,7 @@ R und RStudio
 
 Öffnen Sie nach erfolgreicher Installation die Anwendung RStudio ![](./pic/rstudio-icon.png){width="20px"} und Sie sollten folgende Ansicht vor sich sehen:
 
-```{r layout, echo = F, out.height="80%",out.width="80%", fig.align="center"}
-# knitr::include_graphics(paste0(path1,"101_RStudio.png"))
-```
-
-![](./prereq/RStudio0.png)
+![](./pic/101_RStudio.png)
 
 Um Probleme bei der künftigen Arbeit mit R zu vermeiden, deaktivieren Sie bitte das automatische Speichern und Laden des Workspace. Rufen Sie dazu das entsprechende Menü unter dem Reiter "Tools -\> Global options" auf und deaktivieren Sie bitte "Restore .RData into workspace at startup" und setzen Sie "Save workspace to .RData on exit:" auf `Never`. RStudio speichert ansonsten alle geladenen Objekte wenn Sie die Sitzung beenden und lädt diese automatisch wenn Sie das Programm das nächste Mal öffnen. Dies führt erfahrungsgemäß zu Problemen.
 
@@ -275,6 +271,7 @@ y/x
 
 ## Übungen
 
+-   Legen Sie eine Zahlenreihe von 7 bis 13 an. Wie können Sie die Zahlenreihe mit `seq()` anpassen, sodass nur die ungeraden Zahlen generiert werden?
 -   Legen Sie die Anzahl der Studierenden an der Uni Oldenburg (15643) unter `stud` ab.
 -   Legen Sie die Anzahl der Professuren an der Uni Oldenburg (210) unter `prof` ab.
 -   Berechnen Sie die Anzahl der Studierenden pro Professur an der Uni Oldenburg indem Sie die Objekte `stud` und `prof` verwenden.

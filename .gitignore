@@ -18,6 +18,7 @@ nul
 *.zip
 ~$*
 *.xlsx
+*.docx
 *.pptx
 Zeitplan.xlsx
 /results/

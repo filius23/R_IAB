@@ -155,6 +155,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
@@ -234,7 +240,7 @@ Note
 <section id="rstudio-einrichten" class="level2" data-number="1.2">
 <h2 data-number="1.2" class="anchored" data-anchor-id="rstudio-einrichten"><span class="header-section-number">1.2</span> RStudio einrichten</h2>
 <p>Öffnen Sie nach erfolgreicher Installation die Anwendung RStudio <img src="./pic/rstudio-icon.png" class="img-fluid" width="20"> und Sie sollten folgende Ansicht vor sich sehen:</p>
-<p><img src="./prereq/RStudio0.png" class="img-fluid"></p>
+<p><img src="./pic/101_RStudio.png" class="img-fluid"></p>
 <p>Um Probleme bei der künftigen Arbeit mit R zu vermeiden, deaktivieren Sie bitte das automatische Speichern und Laden des Workspace. Rufen Sie dazu das entsprechende Menü unter dem Reiter “Tools -&gt; Global options” auf und deaktivieren Sie bitte “Restore .RData into workspace at startup” und setzen Sie “Save workspace to .RData on exit:” auf <code>Never</code>. RStudio speichert ansonsten alle geladenen Objekte wenn Sie die Sitzung beenden und lädt diese automatisch wenn Sie das Programm das nächste Mal öffnen. Dies führt erfahrungsgemäß zu Problemen.</p>
 <p><img src="./pic/101_RStudio_setup.png" class="img-fluid"></p>
 <p>Bestätigen Sie die Einstellungen mit “Apply” und schließen Sie das Fenster mit “OK”.</p>
@@ -438,6 +444,7 @@ Note
 <section id="übungen" class="level2" data-number="1.4">
 <h2 data-number="1.4" class="anchored" data-anchor-id="übungen"><span class="header-section-number">1.4</span> Übungen</h2>
 <ul>
+<li>Legen Sie eine Zahlenreihe von 7 bis 13 an. Wie können Sie die Zahlenreihe mit <code>seq()</code> anpassen, sodass nur die ungeraden Zahlen generiert werden?</li>
 <li>Legen Sie die Anzahl der Studierenden an der Uni Oldenburg (15643) unter <code>stud</code> ab.</li>
 <li>Legen Sie die Anzahl der Professuren an der Uni Oldenburg (210) unter <code>prof</code> ab.</li>
 <li>Berechnen Sie die Anzahl der Studierenden pro Professur an der Uni Oldenburg indem Sie die Objekte <code>stud</code> und <code>prof</code> verwenden.</li>
@@ -704,10 +711,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </div> <!-- /content -->
 <footer class="footer">
   <div class="nav-footer">
-    <div class="nav-footer-left">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/R_IAB">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>   
-    <div class="nav-footer-center">
+    <div class="nav-footer-left">
       &nbsp;
-    </div>
+    </div>   
+    <div class="nav-footer-center">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/R_IAB">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>
     <div class="nav-footer-right">
       &nbsp;
     </div>

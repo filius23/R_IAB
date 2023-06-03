@@ -63,8 +63,15 @@ dat3
 
 ### {dplyr}: `mutate(neue_var= )`
 
+Mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
+#| echo: false
+knitr::include_graphics("./pic/103_mutate.png")
 
-Wir hatten die Variante aus `{dplyr}` (`{tidyverse}`) bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt. Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`:
+```
+
+<!-- Wir hatten die Variante aus `{dplyr}` (`{tidyverse}`) bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt.-->
+Die grundsätzliche Struktur ist immer `datensatz %>% mutate(neue_var = ....)`: 
 
 ```{r}
 dat3 %>% mutate(studs_to_mean = studs-mean(studs))

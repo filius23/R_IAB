@@ -5,58 +5,44 @@ library(LaCroixColoR)
 knitr::opts_chunk$set(collapse = F)
 
 # load etb -------------
-
-etb <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta") 
-
-etb <- etb %>% 
-  mutate(
-         F518_SUF = ifelse(F518_SUF >= 99998,NA,F518_SUF),
-         inc100 = F518_SUF/100,
-         across(matches("605|1503|103"),~ ifelse(.x>2,NA,.x)),
-         
-         outside = 2-F605,
-         gender_fct = factor(S1),
-         sick = 2-F1503 ,
-         schicht = 2-F209,
-         wunschb = 2-F103,
-         
-         
-         m1202_fct = factor(m1202,levels = c(-1,1:4), 
-                          labels = names(attributes(m1202)$labels) %>% 
-                            substr(.,1,5) %>% str_squish()),
-         m1202_fct = fct_relevel(m1202_fct,"Ohne"))
-
-
-etb_small <- etb %>% select(intnr,az,S1,S3,S2_j,zpalter,Stib,Bula,m1202,matches("F209")) %>% as.data.frame()
-head(etb_small)
-# write_delim(x = etb_small,"./data/BIBBBAuA_2018_small.csv",delim = ";")
-
-etb %>% count(F103)
-xtabs(~S3,etb)
-
-
-
-
-etb 
-
-
-
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta")
 
 # distinct values ----
 
-etb <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta") 
 ndis <- 
-  etb %>% summarise(across(everything(), ~length(unique(.x)  )) )  %>% 
-  t(.) %>% data.frame(ndis = .) %>% rownames_to_column(.,var = "var") %>% janitor::clean_names() %>% tibble() %>% 
-  left_join(
-    map_dfr(etb,~attributes(.x)$label) %>% 
-      t(.) %>% data.frame("lab"=.) %>% 
-      rownames_to_column(.,var = "var") )
+    pend %>% 
+      summarise(
+      across(everything(), ~ length(unique(.x)), .names = "n0_{col}"),
+      across(!matches("^n0"), ~ length(unique(.x[.x >= 0])), .names = "n1_{col}")
+      ) %>%
+      pivot_longer(cols = everything(),values_to = "ndis") %>%
+      separate(name, into = c("n","var"),sep = "(?<=(0|1))_") %>% 
+      pivot_wider(names_from = n,values_from = ndis) %>% 
+      left_join(
+        map_dfr(pend,~attributes(.x)$label) %>% 
+          t(.) %>% data.frame("lab"=.) %>% 
+          rownames_to_column(.,var = "var") )
 
-ndis %>% filter(ndis %in% 2:4) %>% print(n=Inf)
-ndis %>% filter(ndis == 5) %>% print(n=Inf)
+ndis %>% filter(n0 %in% 3:4) %>% print(n=Inf)
+ndis %>% filter(n1 %in% 3:4) %>% print(n=Inf)
+ndis %>% filter(grepl("[B,b]ild",lab))
+
+pend %>% count(erwerb)
+pend %>% count(statakt)
 
 ndis %>% slice_max(ndis,n = 12)
+
+t1 <- table(pend$statakt)
+names(t1)
+names(t1) <- names(val_labels(pend$statakt))
+
+table(as_factor(pend$statakt))
+
+
+min_val <- 
+  pend %>% 
+    summarise(across(everything(),~min(.x,na.rm = T))) %>% 
+    pivot_longer(cols = everything())
 
 
 etb %>% select(matches("F1450_")) %>% 

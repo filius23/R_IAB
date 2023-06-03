@@ -1,0 +1,2109 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am IAB - 3&nbsp; Einen Überblick erhalten</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./references.html" rel="next">
+<link href="./02_intro.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03_desc.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am IAB</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Willkommen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Links &amp; Weiterführendes</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#häufigkeitsauszählungen" id="toc-häufigkeitsauszählungen" class="nav-link active" data-scroll-target="#häufigkeitsauszählungen"><span class="header-section-number">3.1</span> Häufigkeitsauszählungen</a></li>
+  <li><a href="#NA03" id="toc-NA03" class="nav-link" data-scroll-target="#NA03"><span class="header-section-number">3.2</span> Fehlende Werte in R: <code>NA</code></a>
+  <ul class="collapse">
+  <li><a href="#ue3_1" id="toc-ue3_1" class="nav-link" data-scroll-target="#ue3_1"><span class="header-section-number">3.2.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#andere-tabellenwerte" id="toc-andere-tabellenwerte" class="nav-link" data-scroll-target="#andere-tabellenwerte"><span class="header-section-number">3.3</span> Andere Tabellenwerte</a></li>
+  <li><a href="#mehrere-kennzahlen-in-einer-tabelle" id="toc-mehrere-kennzahlen-in-einer-tabelle" class="nav-link" data-scroll-target="#mehrere-kennzahlen-in-einer-tabelle"><span class="header-section-number">3.4</span> Mehrere Kennzahlen in einer Tabelle</a></li>
+  <li><a href="#kontingenztabellen" id="toc-kontingenztabellen" class="nav-link" data-scroll-target="#kontingenztabellen"><span class="header-section-number">3.5</span> Kontingenztabellen</a>
+  <ul class="collapse">
+  <li><a href="#ue3_3" id="toc-ue3_3" class="nav-link" data-scroll-target="#ue3_3"><span class="header-section-number">3.5.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#lage--konzentrationsmaße" id="toc-lage--konzentrationsmaße" class="nav-link" data-scroll-target="#lage--konzentrationsmaße"><span class="header-section-number">3.6</span> Lage- &amp; Konzentrationsmaße</a>
+  <ul class="collapse">
+  <li><a href="#kennzahlentabelle-mit-summarise" id="toc-kennzahlentabelle-mit-summarise" class="nav-link" data-scroll-target="#kennzahlentabelle-mit-summarise"><span class="header-section-number">3.6.1</span> Kennzahlentabelle mit <code>summarise</code></a></li>
+  <li><a href="#lage--und-streuungsmaße-vergleichen" id="toc-lage--und-streuungsmaße-vergleichen" class="nav-link" data-scroll-target="#lage--und-streuungsmaße-vergleichen"><span class="header-section-number">3.6.2</span> Lage- und Streuungsmaße vergleichen</a></li>
+  <li><a href="#ue3_4" id="toc-ue3_4" class="nav-link" data-scroll-target="#ue3_4"><span class="header-section-number">3.6.3</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">3.7</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#descue1" id="toc-descue1" class="nav-link" data-scroll-target="#descue1"><span class="header-section-number">3.7.1</span> Übung 1</a></li>
+  <li><a href="#descue2" id="toc-descue2" class="nav-link" data-scroll-target="#descue2"><span class="header-section-number">3.7.2</span> Übung 2</a></li>
+  <li><a href="#descue3" id="toc-descue3" class="nav-link" data-scroll-target="#descue3"><span class="header-section-number">3.7.3</span> Übung 3</a></li>
+  <li><a href="#descue4" id="toc-descue4" class="nav-link" data-scroll-target="#descue4"><span class="header-section-number">3.7.4</span> Übung 4</a></li>
+  </ul></li>
+  <li><a href="#hinweise" id="toc-hinweise" class="nav-link" data-scroll-target="#hinweise"><span class="header-section-number">3.8</span> Hinweise</a>
+  <ul class="collapse">
+  <li><a href="#round" id="toc-round" class="nav-link" data-scroll-target="#round"><span class="header-section-number">3.8.1</span> Runden mit <code>round()</code></a></li>
+  <li><a href="#wie-kann-ich-mir-in-r-automatisch-die-häufigsteseltenste-ausprägung-ausgeben-lassen" id="toc-wie-kann-ich-mir-in-r-automatisch-die-häufigsteseltenste-ausprägung-ausgeben-lassen" class="nav-link" data-scroll-target="#wie-kann-ich-mir-in-r-automatisch-die-häufigsteseltenste-ausprägung-ausgeben-lassen"><span class="header-section-number">3.8.2</span> Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="tab" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Nachdem wir Datensätze importiert haben, wollen wir nun einen Überblick erhalten. Jede statistische Auswertung startet mit einer Beschreibung der Variablen. In dieser Session werden wir sehen, wie wir uns mit Tabellen einen Überblick über die Informationen in einem Datensatz verschaffen können. Wir werden auch in dieser Session mit dem ETB2018 arbeiten. Wir starten also mit dem Einlesen der Daten:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"haven"</span>) <span class="co"># falls nicht schon installiert </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven) <span class="co"># datenimport für stata-datensätze</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse) <span class="co"># tidyverse</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pend <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="häufigkeitsauszählungen" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="häufigkeitsauszählungen"><span class="header-section-number">3.1</span> Häufigkeitsauszählungen</h2>
+<p>Uns stehen verschiedene Befehle zur Verfügung, um eine Häufigkeitsauszählung zu erstellen:</p>
+<ul>
+<li><code>table()</code></li>
+<li><code>count()</code> aus <code>{dplyr}</code></li>
+</ul>
+<p>Einfachster Befehl für die Auszählung von Häufigkeiten ist der <code>table()</code> Befehl. Beispielsweise mit der Variable <code>statakt</code> zur Ausbildung der Befragten.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ -10   -9   -5    1    2    3 
+3765 3289  280 9470 6139 5481 </code></pre>
+</div>
+</div>
+<p>Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten.</p>
+<p>Allerdings werden sowohl für <code>table()</code> die Labels in der Ausgabe erstmal ignoriert. Mit <code>as_factor()</code> aus dem Paket <code>{haven}</code> können wir die Labels aus dem Datensatz abrufen. Bspw. steht <code>1</code> dafür, dass der*die Befragte erwerbstätig ist:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">as_factor</span>(pend<span class="sc">$</span>statakt))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Item fuer Fragebogenversion nicht relevant 
+                                      3765 
+               Item in Welle nicht erhoben 
+                                      3289 
+   Generierung nicht mgl. (fehlende Werte) 
+                                       280 
+                             Erwerbstaetig 
+                                      9470 
+        Arbeitslos (Gemeldet und sonstige) 
+                                      6139 
+                                   Inaktiv 
+                                      5481 </code></pre>
+</div>
+</div>
+<p>3289 Befragte haben keinen Berufsabschluss, 9470 Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)</p>
+<p>Mit <code>count()</code> aus <code>{dplyr}</code> bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise <a href="02_intro.html#pipe">mit der Pipe <code>%&gt;%</code></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 2
+  statakt                                              n
+  &lt;dbl+lbl&gt;                                        &lt;int&gt;
+1 -10 [Item fuer Fragebogenversion nicht relevant]  3765
+2  -9 [Item in Welle nicht erhoben]                 3289
+3  -5 [Generierung nicht mgl. (fehlende Werte)]      280
+4   1 [Erwerbstaetig]                               9470
+5   2 [Arbeitslos (Gemeldet und sonstige)]          6139
+6   3 [Inaktiv]                                     5481</code></pre>
+</div>
+</div>
+<p>Wir können auch Tabellen unter einem frei wählbaren Namen ablegen und später wieder aufrufen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">table</span>(pend<span class="sc">$</span>statakt)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Wir sehen hier, dass die Tabelle mit <code>xtabs()</code> eine neue Objektform ist, ein table. Mit <code>count()</code> wird hingegen ein <code>data.frame</code> erstellt.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(t1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "table"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(t2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "tbl_df"     "tbl"        "data.frame"</code></pre>
+</div>
+</div>
+</section>
+<section id="NA03" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="NA03"><span class="header-section-number">3.2</span> Fehlende Werte in R: <code>NA</code></h2>
+<p>Etwas störend sind aber die negativen Werte.</p>
+<p>Um die Werte wie <code>-5</code> auch in R als fehlende Angabe zu kennzeichnen, müssen wir sie in <code>pend</code> auf <code>NA</code> setzen. Dazu rufen wir <code>pend$statakt</code> auf und filtern mit <code>[]</code> nur die Werte für <code>statakt</code> gleich <code>-1</code> heraus. Im vorherigen Kapitel haben wir kennengelernt, dass wir so spezifische Werte aufrufen können:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">==</span> <span class="sc">-</span><span class="dv">5</span>] <span class="co"># nur statakt = -5 aufrufen</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;labelled&lt;double&gt;[280]&gt;: Aktueller Hauptstatus, generiert (ab Welle 2)
+  [1] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+ [26] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+ [51] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+ [76] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[101] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[126] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[151] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[176] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[201] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[226] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[251] -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5 -5
+[276] -5 -5 -5 -5 -5
+
+Labels:
+ value                                      label
+   -10 Item fuer Fragebogenversion nicht relevant
+    -9                Item in Welle nicht erhoben
+    -5    Generierung nicht mgl. (fehlende Werte)
+     1                              Erwerbstaetig
+     2         Arbeitslos (Gemeldet und sonstige)
+     3                                    Inaktiv</code></pre>
+</div>
+</div>
+<p>(Hier bekommen wir nochmal die Labels ausgespuckt, was etwas suboptimal für die Übersichtlichkeit ist.)</p>
+<p>Wenn wir daran mit <code>&lt;-</code> einen neuen Wert angeben, werden die aufgerufenen Werte damit überschrieben - hier überschreiben wir also alle Werte für <code>statakt == -1</code> mit <code>NA</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">==</span> <span class="sc">-</span><span class="dv">5</span>]  <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>NA</code> ist in der R der Code für fehlende Angaben, sie werden dann in <code>table()</code> nicht aufgeführt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ -10   -9    1    2    3 
+3765 3289 9470 6139 5481 </code></pre>
+</div>
+</div>
+<p>Wir können aber mit der Option <code>exclude = NULL</code> die Auszählung von <code>NA</code> explizit anfordern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt,<span class="at">exclude =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ -10   -9    1    2    3 &lt;NA&gt; 
+3765 3289 9470 6139 5481  280 </code></pre>
+</div>
+</div>
+<p>Allerdings haben wir ja jetzt noch nicht alle negativen Werte überschrieben, die <code>-10</code> und <code>-9</code> fehlen noch. Natürlich wäre es so etwas möglich, aber etwas umständlich:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">==</span> <span class="sc">-</span><span class="dv">9</span> ]  <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">==</span> <span class="sc">-</span><span class="dv">10</span>]  <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Stattdessen können wir den <code>%in%</code>-Operator verwenden, den wir schon im Zusammenhang mit <a href="02_intro.html#filter"><code>filter()</code></a> kennengelernt hatten - alternativ klappt für die PASS-Daten auch <code>&lt; 0</code>, weil alle Missing-Codes kleiner 0 sind:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">%in%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">9</span>,<span class="sc">-</span><span class="dv">10</span>)]  <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>statakt[pend<span class="sc">$</span>statakt <span class="sc">&lt;</span> <span class="dv">0</span> ]  <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Damit sind wir für <code>statakt</code> am Ziel:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2    3 
+9470 6139 5481 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt,<span class="at">exclude =</span> <span class="cn">NULL</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   1    2    3 &lt;NA&gt; 
+9470 6139 5481 7334 </code></pre>
+</div>
+</div>
+<p>In <code>count()</code> wird <code>NA</code> auch mit ausgezählt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  statakt                                     n
+  &lt;dbl+lbl&gt;                               &lt;int&gt;
+1  1 [Erwerbstaetig]                       9470
+2  2 [Arbeitslos (Gemeldet und sonstige)]  6139
+3  3 [Inaktiv]                             5481
+4 NA                                       7334</code></pre>
+</div>
+</div>
+<p>Möchten wir das umgehen, nehmen wir wieder <code>filter()</code> zu Hilfe - mit <code>is.na()</code> können wir <code>NA</code> identifizieren. Durch Voranstellen von <code>!</code> können wir damit anfordern, dass alle nicht-<code>NA</code>-Werte mit <code>TRUE</code> behalten werden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(statakt)) <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 2
+  statakt                                    n
+  &lt;dbl+lbl&gt;                              &lt;int&gt;
+1 1 [Erwerbstaetig]                       9470
+2 2 [Arbeitslos (Gemeldet und sonstige)]  6139
+3 3 [Inaktiv]                             5481</code></pre>
+</div>
+</div>
+<p>Mehr zu fehlenden Werten findet sich beispielsweise im <a href="https://tmb.njtierney.com/"><strong>The missing book</strong></a> von Nicholas Tierney &amp; Allison Horst.</p>
+<section id="ue3_1" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="ue3_1"><span class="header-section-number">3.2.1</span> <a href="#descue1">Übung</a></h3>
+</section>
+</section>
+<section id="andere-tabellenwerte" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="andere-tabellenwerte"><span class="header-section-number">3.3</span> Andere Tabellenwerte</h2>
+<p>Mit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:</p>
+<ul>
+<li><code>prop.table()</code>: relative Werte/Anteile</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt) <span class="sc">%&gt;%</span> <span class="fu">prop.table</span>(.) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+        1         2         3 
+0.4490280 0.2910858 0.2598862 </code></pre>
+</div>
+</div>
+<p>29.109% aller Befragten sind arbeitslos.</p>
+<ul>
+<li><code>cumsum()</code>: kumulierte Werte</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt) <span class="sc">%&gt;%</span> <span class="fu">cumsum</span>(.)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    1     2     3 
+ 9470 15609 21090 </code></pre>
+</div>
+</div>
+<p>15609 Befragte sind erwerbstätig oder sind arbeitslos.</p>
+<ul>
+<li><code>prop.table()</code> mit <code>cumsum()</code>: kumulierte relative Häufigkeiten</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>statakt) <span class="sc">%&gt;%</span> <span class="fu">prop.table</span>() <span class="sc">%&gt;%</span> <span class="fu">cumsum</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3 
+0.4490280 0.7401138 1.0000000 </code></pre>
+</div>
+</div>
+<p>74.011% aller Befragten sind erwerbstätig oder arbeitslos (und nicht inaktiv).</p>
+</section>
+<section id="mehrere-kennzahlen-in-einer-tabelle" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="mehrere-kennzahlen-in-einer-tabelle"><span class="header-section-number">3.4</span> Mehrere Kennzahlen in einer Tabelle</h2>
+<p>Aus Stata kennen viele sicherlich folgende Ansicht mit <code>tab statakt</code>:</p>
+<div class="cell" data-collectcode="false">
+<div class="cell-output cell-output-stdout">
+<pre><code>   Aktueller Hauptstatus, generiert (ab |
+                               Welle 2) |      Freq.     Percent        Cum.
+----------------------------------------+-----------------------------------
+                          Erwerbstaetig |      9,470       33.32       33.32
+     Arbeitslos (Gemeldet und sonstige) |      6,139       21.60       54.91
+                                Inaktiv |      5,481       19.28       74.20
+                                      . |      7,334       25.80      100.00
+----------------------------------------+-----------------------------------
+                                  Total |     28,424      100.00</code></pre>
+</div>
+</div>
+<p>Standardmäßig ein <code>table()</code> oder <code>count()</code> immer nur eine Art von Kennzahlen. Da wir aber mit <code>count()</code> die Auszählungen als <code>data.frame()</code> erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen.</p>
+<p>Dazu verwenden wir <code>dat1$var &lt;- ....</code>, das wir im vorherigen Kapitel kennen gelernt hatten. Um also eine neue Spalte <code>pct</code>in unseren <code>data.frame</code> mit den Auszählungen einzufügen gehen wir wie folgt vor: + Zuerst erstellen wir einen <code>data.frame</code> mit der Auszählung mit Hilfe von <code>count()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>tab_statakt <span class="ot">&lt;-</span> pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt) <span class="co"># ausgangsbefehl</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>tab_statakt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 2
+  statakt                                     n
+  &lt;dbl+lbl&gt;                               &lt;int&gt;
+1  1 [Erwerbstaetig]                       9470
+2  2 [Arbeitslos (Gemeldet und sonstige)]  6139
+3  3 [Inaktiv]                             5481
+4 NA                                       7334</code></pre>
+</div>
+</div>
+<ul>
+<li>Dann fügen wir eine neue Spalte für die relativen Häufigkeiten hinzu, welche mit <code>prop.table()</code> berechnet werden:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>tab_statakt<span class="sc">$</span>pct <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab_statakt<span class="sc">$</span>n)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>tab_statakt</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  statakt                                     n   pct
+  &lt;dbl+lbl&gt;                               &lt;int&gt; &lt;dbl&gt;
+1  1 [Erwerbstaetig]                       9470 0.333
+2  2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.216
+3  3 [Inaktiv]                             5481 0.193
+4 NA                                       7334 0.258</code></pre>
+</div>
+</div>
+<p>Wenn wir jetzt noch die kumulierten Häufigkeiten erstellen möchten, dann können wir <code>cumsum()</code> auf <code>pct</code> anwenden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>tab_statakt<span class="sc">$</span>Cum <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(tab_statakt<span class="sc">$</span>pct)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Etwas störend ist aber noch das <code>NA</code>, die für fehlende Angaben steht und nicht berücksichtigt werden soll. Das können wir einfach <code>!is.na()</code> in <code>filter()</code> ausschließen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>tab_statakt2 <span class="ot">&lt;-</span> pend <span class="sc">%&gt;%</span> <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(statakt)) <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt) </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>tab_statakt2<span class="sc">$</span>pct <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(tab_statakt2<span class="sc">$</span>n)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>tab_statakt2<span class="sc">$</span>Cum <span class="ot">&lt;-</span> <span class="fu">cumsum</span>(tab_statakt2<span class="sc">$</span>pct)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>tab_statakt2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 4
+  statakt                                    n   pct   Cum
+  &lt;dbl+lbl&gt;                              &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;
+1 1 [Erwerbstaetig]                       9470 0.449 0.449
+2 2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.291 0.740
+3 3 [Inaktiv]                             5481 0.260 1    </code></pre>
+</div>
+</div>
+</section>
+<section id="kontingenztabellen" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="kontingenztabellen"><span class="header-section-number">3.5</span> Kontingenztabellen</h2>
+<p>Aus Kontingenztabellen erfahren wir, wie häufig Merkmalskombinationen auftreten. Auch für Kontingenztabellen können wir <code>table()</code> verwenden. Zum Beispiel können wir uns eine Tabelle anzeigen lassen, die uns die Häufigkeiten des Erwerbsstatus getrennt nach Geschlechtern zeigt:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(pend<span class="sc">$</span>zpsex, pend<span class="sc">$</span>statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+       1    2    3
+  1 4685 3240 2047
+  2 4785 2899 3434</code></pre>
+</div>
+</div>
+<p>Wir erkennen aus dieser Tabelle beispielsweise, dass 3434 Befragte weiblich (<code>zpsex=2</code>) und inaktiv (<code>statakt = 3</code>) sind.</p>
+<p>Für eine Kontingenztabelle mit <code>count()</code> geben wir einfach die Variablen in <code>count()</code> an. Das Ergebnis wird immer im “long shape” Format ausgegeben:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(zpsex,statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 8 × 3
+  zpsex         statakt                                     n
+  &lt;dbl+lbl&gt;     &lt;dbl+lbl&gt;                               &lt;int&gt;
+1 1 [Maennlich]  1 [Erwerbstaetig]                       4685
+2 1 [Maennlich]  2 [Arbeitslos (Gemeldet und sonstige)]  3240
+3 1 [Maennlich]  3 [Inaktiv]                             2047
+4 1 [Maennlich] NA                                       3555
+5 2 [Weiblich]   1 [Erwerbstaetig]                       4785
+6 2 [Weiblich]   2 [Arbeitslos (Gemeldet und sonstige)]  2899
+7 2 [Weiblich]   3 [Inaktiv]                             3434
+8 2 [Weiblich]  NA                                       3779</code></pre>
+</div>
+</div>
+<p>Hier ist <code>count()</code> informativer als <code>table()</code>. Hier werden die Labels verwendet. Der Übersichtlichkeit halber verwende ich meistens <code>count()</code>, auch wenn das <em>long shape</em> Format etwas gewöhnungsbedürftig ist.</p>
+<section id="ue3_3" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="ue3_3"><span class="header-section-number">3.5.1</span> <a href="#descue3">Übung</a></h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>Bei langen Tabellen werden nicht alle Werte ausgegeben, sondern nur die ersten Zeilen. Um hier alle Werte zu bekommen, hilft <code>print(n=Inf)</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(palter) <span class="co"># wird abgeschnitten</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 2
+   palter                n
+   &lt;dbl+lbl&gt;         &lt;int&gt;
+ 1 -2 [Keine Angabe]    60
+ 2 14                    1
+ 3 15                  271
+ 4 16                  308
+ 5 17                  276
+ 6 18                  282
+ 7 19                  266
+ 8 20                  296
+ 9 21                  282
+10 22                  330
+# … with 74 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(palter) <span class="sc">%&gt;%</span> <span class="fu">print</span>(<span class="at">n=</span><span class="cn">Inf</span>) <span class="co"># alle Werte werden gezeigt</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 84 × 2
+   palter                n
+   &lt;dbl+lbl&gt;         &lt;int&gt;
+ 1 -2 [Keine Angabe]    60
+ 2 14                    1
+ 3 15                  271
+ 4 16                  308
+ 5 17                  276
+ 6 18                  282
+ 7 19                  266
+ 8 20                  296
+ 9 21                  282
+10 22                  330
+11 23                  338
+12 24                  325
+13 25                  371
+14 26                  401
+15 27                  438
+16 28                  460
+17 29                  449
+18 30                  502
+19 31                  495
+20 32                  502
+21 33                  515
+22 34                  513
+23 35                  511
+24 36                  500
+25 37                  474
+26 38                  504
+27 39                  484
+28 40                  517
+29 41                  521
+30 42                  526
+31 43                  536
+32 44                  540
+33 45                  552
+34 46                  610
+35 47                  604
+36 48                  600
+37 49                  585
+38 50                  601
+39 51                  621
+40 52                  597
+41 53                  598
+42 54                  615
+43 55                  575
+44 56                  566
+45 57                  561
+46 58                  618
+47 59                  589
+48 60                  568
+49 61                  512
+50 62                  507
+51 63                  534
+52 64                  469
+53 65                  438
+54 66                  424
+55 67                  376
+56 68                  326
+57 69                  316
+58 70                  291
+59 71                  259
+60 72                  239
+61 73                  212
+62 74                  188
+63 75                  177
+64 76                  134
+65 77                  126
+66 78                  119
+67 79                   96
+68 80                   74
+69 81                   62
+70 82                   54
+71 83                   48
+72 84                   40
+73 85                   26
+74 86                   27
+75 87                   23
+76 88                   15
+77 89                   11
+78 90                   12
+79 91                   11
+80 92                    9
+81 93                    7
+82 94                    4
+83 95                    2
+84 97                    2</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="lage--konzentrationsmaße" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="lage--konzentrationsmaße"><span class="header-section-number">3.6</span> Lage- &amp; Konzentrationsmaße</h2>
+<p>Lagemaße sind statische Kennzahlen zur Beschreibung von metrischen Variablen, wie beispielsweise das arithmetische Mittel oder der Median. Einen Überblick bietet <code>summary()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pend<span class="sc">$</span>netges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+    -5.0     -3.0     -3.0    567.9    990.0 111419.0 </code></pre>
+</div>
+</div>
+<p>Allerdings gibt es im Datensatz natürlich keine Befragten mit einem Bruttoverdienst von -5.0 EUR. Werte kleiner Null sind Zahlencodes für <em>keine Angabe</em>:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="jbjmcbnoqu" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#jbjmcbnoqu .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 10px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#jbjmcbnoqu .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#jbjmcbnoqu .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#jbjmcbnoqu .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#jbjmcbnoqu .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#jbjmcbnoqu .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#jbjmcbnoqu .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#jbjmcbnoqu .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#jbjmcbnoqu .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#jbjmcbnoqu .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#jbjmcbnoqu .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#jbjmcbnoqu .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#jbjmcbnoqu .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#jbjmcbnoqu .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbjmcbnoqu .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#jbjmcbnoqu .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#jbjmcbnoqu .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbjmcbnoqu .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#jbjmcbnoqu .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbjmcbnoqu .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#jbjmcbnoqu .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbjmcbnoqu .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#jbjmcbnoqu .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#jbjmcbnoqu .gt_left {
+  text-align: left;
+}
+
+#jbjmcbnoqu .gt_center {
+  text-align: center;
+}
+
+#jbjmcbnoqu .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#jbjmcbnoqu .gt_font_normal {
+  font-weight: normal;
+}
+
+#jbjmcbnoqu .gt_font_bold {
+  font-weight: bold;
+}
+
+#jbjmcbnoqu .gt_font_italic {
+  font-style: italic;
+}
+
+#jbjmcbnoqu .gt_super {
+  font-size: 65%;
+}
+
+#jbjmcbnoqu .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#jbjmcbnoqu .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#jbjmcbnoqu .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#jbjmcbnoqu .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#jbjmcbnoqu .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#jbjmcbnoqu .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#jbjmcbnoqu .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
+<thead class="gt_col_headings">
+<tr class="header">
+<th id="name" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">name</th>
+<th id="value" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">value</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_left" headers="name">Item fuer Fragebogenversion nicht relevant</td>
+<td class="gt_row gt_right" headers="value">-10</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="name">Item in Welle nicht erhoben</td>
+<td class="gt_row gt_right" headers="value">-9</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_left" headers="name">Generierung nicht mgl. (fehlende Werte)</td>
+<td class="gt_row gt_right" headers="value">-5</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_left" headers="name">Trifft nicht zu (Filter)</td>
+<td class="gt_row gt_right" headers="value">-3</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Um aussagekräftige Werte zu bekommen, müssen wir diese Werte mit <code>NA</code> überschreiben:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>netges[pend<span class="sc">$</span>netges <span class="sc">&lt;</span> <span class="dv">0</span> ] <span class="ot">&lt;-</span> <span class="cn">NA</span> <span class="co"># missings überschreiben</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(pend<span class="sc">$</span>netges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+      0     880    1320    1562    1890  111419   18056 </code></pre>
+</div>
+</div>
+<p>Wir können aber auch bestimmte Kennzahlen anfordern sehen uns die Bruttoverdienste der Befragten zu beschreiben:</p>
+<ul>
+<li>Minimum und Maximum: <code>min()</code>, <code>max()</code></li>
+<li>arithm. Mittel: <code>mean()</code></li>
+<li>Median: <code>median()</code></li>
+<li>Quantile: <code>quantile()</code></li>
+<li>Varianz: <code>var()</code></li>
+<li>Standardabweichung: <code>sd()</code></li>
+<li>Gini-Koeffizient: <code>Gini</code> aus dem Paket <code>{ineq}</code></li>
+</ul>
+<p>Wenn eine Variable <code>NA</code> enthält, müssen diese explizit ignoriert werden - ansonsten wird nur <code>NA</code> ausgegeben:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pend<span class="sc">$</span>netges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] NA</code></pre>
+</div>
+</div>
+<p>Deshalb müssen wir die Option <code>na.rm = T</code> angeben:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(pend<span class="sc">$</span>netges,<span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1562.3</code></pre>
+</div>
+</div>
+<p>Ein Quantil einer Verteilung trennt die Daten so in zwei Teile, dass <code>x</code>% der Daten darunter und 100-<code>x</code>% darüber liegen. Mit <code>quantile()</code>wir durch Angabe in der Option <code>probs =</code> beliebige Quantilgrenzen anfordern, zB. für die 40%-Quantilgrenze:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">quantile</span>(pend<span class="sc">$</span>netges,<span class="at">probs =</span> .<span class="dv">4</span>, <span class="at">na.rm =</span> T)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 40% 
+1125 </code></pre>
+</div>
+</div>
+<p>Den <a href="#gini_graph">Gini-Koeffizienten</a> können wir mit <code>Gini()</code> aus dem Paket <code>ineq</code> berechnen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"ineq"</span>) <span class="co"># einmal installieren</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ineq) <span class="co"># ineq laden</span></span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">Gini</span>(pend<span class="sc">$</span>netges)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.3560557</code></pre>
+</div>
+</div>
+<section id="kennzahlentabelle-mit-summarise" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="kennzahlentabelle-mit-summarise"><span class="header-section-number">3.6.1</span> Kennzahlentabelle mit <code>summarise</code></h3>
+<p>Mit Hilfe von <code>summarise()</code> aus <code>{dplyr}</code> können wir ein eigenes <code>summary()</code> bauen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Minimum =</span> <span class="fu">min</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Median =</span> <span class="fu">median</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Mittelwert =</span> <span class="fu">mean</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Maximum =</span> <span class="fu">max</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Gini =</span> <span class="fu">Gini</span>(netges))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 5
+  Minimum   Median Mittelwert Maximum    Gini
+  &lt;dbl+lbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;dbl&gt;
+1 0           1320      1562. 111419    0.356</code></pre>
+</div>
+</div>
+<p>Der Vorteil des Ganzen wird im nächsten Schritt klarer.</p>
+</section>
+<section id="lage--und-streuungsmaße-vergleichen" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="lage--und-streuungsmaße-vergleichen"><span class="header-section-number">3.6.2</span> Lage- und Streuungsmaße vergleichen</h3>
+<p>Häufig werden diese Kennzahlen erst im Vergleich richtig spannend.<br>
+Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Minimum =</span> <span class="fu">min</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Median =</span> <span class="fu">median</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Mittelwert =</span> <span class="fu">mean</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Maximum =</span> <span class="fu">max</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Gini =</span> <span class="fu">Gini</span>(netges),</span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.by =</span> welle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 6
+   welle                    Minimum   Median Mittelwert Maximum    Gini
+   &lt;dbl+lbl&gt;                &lt;dbl+lbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;dbl&gt;
+ 1  1 [Welle 1 (2006/2007)] 1          1200       1525. 111419    0.416
+ 2  3 [Welle 3 (2008/2009)] 0          1298.      1498.  12000    0.349
+ 3  2 [Welle 2 (2007/2008)] 0          1320       1529.   7200    0.333
+ 4  4 [Welle 4 (2010)]      0          1210       1447.  10800    0.334
+ 5  5 [Welle 5 (2011)]      0          1250       1494.  33363    0.367
+ 6  6 [Welle 6 (2012)]      0          1215       1459.  15950    0.348
+ 7  7 [Welle 7 (2013)]      0          1250       1539.  87835    0.382
+ 8  8 [Welle 8 (2014)]      0          1255       1456.   9000    0.322
+ 9 10 [Welle 10 (2016)]     0          1375       1541.   6300    0.317
+10 11 [Welle 11 (2017)]     0          1500       1748.  44440    0.340
+11 12 [Welle 12 (2018)]     0          1500       1667.   7150    0.312
+12 13 [Welle 13 (2019)]     0          1550       1816.  88453    0.358
+13  9 [Welle 9 (2015)]      0          1280       1613. 110451    0.387</code></pre>
+</div>
+</div>
+<p>Hier stört aber die Sortierung der Welle (R übernimmt die Sortierung aus den Daten). Also hängen wir ein <code>arrange()</code> an, um die Sortierung nach <code>welle</code> anzufordern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> <span class="fu">summarise</span>(<span class="at">Minimum =</span> <span class="fu">min</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Median =</span> <span class="fu">median</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Mittelwert =</span> <span class="fu">mean</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Maximum =</span> <span class="fu">max</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Gini =</span> <span class="fu">Gini</span>(netges),</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.by =</span> welle) <span class="sc">%&gt;%</span> </span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(welle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 13 × 6
+   welle                    Minimum   Median Mittelwert Maximum    Gini
+   &lt;dbl+lbl&gt;                &lt;dbl+lbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;dbl&gt;
+ 1  1 [Welle 1 (2006/2007)] 1          1200       1525. 111419    0.416
+ 2  2 [Welle 2 (2007/2008)] 0          1320       1529.   7200    0.333
+ 3  3 [Welle 3 (2008/2009)] 0          1298.      1498.  12000    0.349
+ 4  4 [Welle 4 (2010)]      0          1210       1447.  10800    0.334
+ 5  5 [Welle 5 (2011)]      0          1250       1494.  33363    0.367
+ 6  6 [Welle 6 (2012)]      0          1215       1459.  15950    0.348
+ 7  7 [Welle 7 (2013)]      0          1250       1539.  87835    0.382
+ 8  8 [Welle 8 (2014)]      0          1255       1456.   9000    0.322
+ 9  9 [Welle 9 (2015)]      0          1280       1613. 110451    0.387
+10 10 [Welle 10 (2016)]     0          1375       1541.   6300    0.317
+11 11 [Welle 11 (2017)]     0          1500       1748.  44440    0.340
+12 12 [Welle 12 (2018)]     0          1500       1667.   7150    0.312
+13 13 [Welle 13 (2019)]     0          1550       1816.  88453    0.358</code></pre>
+</div>
+</div>
+<p>Was aber wenn wir nur Welle 1 und 10 vergleichen wollen? Wir schalten einen <code>filter()</code> vor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>pend <span class="sc">%&gt;%</span> </span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(welle <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">10</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">Minimum =</span> <span class="fu">min</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Median =</span> <span class="fu">median</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Mittelwert =</span> <span class="fu">mean</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Maximum =</span> <span class="fu">max</span>(netges,<span class="at">na.rm =</span> T),</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>                    <span class="at">Gini =</span> <span class="fu">Gini</span>(netges),</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>                   <span class="at">.by =</span> welle)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 6
+  welle                    Minimum   Median Mittelwert Maximum    Gini
+  &lt;dbl+lbl&gt;                &lt;dbl+lbl&gt;  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;dbl&gt;
+1  1 [Welle 1 (2006/2007)] 1           1200      1525. 111419    0.416
+2 10 [Welle 10 (2016)]     0           1375      1541.   6300    0.317</code></pre>
+</div>
+</div>
+<!-- ::: callout-tip -->
+<!-- Für den Kennzahlenvergleich können wir auch die Schreibweise mit `[]` verwenden, beispielsweise können wir für das gesamte `summary` die Differenz zwischen NRW und Niedersachsen bilden: -->
+<!-- ```{r sw5_su_vgl} -->
+<!-- summary(pend$netges[pend$Bula == 5], na.rm = T) - -->
+<!--   summary(pend$netges[pend$Bula == 3], na.rm = T)  -->
+<!-- ``` -->
+<!-- ::: -->
+<!-- ::: note -->
+<!-- [**Häufige Fehlermeldungen**](#rerror) -->
+<!-- ::: -->
+</section>
+<section id="ue3_4" class="level3" data-number="3.6.3">
+<h3 data-number="3.6.3" class="anchored" data-anchor-id="ue3_4"><span class="header-section-number">3.6.3</span> <a href="#descue4">Übung</a></h3>
+</section>
+</section>
+<section id="übungen" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="übungen"><span class="header-section-number">3.7</span> Übungen</h2>
+<!-- {{< include _03_0_ueb.qmd >}} -->
+<p>Alle Übungen beziehen sich auf das PASS CampusFile:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a>pend <span class="ot">&lt;-</span> <span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><strong><a href="./02_intro.html#import">Zur Erinnerung: hier geht’s zur Übersicht der Einlesebefehle</a></strong></p>
+<section id="descue1" class="level3" data-number="3.7.1">
+<h3 data-number="3.7.1" class="anchored" data-anchor-id="descue1"><span class="header-section-number">3.7.1</span> Übung 1</h3>
+<p>Wir interessieren uns für die Variable <code>famstand</code>, welche den Familienstand der Befragten enthält:</p>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="xwsbbpptuy" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#xwsbbpptuy .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 9px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#xwsbbpptuy .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#xwsbbpptuy .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#xwsbbpptuy .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#xwsbbpptuy .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#xwsbbpptuy .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#xwsbbpptuy .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#xwsbbpptuy .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#xwsbbpptuy .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#xwsbbpptuy .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#xwsbbpptuy .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#xwsbbpptuy .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#xwsbbpptuy .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#xwsbbpptuy .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xwsbbpptuy .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#xwsbbpptuy .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#xwsbbpptuy .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xwsbbpptuy .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#xwsbbpptuy .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xwsbbpptuy .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#xwsbbpptuy .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xwsbbpptuy .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#xwsbbpptuy .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#xwsbbpptuy .gt_left {
+  text-align: left;
+}
+
+#xwsbbpptuy .gt_center {
+  text-align: center;
+}
+
+#xwsbbpptuy .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#xwsbbpptuy .gt_font_normal {
+  font-weight: normal;
+}
+
+#xwsbbpptuy .gt_font_bold {
+  font-weight: bold;
+}
+
+#xwsbbpptuy .gt_font_italic {
+  font-style: italic;
+}
+
+#xwsbbpptuy .gt_super {
+  font-size: 65%;
+}
+
+#xwsbbpptuy .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#xwsbbpptuy .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#xwsbbpptuy .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#xwsbbpptuy .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#xwsbbpptuy .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#xwsbbpptuy .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#xwsbbpptuy .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
+<thead class="gt_col_headings">
+<tr class="header">
+<th id="famstand" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">famstand</th>
+<th id="label" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">label</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="famstand">1</td>
+<td class="gt_row gt_center" headers="label">Ledig</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="famstand">2</td>
+<td class="gt_row gt_center" headers="label">Verheiratet/eing. Lebensp., zus. lebd.</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="famstand">3</td>
+<td class="gt_row gt_center" headers="label">Verheiratet/eing. Lebensp., getr. lebd.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="famstand">4</td>
+<td class="gt_row gt_center" headers="label">Geschieden</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="famstand">5</td>
+<td class="gt_row gt_center" headers="label">Verwitwet</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li>Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen, nutzen Sie dafür sowohl <code>table()</code> als auch <code>count()</code> (Denken Sie daran, <code>{tidyverse}</code> zu laden für <code>count()</code>).</li>
+<li>Überschreiben Sie Missing-Codes mit <code>NA</code>.</li>
+<li>Lassen Sie sich der relativen Häufigkeiten (Anteile) ausgeben. Verwenden Sie <code>prop.table()</code> auf Basis des <code>table()</code>.</li>
+<li>Erstellen Sie eine Kontingenztabelle, indem Sie neben <code>famstand</code> auch das Geschlecht <code>zpsex</code> (2 = Frauen, 1 = Männer) mit einbeziehen</li>
+<li>Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.</li>
+</ul>
+<p><a href="#ue3_1">Zurück nach oben</a></p>
+</section>
+<section id="descue2" class="level3" data-number="3.7.2">
+<h3 data-number="3.7.2" class="anchored" data-anchor-id="descue2"><span class="header-section-number">3.7.2</span> Übung 2</h3>
+</section>
+<section id="descue3" class="level3" data-number="3.7.3">
+<h3 data-number="3.7.3" class="anchored" data-anchor-id="descue3"><span class="header-section-number">3.7.3</span> Übung 3</h3>
+<ul>
+<li>Erstellen Sie mit Hilfe von <code>count()</code> eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten für <code>famstand</code>. Erstellen Sie zunächst eine Auszählung mit <code>count()</code> und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.</li>
+<li>Erstellen Sie eine Kontingenztabelle für <code>famstand</code> und <code>zpsex</code></li>
+<li>Wie viel Prozent der Befragten sind geschiedene Frauen?</li>
+</ul>
+<p><a href="#ue3_3">Zurück nach oben</a></p>
+</section>
+<section id="descue4" class="level3" data-number="3.7.4">
+<h3 data-number="3.7.4" class="anchored" data-anchor-id="descue4"><span class="header-section-number">3.7.4</span> Übung 4</h3>
+<p>Beschreiben Sie das Alter der Befragten (<code>palter</code>) mit <code>summary</code> und erstellen Sie selbst einen Überblick mit Hilfe von <code>summarise()</code>, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.</p>
+<ul>
+<li>Überschreiben Sie zunächst die Missings mit <code>NA</code>:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>pend<span class="sc">$</span>palter[pend<span class="sc">$</span>palter<span class="sc">&gt;</span><span class="dv">100</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<ul>
+<li>Erstellen Sie einen Überblick mit <code>summary()</code></li>
+<li>Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von <code>summarise()</code></li>
+<li>Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschiedenen <code>famstand</code>-Kategorien ausgegeben bekommen.</li>
+</ul>
+<p><a href="#ue3_4">Zurück nach oben</a></p>
+</section>
+</section>
+<section id="hinweise" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="hinweise"><span class="header-section-number">3.8</span> Hinweise</h2>
+<section id="round" class="level3" data-number="3.8.1">
+<h3 data-number="3.8.1" class="anchored" data-anchor-id="round"><span class="header-section-number">3.8.1</span> Runden mit <code>round()</code></h3>
+<p>Erläuterung: Sie können mit <code>round(x , 3)</code> Werte auf eine gewisse Zahl von Ziffern runden. Die zweite Zahl in der Klammer (nach dem Komma) gibt an, wieviele Dezimalstellen wir möchten:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fl">21.12121123</span>,<span class="at">digits =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21.121</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fl">21.12121123</span>,<span class="at">digits =</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21.12121</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">round</span>(<span class="fl">21.12121123</span>,<span class="at">digits =</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 21</code></pre>
+</div>
+</div>
+<p>Wir können also die relativen Häufigkeiten runden und so die Tabelle von oben übersichtlicher machen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">xtabs</span>(<span class="sc">~</span>zpsex<span class="sc">+</span>statakt, <span class="at">data =</span> pend) <span class="sc">%&gt;%</span> </span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prop.table</span>(.,<span class="at">margin =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(.,<span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     statakt
+zpsex     1     2     3
+    1 0.470 0.325 0.205
+    2 0.430 0.261 0.309</code></pre>
+</div>
+</div>
+</section>
+<section id="wie-kann-ich-mir-in-r-automatisch-die-häufigsteseltenste-ausprägung-ausgeben-lassen" class="level3" data-number="3.8.2">
+<h3 data-number="3.8.2" class="anchored" data-anchor-id="wie-kann-ich-mir-in-r-automatisch-die-häufigsteseltenste-ausprägung-ausgeben-lassen"><span class="header-section-number">3.8.2</span> Wie kann ich mir in R automatisch die häufigste/seltenste Ausprägung ausgeben lassen?</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>t4 <span class="ot">&lt;-</span> <span class="fu">table</span>(pend<span class="sc">$</span>palter)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>t4[<span class="fu">which</span>(t4 <span class="sc">==</span> <span class="fu">max</span>(t4))] <span class="co"># Modus</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> 51 
+621 </code></pre>
+</div>
+</div>
+<p>51 ist mit 621 Befragten die häufigste Ausprägung.</p>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./02_intro.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">Links &amp; Weiterführendes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/R_IAB">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>
