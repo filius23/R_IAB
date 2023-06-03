@@ -216,6 +216,31 @@ table(pend$zpsex, pend$statakt)
 
 Wir erkennen aus dieser Tabelle beispielsweise, dass `r table(pend$zpsex, pend$statakt)[6]` Befragte weiblich (`zpsex=2`) und inaktiv (`statakt = 3`) sind.
 
+Möchten wir jetzt die relativen Häufigkeiten, dann wenden wir wieder `prop.table()` an:
+```{r}
+table(pend$zpsex, pend$statakt) %>% prop.table()
+```
+Für Zeilenprozente benötigen wir die zusätzliche Option `margin = 1`:
+```{r}
+table(pend$zpsex, pend$statakt) %>% prop.table(margin = 1)
+```
+```{r}
+#| echo: false
+t1 <- table(pend$zpsex, pend$statakt) %>% prop.table(margin = 1) %>% pluck(6)*100
+t2 <- table(pend$zpsex, pend$statakt) %>% prop.table(margin = 2) %>% pluck(6)*100
+```
+
+>  `r format(t1,digits = 4)`% der weiblichen Befragten (`zpsex=2`) sind inaktiv (`statakt = 3`).
+
+
+Für Zeilenprozente dann `margin = 2`:
+```{r}
+table(pend$zpsex, pend$statakt) %>% prop.table(margin = 2)
+```
+
+> `r format(t2,digits = 4)`% der inaktiven Befragten (`statakt = 3`) sind weiblich (`zpsex=2`).
+
+
 Für eine Kontingenztabelle mit `count()` geben wir einfach die Variablen in `count()` an. Das Ergebnis wird immer im "long shape" Format ausgegeben:
 
 ```{r}
@@ -422,7 +447,9 @@ pend %>% count(famstand) %>%
   
 + Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten für `famstand`. Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.
 + Erstellen Sie eine Kontingenztabelle für `famstand` und `zpsex`
-+ Wie viel Prozent der Befragten sind geschiedene Frauen?
++ Wie viel Prozent der Befragten sind geschiedene Frauen? 
++ Wie viel Prozent der Frauen sind geschieden?
++ Wie viel Prozent der Geschiedenen sind Frauen?
   
 [Zurück nach oben](#ue3_3)
 
