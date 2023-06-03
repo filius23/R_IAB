@@ -9,13 +9,17 @@ library(patchwork)
 knitr::opts_chunk$set(message = F,warning = F,highlight = "#<<",cache = T,
                       out.height= "65%", out.width = "65%", fig.align="center")
 # https://wtoivo.github.io/SGSSS-data-viz-workshop/bar-plots.html
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
-tab_df <- xtabs(~S1+m1202, data = etb18) %>% data.frame()
+# pend <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+
+library(haven)
+pend <- read_dta("./orig/PENDDAT_cf_W13.dta")
+
+tab_df <- xtabs(~zpsex+casmin, data = pend) %>% data.frame()
 
 theme_set(new = theme_gray(base_size = 15))
 
-# etb18$zpalter[etb18$zpalter>100] <- NA
-# etb18$m1202[etb18$m1202<0] <- NA
+# pend$palter[pend$palter>100] <- NA
+# pend$casmin[pend$casmin<0] <- NA
 ```
 
 
@@ -35,32 +39,36 @@ Zunächst sehen wir uns den Weg zu einem Scatterplot an:
 
 ```{r, out.height= "80%", out.width= "80%", fig.align="center", echo = F}
 #| warning: false
-etb18 %>%
-  slice(1:100) %>% 
-  mutate(S1_fct = factor(S1, levels = 1:2, labels = c("Männer","Frauen")),
-         zpalter = ifelse(zpalter > 100,NA,zpalter)) %>%
-ggplot(aes(x = zpalter, y = az)) +
-  geom_point(aes(color = S1_fct)) +
-  # facet_grid(~S1_fct) +
+library(haven)
+pend %>%
+  slice(1:1000) %>% 
+  mutate(zpsex_fct = factor(zpsex, levels = 1:2, labels = c("Männer","Frauen")),
+         palter = ifelse(palter < 0,NA,palter),
+         azges1  = ifelse(azges1 < 0,NA,azges1)
+         ) %>%
+ggplot(aes(x = palter, y = azges1)) +
+  geom_point(aes(color = zpsex_fct)) +
+  # facet_grid(~zpsex_fct) +
   theme_minimal() +
   labs(color = "Geschlecht", y = "Arbeitszeit/Woche",
        x = "Alter") +
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
 
-Datengrundlage für unsere Graphik ist die ETB18 mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
+Datengrundlage für unsere Graphik ist die pend mit den Angaben zur Arbeitszeit sowie dem Geschlecht und Alter der Befragten:
 ```{r}
 #| eval: false
-etb18 <- read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+library(haven)
+pend <- read_dta("./orig/PENDDAT_cf_W13.dta")
 ```
 ```{r}
-etb18 %>% select(az,S1,zpalter) %>% head()
+pend %>% select(azges1,zpsex,palter) %>% head()
 ```
 
 Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
 ```{r}
-etb18$zpalter[etb18$zpalter>100] <- NA # missing in zpalter mit NA überschreiben
-etb18_small <- etb18 %>% slice(1:100)
+pend$palter[pend$palter>100] <- NA # missing in palter mit NA überschreiben
+pend_small <- pend %>% slice(1:100)
 ```
 
 
@@ -88,7 +96,7 @@ Wir arbeiten uns also jetzt durch die einzelnen *layer*/Schichten der Grafik:
 
 In `data = ` geben die den `data.frame` an, aus dem die darzustellenden Informationen kommen. Wir starten unseren ggplot also mit:
 ```{r}
-ggplot(data = etb18_small)
+ggplot(data = pend_small)
 ```
 
 
@@ -97,41 +105,41 @@ ggplot(data = etb18_small)
 Diese Werte wollen wir also in einem Scatterplot darstellen, sodass das Alter auf der x-Achse und auf der y-Achse die Wochenarbeitszeit abgetragen ist:
 ```{r}
 #| warning: false
-ggplot(data = etb18_small, aes(x = zpalter, y = az))
+ggplot(data = pend_small, aes(x = palter, y = azges1))
 ```
 
 ### `geom`
 Wenn wir nur diese Angaben machen, bekommen wir lediglich ein leeres Koordinatensystem - warum? Weil wir noch nicht angegeben haben, welche *Form* der Darstellung wir gerne möchten. Dazu muss wir ein `geom_` angeben, für Säulendiagramme ist das `geom_col()`, diese hängen wir an den `ggplot`-Befehl mit `+` an:
 ```{r}
-ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point()
+ggplot(data = pend_small, aes(x = palter, y = azges1)) + geom_point()
 ```
 Mit `color =` können wir den Punkten auch eine andere Farbe geben:
 ```{r}
-ggplot(data = etb18_small, aes(x = zpalter, y = az)) + geom_point(color = "orange")
+ggplot(data = pend_small, aes(x = palter, y = azges1)) + geom_point(color = "orange")
 ```
 [Hier](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf) findet sich eine Übersicht mit allen Farbnamen, die verstanden werden, es gibt aber noch viel mehr Farben - siehe [Anhang](#farben).
 
 ### `aes()` Teil II
 Das sieht soweit schon ganz gut aus, allerdings werden die Punkte noch nicht getrennt nach Geschlecht dargestellt. 
-Dazu müssen wir die Geschlechtsangabe (`S1`) in `aes()` angeben.
+Dazu müssen wir die Geschlechtsangabe (`zpsex`) in `aes()` angeben.
 Neben den Achsen werden in `aes()` nämlich auch die Variablen für das Aussehen der `geom_`s angeben - das kann neben der Farbe auch die Form, Größe oder Transparenz sein. [Hier ein Überblick](#aes_list)
 
 Das Geschlecht soll die Färbung der Punkte vorgeben, diese können wir in `aes` mit `color` angeben:
 ```{r}
 #| error=TRUE
 # ergibt einen Fehler aufgrund der Labels:
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = S1 )) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = zpsex )) + 
   geom_point()
 ```
 
 Eine numerische Variable für `color =` ergibt einen Farbverlauf, eine `factor`/`character`-Variable ergibt eine diskrete Farbskala:
 ```{r}
 #| layout-ncol: 2
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.numeric(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.numeric(zpsex))) + 
   geom_point()
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.factor(zpsex))) + 
   geom_point()
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.character(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.character(zpsex))) + 
   geom_point()
 ```
 
@@ -139,7 +147,7 @@ Außerdem können wir mit `scale_color_manual`[^2] selbst Farben angeben, eine L
 
 [^2]: Hätten wir `color` in `aes`  angeben, wäre der entsprechende Befehl `scale_color_manual`.
 ```{r}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.factor(zpsex))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"))
 ```
@@ -149,7 +157,7 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) +
 
 Wir können mit den Optionen `breaks` und `labels` zudem auch die Beschriftung der Legende bearbeiten. Dazu geben wir zunächst in `breaks`  die Ausprägungen der Variable Geschlecht an und dann in der gleichen Reihenfolge die zu vergebenden Labels:
 ```{r, out.height= "75%", out.width = "75%", fig.align="center"}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.factor(zpsex))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") )
@@ -166,7 +174,7 @@ Abschließend passen wir dann noch mit `labs` die Beschriftungen an, dabei haben
 
 
 ```{r fullplt}
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = as.factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = as.factor(zpsex))) + 
   geom_point() + 
   scale_color_manual(values = c("lightskyblue4","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
@@ -187,23 +195,25 @@ Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme
 #| out-width: 100%
 #| cache: true
 
-etb18_small$m1202[etb18_small$m1202<0] <- NA
-ggplot(data = etb18_small, aes(x = zpalter, y = az, 
-                               color = as.factor(S1),
-                               shape = as.factor(m1202))) + 
+pend_small$casmin[pend_small$casmin<0] <- NA
+pend_small$PAS0100[pend_small$PAS0100<0] <- NA
+pend_small$azges1[pend_small$azges1<0] <- NA
+ggplot(data = pend_small, aes(x = palter, y = azges1, 
+                               shape = as.factor(zpsex),
+                               color = as_factor(PAS0100))) + 
   geom_point(size = 2) + 
-  scale_color_manual(values = c("lightskyblue3","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
-                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  labs(color = "Geschlecht", 
-       shape = "Ausbildung",
-       fill = "Geschlecht",
+  scale_color_manual(values = c("lightskyblue","#007ACF","navy","orange") ) +
+  scale_shape_manual(values = c(17:18),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")
+                     ) +
+  labs(color = "", 
+       fill = "",
+       shape = "Geschlecht",
        y = "Arbeitszeit/Woche",
        x = "Alter",
        title = "Arbeitszeit und Alter",
        subtitle = "Nach Geschlecht",
-       caption = "Quelle: ETB 2018"
+       caption = "Quelle: PASS CF 0619"
        ) 
 ```
 
@@ -217,9 +227,9 @@ Besser ist es aber explizit zu sein und die gewünschte Grafik als Objekt abzule
 
 ```{r}
 #| eval: false
-plot_objekt1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, 
-                               color = factor(S1),
-                               shape = factor(m1202))) + 
+plot_objekt1 <- ggplot(data = pend_small, aes(x = palter, y = azges1, 
+                               color = factor(zpsex),
+                               shape = factor(casmin))) + 
   geom_point(size = 2) + 
   scale_color_manual(values = c("lightskyblue3","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen") ) +
@@ -311,25 +321,25 @@ theme_set(new = theme_grey(base_size = 14))
 
 Mit der folgenden Syntax können wir mit `ggplot2` einen Boxplot erstellen. Da wir nur eine Variable betrachten, müssen wir lediglich `y = ` oder `x =` angeben - je nachdem ob die Box vertikal oder horizontal orientiert sein soll.
 ```{r}
-ggplot(data = etb18_small, aes(y = az)) + geom_boxplot()
+ggplot(data = pend_small, aes(y = azges1)) + geom_boxplot()
 ```
 
 So können wir einen Boxplot erstellen, der die Werte für Männer und Frauen getrennt darstellt: 
 ```{r}
-ggplot(data = etb18_small, aes(y = az, x = factor(S1))) + geom_boxplot()
+ggplot(data = pend_small, aes(y = azges1, x = factor(zpsex))) + geom_boxplot()
 ```
 
 ### Histogram 
 
 Ebenso können Verteilungen mit einem Histogramm beschrieben werden:
 ```{r}
-ggplot(data = etb18_small, aes(x = az)) + 
+ggplot(data = pend_small, aes(x = azges1)) + 
   geom_histogram()  
 ```
 
 Wenn wir hier die Farbe ändern möchten, dann ist `fill =` anstelle von `color =` die richtige Option:
 ```{r}
-ggplot(data = etb18_small, aes(x = az)) + 
+ggplot(data = pend_small, aes(x = azges1)) + 
   geom_histogram(fill = "sienna1")  
 ```
 
@@ -337,17 +347,17 @@ Möchten wir das Histogramm nach Geschlecht aufsplitten, können wir auch hier w
 ```{r hist0}
 #| cache: true
 #| layout-ncol: 2
-ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+ggplot(data = pend_small, aes(x = azges1, fill = factor(zpsex))) + 
   geom_histogram() 
 
-ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+ggplot(data = pend_small, aes(x = azges1, fill = factor(zpsex))) + 
   geom_histogram(position = position_dodge()) 
 ```
 
 Auch hier funktionieren natürlich wieder die `scale_...manual` Befehle, allerdings hier als `scale_fill_manual` anstelle `scale_color_manual` von oben:
 ```{r hist1}
 #| cache: true
-ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) + 
+ggplot(data = pend_small, aes(x = azges1, fill = factor(zpsex))) + 
   geom_histogram(position = position_dodge()) +
   scale_fill_manual(values = c("sienna1","dodgerblue4"),
                     breaks = 1:2, labels = c("Männer","Frauen")) +
@@ -361,31 +371,31 @@ ggplot(data = etb18_small, aes(x = az, fill = factor(S1))) +
 
 Im Folgenden sehen wir uns eine Möglichkeit an, die Kontingenztabelle aus [Kapitel 2](03_desc.qmd#crosscount) zu visualisieren:
 ```{r}
-etb18$m1202[etb18$m1202<0] <- NA # missings ausschließen
-etb18 %>% 
-  count(S1,m1202) %>% 
-  filter(!is.na(m1202))
+pend$casmin[pend$casmin<0] <- NA # missings ausschließen
+pend %>% 
+  count(zpsex,casmin) %>% 
+  filter(!is.na(casmin))
 ```
 
 Da wir mit `count()` einen `data.frame` erhalten, können wir diesen direkt in `ggplot()` schicken und mit `geom_col()` Säulen darstellen:
 ```{r colcount}
 #| cache: true
-etb18 %>% 
-  count(S1,m1202) %>% 
-  filter(!is.na(m1202)) %>% 
-  ggplot(data = ., aes(x = m1202, y = n, fill = factor(S1))) +
+pend %>% 
+  count(zpsex,casmin) %>% 
+  filter(!is.na(casmin)) %>% 
+  ggplot(data = ., aes(x = casmin, y = n, fill = factor(zpsex))) +
   geom_col(position=position_dodge()) 
 ```
 
 Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweitern einfach die Pipeline vor `ggplot()` um den `prop.table()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
 ```{r scalepct}
 #| cache: true
-etb18 %>% 
-  filter(!is.na(m1202)) %>% 
-  count(S1,m1202) %>% 
-  group_by(S1) %>% 
+pend %>% 
+  filter(!is.na(casmin)) %>% 
+  count(zpsex,casmin) %>% 
+  group_by(zpsex) %>% 
   mutate(pct_gender = prop.table(n)) %>% 
-  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  ggplot(data = ., aes(x = casmin, y = pct_gender, fill = factor(zpsex))) +
   geom_col(position=position_dodge())  +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1)) 
 ```
@@ -395,14 +405,14 @@ etb18 %>%
 #| cache: true
 #| layout-ncol: 2
 #| include: false
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1) )) + 
+ggplot(data = pend , 
+       aes(x = casmin, fill = factor(zpsex) )) + 
   geom_bar(  position=position_dodge()) + 
   labs(title = "Absolute Häufigkeit")
 
 
-ggplot(data = etb18 , 
-       aes(x = m1202, fill = factor(S1),
+ggplot(data = pend , 
+       aes(x = casmin, fill = factor(zpsex),
            y = ..count../sum(..count..)
            )) + 
   geom_bar(  position=position_dodge()) + 
@@ -412,12 +422,12 @@ ggplot(data = etb18 ,
 Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
 ```{r fullplot}
 #| cache: true
-etb18 %>% 
-  filter(!is.na(m1202)) %>% 
-  count(S1,m1202) %>% 
-  group_by(S1) %>% 
+pend %>% 
+  filter(!is.na(casmin)) %>% 
+  count(zpsex,casmin) %>% 
+  group_by(zpsex) %>% 
   mutate(pct_gender = prop.table(n)) %>% 
-  ggplot(data = ., aes(x = m1202, y = pct_gender, fill = factor(S1))) +
+  ggplot(data = ., aes(x = casmin, y = pct_gender, fill = factor(zpsex))) +
   geom_col(position=position_dodge())  +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1))  + 
   scale_fill_manual(values = c("navajowhite","navy"),
@@ -437,22 +447,22 @@ etb18 %>%
 ### [Übung](#pltue3)  {#ue4_03}
 
 ## Übungen
-Nutzen Sie für alle Aufgaben die ersten 150 Beobachtungen (`etb18_small`), um den Plot einfach zu halten. Denken Sie daran die fehlenden Werte mit `filter()` auszuschließen, Sie können dazu diesen Befehl verwenden:
+Nutzen Sie für alle Aufgaben die ersten 150 Beobachtungen (`pend_small`), um den Plot einfach zu halten. Denken Sie daran die fehlenden Werte mit `filter()` auszuschließen, Sie können dazu diesen Befehl verwenden:
 
 ```{r}
 #| eval: false
-etb18 <-
+pend <-
   haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-    col_select = c("h1216d", "S2_j", "S1", "m1202", "F518_SUF", "nt", "gkpol")
+    col_select = c("h1216d", "S2_j", "zpsex", "casmin", "F518_SUF", "nt", "gkpol")
     )
-etb18_small <-
-  etb18 %>% filter(S2_j < 9999, h1216d > 0, F518_SUF < 99998) %>% slice(1:150)
+pend_small <-
+  pend %>% filter(S2_j < 9999, h1216d > 0, F518_SUF < 99998) %>% slice(1:150)
 ```
 
 ### Übung 1 {#pltue1}
 
 + Erstellen Sie einen Scatterplot für die Variablen Geburtsjahr (`S2_j`, x-Achse) und Dauer der Ausbildung (`h1216d`, y-Achse). 
-+ Legen Sie die Farbe so fest, dass Männer und Frauen unterschiedliche Farben gekennzeichnet werden (`S1`)
++ Legen Sie die Farbe so fest, dass Männer und Frauen unterschiedliche Farben gekennzeichnet werden (`zpsex`)
 + Verändern Sie die Farben auf `goldenrod1` und `dodgerblue4` fest ([oder eine beliebige andere](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf))
 + Beschriften Sie die Achsen und Legende!
 
@@ -477,7 +487,7 @@ etb18_small <-
 Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
 ```{r}
 #| echo: false
-etb18 %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>% 
+pend %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>% 
   str_remove_all(.," Einwohner") %>% 
   str_replace_all(.,pattern = "\\.000","k") %>% 
   str_replace(.,pattern = "unter ","<") %>% 
@@ -576,11 +586,11 @@ Außerdem bietet das Paket [{ggthemes}](https://yutannihilation.github.io/allYou
 
 ```{r}
 #| eval: false
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = factor(zpsex))) + 
   geom_point(size = 2) + 
   theme_minimal()
 
-ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+ggplot(data = pend_small, aes(x = palter, y = azges1, color = factor(zpsex))) + 
   geom_point(size = 2) +
   theme_dark()
 ```
@@ -590,7 +600,7 @@ ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) +
 #| layout-ncol: 2
 #| echo: false
 
-p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+p1 <- ggplot(data = pend_small, aes(x = palter, y = azges1, color = factor(zpsex))) + 
   geom_point(size = 2) 
 
 p1 + theme_gray() + labs(title="theme_grey() - Standard") + theme(plot.title = element_text(size = rel(2.5),hjust = 0.5))
@@ -602,7 +612,7 @@ p1 + theme_dark() + labs(title="theme_dark()") + theme(plot.title = element_text
 ### Farben {#farben}
 
 ```{r}
-p1 <- ggplot(data = etb18_small, aes(x = zpalter, y = az, color = factor(S1))) + 
+p1 <- ggplot(data = pend_small, aes(x = palter, y = azges1, color = factor(zpsex))) + 
   geom_point(size = 3) 
 ```
 
