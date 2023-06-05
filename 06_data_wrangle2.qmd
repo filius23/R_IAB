@@ -68,7 +68,6 @@ Eine alternative Möglichkeit, Variablen zu erstellen ist `mutate(neu_variable =
 ```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
 #| echo: false
 knitr::include_graphics("./pic/103_mutate.png")
-
 ```
 
 <!-- Wir hatten die Variante aus `{dplyr}` (`{tidyverse}`) bereits in [Kapitel 3](03_desc.qmd#crosscount) kurz kennen gelernt.-->
@@ -122,10 +121,16 @@ dat3 %>%
 
 
 
-## Gruppierung mit `group_by()` & `.by=` {#group_by}
+## Gruppierung mit `group_by()` oder `.by=` {#group_by}
 
 Die wirkliche Stärke von `mutate()` kommt aber erst zum Tragen, wenn wir es mit weiteren `{dplyr}`-Funktionen kombinieren.
 Eine häufige Aufgabe in der Datenaufbereitung sind gruppierte Werte.
+
+```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
+#| echo: false
+knitr::include_graphics("./pic/601_mutate_summarise.png")
+```
+
 
 Wir machen unseren Beispieldatensatz noch etwas kleiner:
 ```{r}
@@ -290,34 +295,42 @@ Dazu sehen wir uns drei Zufriedensheitsvariablen für die Befragten aus den Zeil
 library(gt)
 
   etb_worksat <- 
-    haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",n_max = 1) %>% 
-    select(F1450_04,F1450_05,F1450_06)
+    haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1) %>% 
+    select(contains("PEO0300"))
   
-vals1 <- 
+
+  
+
+etb_worksat %>%
+  map_dfr(.,~attributes(.x)$label) %>%
+  pivot_longer(cols = everything(),names_to = "var") %>% 
+  mutate(var = glue::glue("`{var}`"),
+         value = str_remove(value, "Wichtig bei Beruf\\:")) %>% 
+  rename(`Wichtig bei Beruf` = value) %>% 
+  gt() %>% 
+  tab_options(  table.font.size = 12) %>% 
+  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var)) %>% 
+  fmt_markdown(columns = 1)
+
+
     etb_worksat %>% 
     map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
     pivot_longer(-var) %>% 
     pivot_wider(names_from = value,values_from = name) %>% 
-    select(matches("var|1|2|3|4|9")) %>% 
-    rename(`7/8/9`=`9`) %>% 
-    mutate(`7/8/9` = "t.n.z./k.A.")
-  
-
-etb_worksat %>%
-  map_dfr(.,~attributes(.x)$label) %>% 
-      t(.) %>% data.frame() %>% 
-      rownames_to_column(.,var = "var") %>% 
-  left_join(vals1) %>% 
-  gt() %>% 
-  tab_options(  table.font.size = 12) %>% 
-  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+    select(matches("^1|^2|^3|^4|-10")) %>% 
+    rename(`-10 bis -1`=`-10`) %>% 
+    mutate(`-10 bis -1` = "t.n.z./k.A.") %>% 
+    distinct() %>% 
+    gt() %>% 
+    tab_options(  table.font.size = 11)
 ```
 ```{r}
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta")
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta")
 
 sat_small <- 
-  etb18 %>% 
-    select(F1450_04,F1450_05,F1450_06) %>% 
+  pend %>% 
+    filter(welle == 1) %>% 
+    select(matches("PEO0300(a|b|c)")) %>% 
     slice(12:16) %>% 
     haven::zap_labels() %>% haven::zap_label() # labels entfernen
 sat_small
@@ -333,13 +346,13 @@ Was aber, wenn wir eine Berechnung durchführen wollen, die nicht einfach die An
 
 ```{r}
 sat_small %>% 
-  mutate(dmean_F1450_04 = F1450_04 - mean(F1450_04,na.rm = T),
-         dmean_F1450_05 = F1450_05 - mean(F1450_05,na.rm = T))
+  mutate(dmean_PEO0300a = PEO0300a - mean(PEO0300a,na.rm = T),
+         dmean_PEO0300c = PEO0300c - mean(PEO0300c,na.rm = T))
 
 ```
 
 ...und jetzt noch `F1450_06`?
-Dann hätten wir drei Mal das mehr oder weniger gleiche getippt und damit gegen das "DRY"-Prinzip[^dry] verstoßen. Außerdem gibt es in der ETB 2018 insgesamt `r etb18 %>% select(starts_with("F1450_")) %>% ncol()` Spalten mit ähnlichen Zufriedenheitsvariablen. Wenn wir die alle bearbeiten möchten, ist copy & paste keine echte Option.
+Dann hätten wir drei Mal das mehr oder weniger gleiche getippt und damit gegen das "DRY"-Prinzip[^dry] verstoßen. Außerdem gibt es im PASS CampusFile insgesamt `r pend %>% select(matches("PEO0300")) %>% ncol()` Spalten mit ähnlichen Zufriedenheitsvariablen. Wenn wir die alle bearbeiten möchten, ist copy & paste keine echte Option.
 
 [^dry]: Do not repeat yourself, siehe [Wickham et al](https://r4ds.had.co.nz/functions.html): "You should consider writing a function whenever you’ve copied and pasted a block of code more than twice (i.e. you now have three copies of the same code)."
 
@@ -366,22 +379,25 @@ Wie können wir unsere Funktion `dtomean()` jetzt auf die Variablen aus unserem 
 Grundsätzlich haben wir ganz [zu Beginn](#02_intro)  gesehen, dass ein `data.frame` lediglich zusammengefügte Sammlung von Vektoren (den Variablen) ist. 
 Dementsprechend können wir jetzt unsere `dtomean()` auf eine Variable (einen Vektor) anwenden, indem wir ihn mit `data.frame$variablename` aufrufen:
 ```{r}
-dtomean(sat_small$F1450_04)
+dtomean(sat_small$PEO0300a)
 ```
 
-Um unsere Funktion jetzt auf jede Variable eines `data.frame` anzuwenden, können wir `map()` aus `{purrr}` (ebenfalls Teil des `{tidyverse}`) verwenden - der Output ist dann eine Liste, deren Elemente nach den Variablennamen benannt werden:
+Um unsere Funktion jetzt auf jede Variable eines `data.frame` anzuwenden, können wir `lapply()` verwenden - der Output ist dann eine Liste, deren Elemente nach den Variablennamen benannt werden:
 ```{r}
-sat_small %>% map(.f = ~dtomean(.x))
+lapply(sat_small,FUN = dtomean)
+res <- lapply(sat_small,FUN = dtomean)
+class(res)
 ```
 
-Mit `bind_cols()` können wir die Liste spaltenweise zusammenfügen:
+`map()` aus `{purrr}` ist eine Alternative zu `lapply`:
 ```{r}
-sat_small %>% map(~dtomean(.x)) %>% bind_cols() # formula syntax-Schreibweise
+lapply(sat_small,FUN = dtomean)
+sat_small %>% map(~dtomean(.x))
 ```
 Diese *formula syntax* Schreibweise findet sich dann auch in `across()` wieder - zusätzlich haben wir hier direkt über `.names =` die Möglichkeit, die Variablennamen für die Ergebnisse zu bearbeiten:
 ```{r}
 sat_small %>% 
-  mutate(across(matches("F1450"),~dtomean(.x),.names = "dmean_{.col}"))
+  mutate(across(matches("PEO0300"),~dtomean(.x),.names = "dmean_{.col}"))
 ```
 
 <!-- ::: callout-tip -->
@@ -462,14 +478,15 @@ dat3 %>% mutate(alter = case_when(gegr < 1500 & prom_recht == T ~ "sehr alte Uni
 Um Variablen umzubenennen gibt es `rename(neuer_name = alter_name)`
 
 ```{r}
-sat_small %>% rename(neu=F1450_04)
+sat_small %>% rename(neuername =PEO0300a)
 ```
 
 Für fortgeschrittene Veränderungen empfiehlt sich ein Blick in `rename_with()`. Damit können wir [Regular Expressions](https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf), bspw. aus [{stringr}](https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf) verwenden. Hier nur ein Beispiel:
 
 ```{r}
 sat_small %>% rename_with(~tolower(.))
-sat_small %>% rename_with(~str_remove(.x,"1450_"))
+sat_small %>% rename_with(~str_remove(.x,"PEO0300"))
+sat_small %>% rename_with(~str_replace(.x,"PEO0300","Beruf_"))
 ```
 
 
@@ -524,41 +541,57 @@ Daumenregel zur Entscheidung, ob `mutate()` oder `...$newvar <-` besser passt: I
   
 ### Übung {#across_ue}
 
-+ Verwenden Sie den `etb18_small`-Datensatz:
++ Verwenden Sie den `pend_small`-Datensatz:
 
 ```{r}
-#| eval: false
-etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               n_max = 10, # nur 10 Zeilen
-                               col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03")
-                               )
+#| include: false
+haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                               col_select = c("welle","PEO0400a","PEO0400b","PEO0400c","PEO0400d")
+                               ) %>%  
+  filter(welle == 2) %>% 
+  mutate(id = floor(as.numeric(rownames(.))/10),
+         across(matches("PE"),~.x<0)) %>% 
+  mutate(na = rowSums(select(., matches("PE") )) ) %>% 
+  summarise(sum_na = sum(na),.by = id) %>% 
+  arrange(sum_na) %>% 
+  filter(id %in% 13:15)
 ```
 
-+ Berechnen Sie den Mittelwert für die Variablen F1450_01, F1450_02, und F1450_03:
+
+```{r}
+pend_small <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                               col_select = c("welle","zpsex","PEO0400a","PEO0400b","PEO0400c","PEO0400d")
+                               ) %>% 
+  filter(welle == 2) %>% 
+  slice(1:15)
+```
+
++ Berechnen Sie den Mittelwert für die Variablen `PEO0400a`, `PEO0400b`, `PEO0400c` und `PEO0400d`:
 ```{r}
 #| echo: false
 #| warning: false
 #| message: false
 library(gt)
-etb18_smallx <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                                col_select = c("F1450_01", "F1450_02","F1450_03"),
-                                n_max = 1)
-etb18_smallx %>% select(starts_with("F1450")) %>% 
+etb18_smallx <-  haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                               col_select = c("PEO0400a","PEO0400b","PEO0400c","PEO0400d"),
+                               n_max = 1)
+
+etb18_smallx %>% select(starts_with("PEO0400")) %>% 
   map_dfr(.,~attributes(.x)$label) %>% 
-      t(.) %>% data.frame() %>% 
+      t(.) %>% data.frame(lab = .) %>% 
       rownames_to_column(.,var = "var") %>% 
+  mutate(lab = str_remove(lab,"Familie/Beruf\\: "),
+         var = glue::glue("`{var}`")) %>% 
   gt() %>% 
   tab_options(  table.font.size = 12) %>% 
-  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
-etb18_small <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               n_max = 10, # nur 10 Zeilen
-                               col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03")
-                               )
-data.frame(etb18_small)
+  fmt_markdown(columns = var)
+
+
+data.frame(pend_small)
 ```
 
-+ Verwenden Sie `across()` und denken Sie ggf. daran, dass Sie `NA`s die `na.rm = T` in `mean()` setzen müssen: `mean(....,na.rm = T)`
-+ Berechnen Sie die Mittelwerte getrennt nach Geschlecht, indem Sie `group_by()` oder `.by =` verwenden.
++ Verwenden Sie `across()`, um die Mittelwerte für alle vier Variablen zu berechnen.
++ Berechnen Sie die Mittelwerte getrennt nach Geschlecht (`zpsex`), indem Sie `group_by()` oder `.by =` verwenden.
 + Fügen Sie auch die Varianz (`var()`) hinzu und nutzen sie `.names=`, um die Spaltennamen nach dem Schema `kennzahl.variable` zu benennen.
 
 
@@ -567,55 +600,56 @@ data.frame(etb18_small)
 
 ### Übung {#fnct}
 
-Verwenden Sie `etb18_small3`:
+Verwenden Sie weiterhin `pend_small`:
 ```{r}
-etb18_small3 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                       col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"))
-etb18_small3 <- etb18_small3 %>% slice(5654:5666)
-etb18_small3
+#| eval: false
+pend_small
 ```
 
 ```{r}
 #| echo: false
-data.frame(etb18_small3)
+data.frame(pend_small)
 ```
 
 ```{r}
-#| echo: false
+#| include: false
 #| warning: false
 #| message: false
 library(gt)
-vals1 <- 
-   haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                       col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"),n_max = 2) %>% 
-  select(starts_with("F1450")) %>% 
-    map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
-    pivot_longer(-var) %>% 
-    pivot_wider(names_from = value,values_from = name) %>% 
-    select(matches("var|1|2|3|4|9")) %>% 
-    rename(`7/8/9`=`9`) %>% 
-    mutate(`7/8/9` = "t.n.z./k.A.")
-  
-
-haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                       col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"),n_max = 2)  %>% 
-  select(starts_with("F1450")) %>% 
+   
+haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                       col_select = c("PEO0400a","PEO0400b","PEO0400c","PEO0400d"),n_max = 2)  %>% 
+  select(starts_with("PEO0400")) %>% 
   map_dfr(.,~attributes(.x)$label) %>% 
-      t(.) %>% data.frame() %>% 
+      t(.) %>% data.frame(lab = .) %>% 
       rownames_to_column(.,var = "var") %>% 
-  left_join(vals1) %>% 
+  mutate(lab = str_remove(lab,"Familie/Beruf\\: "),
+         var = glue::glue("`{var}`")) %>% 
   gt() %>% 
   tab_options(  table.font.size = 12) %>% 
-  tab_style(style = cell_text(font = "Roboto"),locations = cells_body(var))
+  fmt_markdown(columns = var)
+
+
+haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                col_select = c("PEO0400a","PEO0400b","PEO0400c","PEO0400d"),n_max = 1) %>% 
+  map_dfr(.,~attributes(.x)$labels,.id = "var") %>% 
+  pivot_longer(-var) %>%
+  pivot_wider(names_from = value,values_from = name) %>%
+  select(matches("^1|^2|^3|^4|-10")) %>%
+  rename(`-10 bis -1`=`-10`) %>%
+  mutate(`-10 bis -1` = "t.n.z./k.A.") %>%
+  distinct()
+
+
 ```
 
 
 
-+ Standardisieren Sie die Variablen F1450_01 - F1450_03 aus `etb_small2` nach folgendem Muster:
++ Standardisieren Sie die Variablen `PEO0400a` - `PEO0400d` aus `pend_small` nach folgendem Muster:
 ```{r}
 #| eval: false
-etb_small2 %>% 
-  mutate(std_F1450_01 = (F1450_01 - mean(F1450_01,na.rm = T))/sd(F1450_01,na.rm = T))
+pend_small %>% 
+  mutate(std_PEO0400b = (PEO0400b - mean(PEO0400b,na.rm = T))/sd(PEO0400b,na.rm = T))
 ```
 + Nutzen Sie eine Funktion, um nicht wiederholt die gleichen Schritte einzugeben.
 + Verwenden Sie zusätzlich `across()`, um die Funktion auf die gewünschten Variablen anzuwenden.
@@ -626,20 +660,20 @@ etb_small2 %>%
 
 ### Übung {#ifcase}
 
-+ Bearbeiten Sie `etb18_small`:
++ Bearbeiten Sie `pend_small2`:
 ```{r}
-etb18_small2 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                         col_select = c("zpalter","S1","F1450_01","F1450_02","F1450_03"))
-etb18_small2 <- etb18_small2 %>% slice(5654:5666)
-etb18_small2
+pend_small2 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                         col_select = c("palter","PEO0400a","PEO0400b","PEO0400c","statakt")) 
+pend_small2 <- pend_small2 %>% slice(5624:5640)
+pend_small2
 ```
 
 
 + Nutzen Sie `ifelse()`, um Personen ab 50 Jahren mit "ü50" zu kennzeichnen - lassen Sie für Personen bis unter 50 Jahren "u50" eintragen.
-+ Führen Sie eine Dreiteilung durch: Personen bis 40 bekommen "u40", Personen bis einschließlich 50 "u50" und Personen über 50 Jahren "ü50". Wie würden Sie mit `case_when()` vorgehen?
-+ Nutzen Sie `ifelse()`, um Werte > 4 in den Variablen `F1450_01`, `F1450_02`, und `F1450_03` in `etb18_small2` mit `NA` zu überschreiben.
-+ Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `F1450_01` alle Werte > 4 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
-+ Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf `F1450_01`, `F1450_02` und `F1450_03` gleichzeitig anwenden?
++ Führen Sie eine Dreiteilung durch: Personen bis unter 40 bekommen "u40", Personen bis <50 "u50" und Personen über 50 Jahren "ü50". Wie würden Sie mit `case_when()` vorgehen?
++ Nutzen Sie `ifelse()`, um Werte < 0 in den Variablen `PEO0400a`, `PEO0400b`, `PEO0400c` und `statakt` in `pend_small2` mit `NA` zu überschreiben.
++ Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `PEO0400a` alle Werte < 0 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
++ Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf `PEO0400a`, `PEO0400b`, `PEO0400c`  und `statakt` gleichzeitig anwenden?
 
 [Zurück nach oben](#ue06_5)
 
