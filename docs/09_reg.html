@@ -1,0 +1,1916 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.353">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>R am IAB - 8&nbsp; Regressionsmodelle</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09_reg2.html" rel="next">
+<link href="./07_inferenz.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/all.css" rel="stylesheet">
+<link href="site_libs/quarto-contrib/fontawesome6-0.1.0/latex-fontsize.css" rel="stylesheet">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script src="site_libs/htmlwidgets-1.6.1/htmlwidgets.js"></script>
+<link href="site_libs/jsoneditor-5.25.6/jsoneditor.min.css" rel="stylesheet">
+<script src="site_libs/jsoneditor-5.25.6/jsoneditor.min.js"></script>
+<script src="site_libs/jsonedit-binding-3.0.0/jsonedit.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet">
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./09_reg.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-full">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">R am IAB</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Willkommen</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Einstieg in R</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02_intro.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Arbeiten mit Datensätzen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03_desc.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Einen Überblick erhalten</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04_viz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Visualisierung mit <code>{ggplot2}</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05_data_wrangle1.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Data Wrangling I: Labels &amp; factor</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06_data_wrangle2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Data Wrangling II</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07_inferenz.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09_reg2.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Links &amp; Weiterführendes</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#lm1" id="toc-lm1" class="nav-link active" data-scroll-target="#lm1"><span class="header-section-number">8.1</span> Regressionsmodelle mit <code>lm()</code></a></li>
+  <li><a href="#regressionsgerade-und-daten-visualisieren" id="toc-regressionsgerade-und-daten-visualisieren" class="nav-link" data-scroll-target="#regressionsgerade-und-daten-visualisieren"><span class="header-section-number">8.2</span> Regressionsgerade und Daten visualisieren</a>
+  <ul class="collapse">
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">8.2.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#modelle-nur-für-manche-fälle-berechnen" id="toc-modelle-nur-für-manche-fälle-berechnen" class="nav-link" data-scroll-target="#modelle-nur-für-manche-fälle-berechnen"><span class="header-section-number">8.3</span> Modelle nur für manche Fälle berechnen</a>
+  <ul class="collapse">
+  <li><a href="#neuen-data.frame-erstellen" id="toc-neuen-data.frame-erstellen" class="nav-link" data-scroll-target="#neuen-data.frame-erstellen"><span class="header-section-number">8.3.1</span> Neuen data.frame erstellen</a></li>
+  <li><a href="#direkt-in-lm-filtern" id="toc-direkt-in-lm-filtern" class="nav-link" data-scroll-target="#direkt-in-lm-filtern"><span class="header-section-number">8.3.2</span> Direkt in <code>lm()</code> filtern</a></li>
+  </ul></li>
+  <li><a href="#regressionstabellen" id="toc-regressionstabellen" class="nav-link" data-scroll-target="#regressionstabellen"><span class="header-section-number">8.4</span> Regressionstabellen</a>
+  <ul class="collapse">
+  <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"><span class="header-section-number">8.4.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#kategoriale-unabhängige-variablen" id="toc-kategoriale-unabhängige-variablen" class="nav-link" data-scroll-target="#kategoriale-unabhängige-variablen"><span class="header-section-number">8.5</span> Kategoriale unabhängige Variablen</a>
+  <ul class="collapse">
+  <li><a href="#übung-2" id="toc-übung-2" class="nav-link" data-scroll-target="#übung-2"><span class="header-section-number">8.5.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#mehre-unabhängige-variablen" id="toc-mehre-unabhängige-variablen" class="nav-link" data-scroll-target="#mehre-unabhängige-variablen"><span class="header-section-number">8.6</span> Mehre unabhängige Variablen</a></li>
+  <li><a href="#modelplot" id="toc-modelplot" class="nav-link" data-scroll-target="#modelplot"><span class="header-section-number">8.7</span> Koeffizientenplots</a>
+  <ul class="collapse">
+  <li><a href="#übung-3" id="toc-übung-3" class="nav-link" data-scroll-target="#übung-3"><span class="header-section-number">8.7.1</span> Übung</a></li>
+  </ul></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">8.8</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#reg1" id="toc-reg1" class="nav-link" data-scroll-target="#reg1"><span class="header-section-number">8.8.1</span> Übung 1: Regression</a></li>
+  <li><a href="#reg2" id="toc-reg2" class="nav-link" data-scroll-target="#reg2"><span class="header-section-number">8.8.2</span> Übung 2: Nur manche Beobachtungen</a></li>
+  <li><a href="#reg3" id="toc-reg3" class="nav-link" data-scroll-target="#reg3"><span class="header-section-number">8.8.3</span> Übung 3: kat. UVs</a></li>
+  <li><a href="#reg4" id="toc-reg4" class="nav-link" data-scroll-target="#reg4"><span class="header-section-number">8.8.4</span> Übung 4: mehrere UVs &amp; Koeffizientenplot</a></li>
+  </ul></li>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"><span class="header-section-number">8.9</span> Anhang</a>
+  <ul class="collapse">
+  <li><a href="#pred" id="toc-pred" class="nav-link" data-scroll-target="#pred"><span class="header-section-number">8.9.1</span> Vorhergesagte Werte</a></li>
+  <li><a href="#res2" id="toc-res2" class="nav-link" data-scroll-target="#res2"><span class="header-section-number">8.9.2</span> Residuen</a></li>
+  <li><a href="#annahmen-checken" id="toc-annahmen-checken" class="nav-link" data-scroll-target="#annahmen-checken"><span class="header-section-number">8.9.3</span> Annahmen checken</a></li>
+  <li><a href="#test-auf-normalverteilung-der-residuen" id="toc-test-auf-normalverteilung-der-residuen" class="nav-link" data-scroll-target="#test-auf-normalverteilung-der-residuen"><span class="header-section-number">8.9.4</span> Test auf Normalverteilung der Residuen</a></li>
+  <li><a href="#test-auf-homoskedastizität" id="toc-test-auf-homoskedastizität" class="nav-link" data-scroll-target="#test-auf-homoskedastizität"><span class="header-section-number">8.9.5</span> Test auf Homoskedastizität</a></li>
+  <li><a href="#test-auf-multikollinearität" id="toc-test-auf-multikollinearität" class="nav-link" data-scroll-target="#test-auf-multikollinearität"><span class="header-section-number">8.9.6</span> Test auf Multikollinearität</a></li>
+  <li><a href="#regressionsmodelle-vergleichen" id="toc-regressionsmodelle-vergleichen" class="nav-link" data-scroll-target="#regressionsmodelle-vergleichen"><span class="header-section-number">8.9.7</span> Regressionsmodelle vergleichen</a></li>
+  <li><a href="#broomplt" id="toc-broomplt" class="nav-link" data-scroll-target="#broomplt"><span class="header-section-number">8.9.8</span> Individuelle Koeffizientenplots mit <code>{broom}</code></a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content column-body" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="reg" class="quarto-section-identifier"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Regressionsmodelle</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Zum Einstieg betrachten wir zunächst einen (fiktiven) Datensatz mit lediglich fünf Fällen. Mit dem <code>data.frame</code> Befehl können wir einen Datensatz erstellen. Unserer hat zunächst lediglich zwei Variablen: var1 und var2</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">id   =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">8</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">var1 =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">5</span>,<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>,<span class="dv">5</span>),</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">var2 =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">9</span>,<span class="dv">7</span>, <span class="dv">4</span>,<span class="dv">25</span>,<span class="dv">3</span>),</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">educ =</span> <span class="fu">c</span>(<span class="dv">3</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">2</span>,<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>,<span class="sc">-</span><span class="dv">1</span>),</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">gend =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>),</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">x    =</span> <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">4</span>,<span class="dv">1</span>,<span class="cn">NA</span>,<span class="cn">NA</span>,<span class="cn">NA</span>) )</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id var1 var2 educ gend  x
+1  1    2    2    3    2  2
+2  2    1    2    1    1  1
+3  3    2    1    2    1  2
+4  4    5    9    2    2  4
+5  5    7    7    1    1  1
+6  6    8    4    3    2 NA
+7  7    9   25    2    1 NA
+8  8    5    3   -1    2 NA</code></pre>
+</div>
+</div>
+<section id="lm1" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="lm1"><span class="header-section-number">8.1</span> Regressionsmodelle mit <code>lm()</code></h2>
+<p>Regressionsmodelle in R lassen sich mit <code>lm()</code> erstellen. Hier geben wir das Merkmal an, dass auf der y-Achse liegt (die <em>abhängige</em> Variable) und nach einer <code>~</code> das Merkmal für die x-Achse (<em>unabhängige</em> Variable). Die Interpretation des Ergebnisses wird uns die kommenden Wochen beschäftigen.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">lm</span>(var2<span class="sc">~</span> var1, <span class="at">data =</span> dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1, data = dat1)
+
+Coefficients:
+(Intercept)         var1  
+     -2.340        1.839  </code></pre>
+</div>
+</div>
+<p>Der Wert unter <code>var1</code> gibt an, um <em>wieviel sich die Gerade pro “Schritt nach rechts” nach oben/unten verändert</em>. Die Gerade steigt also pro Einheit von <code>var1</code> um 1.8389662. Die Ergebnisse können wir unter <code>m1</code> ablegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m1 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2<span class="sc">~</span> var1, <span class="at">data =</span> dat1)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Mit <code>summary()</code> bekommen wir dann eine Regressionstabelle:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1, data = dat1)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-8.372 -3.613  0.162  2.234 10.789 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)  -2.3400     4.3454  -0.538   0.6096  
+var1          1.8390     0.7727   2.380   0.0548 .
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 6.127 on 6 degrees of freedom
+Multiple R-squared:  0.4856,    Adjusted R-squared:  0.3999 
+F-statistic: 5.664 on 1 and 6 DF,  p-value: 0.05477</code></pre>
+</div>
+</div>
+<p><code>m1</code> enthält alle Informationen zum Modell, besonders hilfreich ist <code>$coefficients</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>(Intercept)        var1 
+  -2.339960    1.838966 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m1)<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>             Estimate Std. Error    t value   Pr(&gt;|t|)
+(Intercept) -2.339960  4.3453801 -0.5384938 0.60961706
+var1         1.838966  0.7727028  2.3799139 0.05477457</code></pre>
+</div>
+</div>
+<p>Wir können uns die einzelnen Werte mit <code>View(m1)</code> ansehen:</p>
+<div class="cell">
+<div class="cell-output-display">
+<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2e9dfdb35c10c5c30bb0" style="width:100%;height:10%;"></div>
+<script type="application/json" data-for="htmlwidget-2e9dfdb35c10c5c30bb0">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<p>Bspw. finden sich unter <code>fitted.values</code> die vorhergesagten Werte für jeden Fall.</p>
+</section>
+<section id="regressionsgerade-und-daten-visualisieren" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="regressionsgerade-und-daten-visualisieren"><span class="header-section-number">8.2</span> Regressionsgerade und Daten visualisieren</h2>
+<p>Mit <code>geom_smooth(method = "lm")</code> können wir Regressionsgeraden auch in <code>{ggplot2}</code> darstellen:</p>
+<p>Unser Modell mit <code>var1</code> und <code>var2</code> können wir so darstellen:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="288"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Hier scheinen wir einen Ausreißer zu haben. In unserem übersichtlichen Datensatz ist der schnell gefunden. In größeren Datensätzen hilft uns <code>geom_text()</code>:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">2</span>) <span class="sc">+</span> </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)  <span class="sc">+</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">data =</span> . <span class="sc">%&gt;%</span> <span class="fu">filter</span>(var2 <span class="sc">&gt;</span> <span class="dv">20</span>), <span class="fu">aes</span>(<span class="at">y =</span> var2<span class="sc">+</span><span class="dv">3</span>, <span class="at">label =</span> id), <span class="at">color =</span> <span class="st">"sienna1"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/graph2-1.png" class="img-fluid figure-img" width="288"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Wir können nämlich einzelne <code>geom_</code> auch nur für ein Subset angeben - dazu vergeben wir <code>data =</code> neu (übernehmen also nicht die Auswahl aus dem Haupt-Befehl <code>ggplot()</code>) und setzen darin einen <code>filter()</code>. Außerdem verschieben wir mit <code>var2+3</code> das Label etwas über den Punkt.</p>
+<section id="übung" class="level3" data-number="8.2.1">
+<h3 data-number="8.2.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">8.2.1</span> <a href="#reg1">Übung</a></h3>
+</section>
+</section>
+<section id="modelle-nur-für-manche-fälle-berechnen" class="level2" data-number="8.3">
+<h2 data-number="8.3" class="anchored" data-anchor-id="modelle-nur-für-manche-fälle-berechnen"><span class="header-section-number">8.3</span> Modelle nur für manche Fälle berechnen</h2>
+<p>Wenn wir jetzt das Modell nochmal berechnen wollen, haben wir zwei Möglichkeiten:</p>
+<section id="neuen-data.frame-erstellen" class="level3" data-number="8.3.1">
+<h3 data-number="8.3.1" class="anchored" data-anchor-id="neuen-data.frame-erstellen"><span class="header-section-number">8.3.1</span> Neuen data.frame erstellen</h3>
+<p>Wir können in R mehrere <code>data.frame</code>-Objekte im Speicher halten. Also können wir leicht einen neuen <code>data.frame</code> erstellen, der nur die Beobachtungen mit <code>var2 &lt; 20</code> enthält und diesen dann für unseren <code>lm()</code>-Befehl verwenden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dat1_u20 <span class="ot">&lt;-</span> dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(var2<span class="sc">&lt;</span><span class="dv">20</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>m2a <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2<span class="sc">~</span> var1, <span class="at">data =</span> dat1_u20)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2a)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1, data = dat1_u20)
+
+Residuals:
+      1       2       3       4       5       6       7 
+-0.4737  0.1941 -1.4737  4.5230  1.1875 -2.4803 -1.4770 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   1.1382     1.9217   0.592    0.579
+var1          0.6678     0.3877   1.722    0.146
+
+Residual standard error: 2.555 on 5 degrees of freedom
+Multiple R-squared:  0.3724,    Adjusted R-squared:  0.2469 
+F-statistic: 2.967 on 1 and 5 DF,  p-value: 0.1456</code></pre>
+</div>
+</div>
+</section>
+<section id="direkt-in-lm-filtern" class="level3" data-number="8.3.2">
+<h3 data-number="8.3.2" class="anchored" data-anchor-id="direkt-in-lm-filtern"><span class="header-section-number">8.3.2</span> Direkt in <code>lm()</code> filtern</h3>
+<p>Wir können <code>filter()</code>-Befehl auch direkt in das <code>data=</code>-Argument von <code>lm()</code> bauen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>m2b <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2<span class="sc">~</span> var1, <span class="at">data =</span> dat1 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(var2<span class="sc">&lt;</span><span class="dv">20</span>))</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m2b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1, data = dat1 %&gt;% filter(var2 &lt; 20))
+
+Residuals:
+      1       2       3       4       5       6       7 
+-0.4737  0.1941 -1.4737  4.5230  1.1875 -2.4803 -1.4770 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   1.1382     1.9217   0.592    0.579
+var1          0.6678     0.3877   1.722    0.146
+
+Residual standard error: 2.555 on 5 degrees of freedom
+Multiple R-squared:  0.3724,    Adjusted R-squared:  0.2469 
+F-statistic: 2.967 on 1 and 5 DF,  p-value: 0.1456</code></pre>
+</div>
+</div>
+<!-- ...übrigens: wir können auch in `geom_smooth()` filtern: -->
+<!-- ```{r, fig.height=3, fig.width=3, echo=T, fig.align="center" , warning=F,message=F} -->
+<!-- ggplot(dat1, aes(x = var1, y = var2)) +  -->
+<!--   geom_smooth(method = "lm", color = "darkblue" , fill = "lightskyblue", size = .65)  + -->
+<!--   geom_smooth(data = dat1 %>% filter(var2<20), -->
+<!--     method = "lm", color = "sienna1" , fill = "sienna2", size = .65)  + -->
+<!--   geom_point(size = 2)  -->
+<!-- ``` -->
+</section>
+</section>
+<section id="regressionstabellen" class="level2" data-number="8.4">
+<h2 data-number="8.4" class="anchored" data-anchor-id="regressionstabellen"><span class="header-section-number">8.4</span> Regressionstabellen</h2>
+<p>Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle an.</p>
+<p>Es gibt zahlreiche Alternativen zur Erstellung von Regressionstabellen, mein persönlicher Favorit ist <code>modelsummary()</code> aus dem gleichnamigen Paket <a href="https://vincentarelbundock.github.io/modelsummary/">{modelsummary}</a>. Es kommt mit (nahezu) allen Modellarten zurecht und bietet darüber hinaus eine breite Palette an (u.a. auch <a href="#14_tabellenexport.qmd">Word-Output</a> - dazu später mehr) und auch Koeffizientenplots (auch dazu kommen wir noch). Außerdem ist die <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html">Dokumentation</a> hervorragend.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"modelsummary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(m1,m2a,m2b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;(1)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(2)</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;&nbsp;(3)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">-2.340</td>
+<td style="text-align: center;">1.138</td>
+<td style="text-align: center;">1.138</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(4.345)</td>
+<td style="text-align: center;">(1.922)</td>
+<td style="text-align: center;">(1.922)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">var1</td>
+<td style="text-align: center;">1.839</td>
+<td style="text-align: center;">0.668</td>
+<td style="text-align: center;">0.668</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1px;"></td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.773)</td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.388)</td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.388)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.486</td>
+<td style="text-align: center;">0.372</td>
+<td style="text-align: center;">0.372</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.400</td>
+<td style="text-align: center;">0.247</td>
+<td style="text-align: center;">0.247</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AIC</td>
+<td style="text-align: center;">55.4</td>
+<td style="text-align: center;">36.6</td>
+<td style="text-align: center;">36.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">BIC</td>
+<td style="text-align: center;">55.6</td>
+<td style="text-align: center;">36.5</td>
+<td style="text-align: center;">36.5</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Log.Lik.</td>
+<td style="text-align: center;">-24.702</td>
+<td style="text-align: center;">-15.321</td>
+<td style="text-align: center;">-15.321</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F</td>
+<td style="text-align: center;">5.664</td>
+<td style="text-align: center;">2.967</td>
+<td style="text-align: center;">2.967</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">RMSE</td>
+<td style="text-align: center;">5.31</td>
+<td style="text-align: center;">2.16</td>
+<td style="text-align: center;">2.16</td>
+</tr>
+</tbody>
+</table>
+
+
+</div>
+</div>
+<p>Wir werden uns noch ein bisschen ausführlicher mit den Anpassungsmöglichkeiten für <code>{modelsummary}</code> befassen, hier nur schon mal zwei zentrale Optionen:</p>
+<ul>
+<li>mit <code>stars = T</code> können wir uns die Signifikanz mit den gebräuchlichen Sternchen-Codes anzeigen lassen (<code>*</code>: p &lt; .05 usw.)</li>
+<li>mit <code>gof_omit = "IC|RM|Log"</code> können wir die Goodness of Fit Statistiken ausblenden die <code>IC</code>, <code>RM</code> oder <code>Log</code> im Namen haben (also <code>AIC</code>, <code>BIC</code>, <code>RMSE</code> und die <code>LogLikelihood</code>)</li>
+<li>mit <code>"Name" =</code> in <code>list()</code> können wir Namen angeben:</li>
+</ul>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelsummary</span>(<span class="fu">list</span>(<span class="st">"m1"</span><span class="ot">=</span>m1,<span class="st">"m2a"</span><span class="ot">=</span>m2a,<span class="st">"m2b"</span><span class="ot">=</span>m2b),<span class="at">stars =</span> T,<span class="at">gof_omit =</span> <span class="st">"IC|RM|Log"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<table class="table table-sm table-striped small" data-quarto-postprocess="true">
+<thead>
+<tr class="header">
+<th style="text-align: left;" data-quarto-table-cell-role="th"></th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">m1</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;m2a</th>
+<th style="text-align: center;" data-quarto-table-cell-role="th">&nbsp;m2b</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(Intercept)</td>
+<td style="text-align: center;">-2.340</td>
+<td style="text-align: center;">1.138</td>
+<td style="text-align: center;">1.138</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"></td>
+<td style="text-align: center;">(4.345)</td>
+<td style="text-align: center;">(1.922)</td>
+<td style="text-align: center;">(1.922)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">var1</td>
+<td style="text-align: center;">1.839+</td>
+<td style="text-align: center;">0.668</td>
+<td style="text-align: center;">0.668</td>
+</tr>
+<tr class="even">
+<td style="text-align: left; box-shadow: 0px 1px;"></td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.773)</td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.388)</td>
+<td style="text-align: center; box-shadow: 0px 1px;">(0.388)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Num.Obs.</td>
+<td style="text-align: center;">8</td>
+<td style="text-align: center;">7</td>
+<td style="text-align: center;">7</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">R2</td>
+<td style="text-align: center;">0.486</td>
+<td style="text-align: center;">0.372</td>
+<td style="text-align: center;">0.372</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">R2 Adj.</td>
+<td style="text-align: center;">0.400</td>
+<td style="text-align: center;">0.247</td>
+<td style="text-align: center;">0.247</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F</td>
+<td style="text-align: center;">5.664</td>
+<td style="text-align: center;">2.967</td>
+<td style="text-align: center;">2.967</td>
+</tr>
+</tbody><tfoot>
+<tr class="odd">
+<td style="text-align: left; padding: 0;"><sup></sup> + p &lt; 0.1, * p &lt; 0.05, ** p &lt; 0.01, *** p &lt; 0.001</td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+<td style="text-align: center;"></td>
+</tr>
+</tfoot>
+
+</table>
+
+
+</div>
+</div>
+<section id="übung-1" class="level3" data-number="8.4.1">
+<h3 data-number="8.4.1" class="anchored" data-anchor-id="übung-1"><span class="header-section-number">8.4.1</span> <a href="#reg2">Übung</a></h3>
+</section>
+</section>
+<section id="kategoriale-unabhängige-variablen" class="level2" data-number="8.5">
+<h2 data-number="8.5" class="anchored" data-anchor-id="kategoriale-unabhängige-variablen"><span class="header-section-number">8.5</span> Kategoriale unabhängige Variablen</h2>
+<p>Natürlich können wir auch kategoriale unabhängige Variablen in unser Modell mit aufnehmen. Dazu müssen wir aber entsprechende Variable als <code>factor</code> definieren - und R so mitteilen, dass die Zahlenwerte nicht numerisch zu interpretieren sind. Wenn wir <code>educ</code> aus unserem kleinen Beispiel betrachten - dann steht 1 für einen grundlegenden Bildungsabschluss, 2 für einen mittleren und 3 für einen hohen Bildungsabschluss.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id var1 var2 educ gend  x
+1  1    2    2    3    2  2
+2  2    1    2    1    1  1
+3  3    2    1    2    1  2
+4  4    5    9    2    2  4
+5  5    7    7    1    1  1
+6  6    8    4    3    2 NA
+7  7    9   25    2    1 NA
+8  8    5    3   -1    2 NA</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2<span class="sc">~</span><span class="fu">factor</span>(educ), dat1)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ factor(educ), data = dat1)
+
+Residuals:
+         1          2          3          4          5          6          7 
+-1.000e+00 -2.500e+00 -1.067e+01 -2.667e+00  2.500e+00  1.000e+00  1.333e+01 
+         8 
+-2.387e-15 
+
+Coefficients:
+                Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)    3.000e+00  8.848e+00   0.339    0.752
+factor(educ)1  1.500e+00  1.084e+01   0.138    0.897
+factor(educ)2  8.667e+00  1.022e+01   0.848    0.444
+factor(educ)3 -1.632e-15  1.084e+01   0.000    1.000
+
+Residual standard error: 8.848 on 4 degrees of freedom
+Multiple R-squared:  0.2848,    Adjusted R-squared:  -0.2516 
+F-statistic: 0.531 on 3 and 4 DF,  p-value: 0.685</code></pre>
+</div>
+</div>
+<p>Noch schöner ist das aber natürlich, wenn wir <code>educ</code> vorher labeln:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>ed_fct <span class="ot">&lt;-</span> <span class="fu">factor</span>(dat1<span class="sc">$</span>educ, <span class="at">levels =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>,</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"basic"</span>,<span class="st">"medium"</span>,<span class="st">"high"</span>))</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id var1 var2 educ gend  x ed_fct
+1  1    2    2    3    2  2   high
+2  2    1    2    1    1  1  basic
+3  3    2    1    2    1  2 medium
+4  4    5    9    2    2  4 medium
+5  5    7    7    1    1  1  basic
+6  6    8    4    3    2 NA   high
+7  7    9   25    2    1 NA medium
+8  8    5    3   -1    2 NA   &lt;NA&gt;</code></pre>
+</div>
+</div>
+<p>Dann verwenden den <code>factor</code> im Regressionsbefehl:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>m3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2 <span class="sc">~</span> ed_fct, dat1)</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ ed_fct, data = dat1)
+
+Residuals:
+      1       2       3       4       5       6       7 
+ -1.000  -2.500 -10.667  -2.667   2.500   1.000  13.333 
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)     4.500      6.257   0.719    0.512
+ed_fctmedium    7.167      8.077   0.887    0.425
+ed_fcthigh     -1.500      8.848  -0.170    0.874
+
+Residual standard error: 8.848 on 4 degrees of freedom
+  (1 Beobachtung als fehlend gelöscht)
+Multiple R-squared:  0.2594,    Adjusted R-squared:  -0.1109 
+F-statistic: 0.7005 on 2 and 4 DF,  p-value: 0.5485</code></pre>
+</div>
+</div>
+<ul>
+<li><p>Im Vergleich zu <code>educ = basic</code> ist der vorhergesagte Wert für <code>var2</code> bei <code>educ = medium</code> um 7.17 höher.</p></li>
+<li><p>Im Vergleich zu <code>educ = basic</code> ist der vorhergesagte Wert für <code>var2</code> bei <code>educ = high</code> um -1.5 höher.</p></li>
+</ul>
+<p>Wir können die Referenzkategorie auch ändern:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>ed_fct <span class="ot">&lt;-</span> <span class="fu">relevel</span>(dat1<span class="sc">$</span>ed_fct,<span class="at">ref =</span> <span class="st">"medium"</span>)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>m3b <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2 <span class="sc">~</span> ed_fct, dat1)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m3b)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ ed_fct, data = dat1)
+
+Residuals:
+      1       2       3       4       5       6       7 
+ -1.000  -2.500 -10.667  -2.667   2.500   1.000  13.333 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)  
+(Intercept)   11.667      5.109   2.284   0.0844 .
+ed_fctbasic   -7.167      8.077  -0.887   0.4251  
+ed_fcthigh    -8.667      8.077  -1.073   0.3437  
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 8.848 on 4 degrees of freedom
+  (1 Beobachtung als fehlend gelöscht)
+Multiple R-squared:  0.2594,    Adjusted R-squared:  -0.1109 
+F-statistic: 0.7005 on 2 and 4 DF,  p-value: 0.5485</code></pre>
+</div>
+</div>
+<ul>
+<li><p>Im Vergleich zu <code>educ = medium</code> ist der vorhergesagte Wert für <code>var2</code> bei <code>educ = basic</code> um 7.17 niedriger.</p></li>
+<li><p>Im Vergleich zu <code>educ = medium</code> ist der vorhergesagte Wert für <code>var2</code> bei <code>educ = high</code> um 8.67 niedriger.</p></li>
+</ul>
+<section id="übung-2" class="level3" data-number="8.5.1">
+<h3 data-number="8.5.1" class="anchored" data-anchor-id="übung-2"><span class="header-section-number">8.5.1</span> <a href="#reg3">Übung</a></h3>
+</section>
+</section>
+<section id="mehre-unabhängige-variablen" class="level2" data-number="8.6">
+<h2 data-number="8.6" class="anchored" data-anchor-id="mehre-unabhängige-variablen"><span class="header-section-number">8.6</span> Mehre unabhängige Variablen</h2>
+<p>Um mehrere unabhängige Variablen in unser Regressionsmodellen aufzunehmen, geben wir sie mit <code>+</code> an:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>m4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(var2 <span class="sc">~</span> ed_fct  <span class="sc">+</span> var1, dat1)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ ed_fct + var1, data = dat1)
+
+Residuals:
+     1      2      3      4      5      6      7 
+ 4.258  2.758 -4.824 -2.082 -2.758 -4.258  6.907 
+
+Coefficients:
+            Estimate Std. Error t value Pr(&gt;|t|)
+(Intercept)   2.3187     5.8227   0.398    0.717
+ed_fctbasic  -4.8297     6.0381  -0.800    0.482
+ed_fcthigh   -8.0824     5.9411  -1.360    0.267
+var1          1.7527     0.8347   2.100    0.127
+
+Residual standard error: 6.501 on 3 degrees of freedom
+  (1 Beobachtung als fehlend gelöscht)
+Multiple R-squared:  0.7002,    Adjusted R-squared:  0.4003 
+F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
+</div>
+</div>
+</section>
+<section id="modelplot" class="level2" data-number="8.7">
+<h2 data-number="8.7" class="anchored" data-anchor-id="modelplot"><span class="header-section-number">8.7</span> Koeffizientenplots</h2>
+<p>Neben Regressionstabellen stellt <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelplot.html"><code>{modelsummary}</code></a> auch die Funktion <code>modelplot()</code> zur Verfügung, mit denen einfach ein Koeffizientenplot aus einem oder mehreren Modellen erstellt werden kann:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(m4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-17-1.png" style="width:50.0%;height:50.0%"></p>
+</div>
+</div>
+<p>Für einen Modellvergleich geben wir einfach die Modelle in einer named <code>list</code> an, außerdem können wir mit den üblichen <code>{ggplot2}</code>-Befehlen die Grafik weiter anpassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(<span class="fu">list</span>(<span class="st">"Modell 1"</span><span class="ot">=</span>m1,</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Modell 4"</span><span class="ot">=</span>m4))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-18-1.png" style="width:50.0%;height:50.0%"></p>
+</div>
+</div>
+<p>Mit <code>coef_map</code> können wir Labels für die Koeffizienten vergeben (<code>(Intercept)</code> bekommt keinen Namen und wird daher weggelassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(<span class="fu">list</span>(<span class="st">"Modell 1"</span><span class="ot">=</span>m1,</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Modell 4"</span><span class="ot">=</span>m4),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">coef_map =</span> <span class="fu">c</span>(<span class="st">"var1"</span> <span class="ot">=</span> <span class="st">"Name für var1"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ed_fcthigh"</span>  <span class="ot">=</span> <span class="st">"Höhere Bildung"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ed_fctbasic"</span> <span class="ot">=</span> <span class="st">"Grundlegende Bildung"</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>                          ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-19-1.png" style="width:50.0%;height:50.0%"></p>
+</div>
+</div>
+<p>Außerdem können wir mit den üblichen <code>{ggplot2}</code>-Befehlen die Grafik weiter anpassen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">modelplot</span>(<span class="fu">list</span>(<span class="st">"Modell 1"</span><span class="ot">=</span>m1,</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>               <span class="st">"Modell 4"</span><span class="ot">=</span>m4),</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">coef_map =</span> <span class="fu">c</span>(<span class="st">"var1"</span> <span class="ot">=</span> <span class="st">"Name für var1"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ed_fcthigh"</span>  <span class="ot">=</span> <span class="st">"Höhere Bildung"</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>                       <span class="st">"ed_fctbasic"</span> <span class="ot">=</span> <span class="st">"Grundlegende</span><span class="sc">\n</span><span class="st">Bildung"</span>)) <span class="sc">+</span> <span class="co"># \n fügt einen Zeilenumbruch ein</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"grey40"</span>) <span class="sc">+</span>  <span class="co"># 0-Linie einfügen</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_color_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="st">"orange"</span>,<span class="st">"navy"</span>)) <span class="sc">+</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">15</span>,<span class="at">base_family =</span> <span class="st">"mono"</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-20-1.png" style="width:50.0%;height:50.0%"></p>
+</div>
+</div>
+<p>Mit <code>{broom}</code> können wir auch einen <code>data.frame</code> aus den Regressionsergebnissen erstellen und den <code>ggplot</code> ganz selbst erstellen - <a href="#broomplt">siehe Anhang</a>.</p>
+<section id="übung-3" class="level3" data-number="8.7.1">
+<h3 data-number="8.7.1" class="anchored" data-anchor-id="übung-3"><span class="header-section-number">8.7.1</span> <a href="#reg4">Übung</a></h3>
+</section>
+</section>
+<section id="übungen" class="level2" data-number="8.8">
+<h2 data-number="8.8" class="anchored" data-anchor-id="übungen"><span class="header-section-number">8.8</span> Übungen</h2>
+<p>Verwenden Sie folgenden Subdatensatz des PASS CampusFiles:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>pend_ue08 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(welle <span class="sc">==</span> <span class="dv">13</span>, netges <span class="sc">&gt;</span> <span class="dv">0</span>, azges1 <span class="sc">&gt;</span> <span class="dv">0</span>,schul2 <span class="sc">&gt;</span> <span class="dv">1</span>, palter <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="reg1" class="level3" data-number="8.8.1">
+<h3 data-number="8.8.1" class="anchored" data-anchor-id="reg1"><span class="header-section-number">8.8.1</span> Übung 1: Regression</h3>
+<ul>
+<li>Erstellen Sie ein Objekt <code>mod1</code> mit einem linearen Regressionsmodell (<code>lm</code>) mit <code>netges</code> (Monatsnetto in EUR) als abhängiger und <code>azges1</code> (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe <a href="#lm1">hier</a>)</li>
+<li>Betrachten Sie Ergebnisse <code>mod1</code> - was können Sie zum Zusammenhang zwischen <code>netges</code> und <code>azges1</code> erkennen?</li>
+<li>Visualisieren Sie Ihr Regressionsmodell mit <code>{ggplot2}</code>.</li>
+<li>Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable <code>pnr</code> und <code>geom_text()</code>.</li>
+</ul>
+</section>
+<section id="reg2" class="level3" data-number="8.8.2">
+<h3 data-number="8.8.2" class="anchored" data-anchor-id="reg2"><span class="header-section-number">8.8.2</span> Übung 2: Nur manche Beobachtungen</h3>
+<ul>
+<li>Erstellen Sie ein <code>lm()</code>-Modell <code>mod2</code>, welches nur auf den Beobachtungen mit einem Monatseinkommen unter 20.000 EUR beruht.</li>
+<li>Erstellen Sie eine Regressionstabelle, welche diese neue Modell <code>mod2</code> neben das Modell <code>mod1</code> aus Übung 1 stellt.</li>
+</ul>
+</section>
+<section id="reg3" class="level3" data-number="8.8.3">
+<h3 data-number="8.8.3" class="anchored" data-anchor-id="reg3"><span class="header-section-number">8.8.3</span> Übung 3: kat. UVs</h3>
+<ul>
+<li>Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (<code>netges</code>) als abhängiger und dem Schulabschluss der Befragten <code>m1202</code> als unabhängiger Variable:</li>
+</ul>
+<div class="cell">
+<div class="cell-output-display">
+
+<div id="ndcxkmgtmh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ndcxkmgtmh .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_caption {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+#ndcxkmgtmh .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ndcxkmgtmh .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ndcxkmgtmh .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ndcxkmgtmh .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ndcxkmgtmh .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ndcxkmgtmh .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ndcxkmgtmh .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ndcxkmgtmh .gt_group_heading {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  text-align: left;
+}
+
+#ndcxkmgtmh .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ndcxkmgtmh .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ndcxkmgtmh .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ndcxkmgtmh .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ndcxkmgtmh .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ndcxkmgtmh .gt_stub_row_group {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 5px;
+  padding-right: 5px;
+  vertical-align: top;
+}
+
+#ndcxkmgtmh .gt_row_group_first td {
+  border-top-width: 2px;
+}
+
+#ndcxkmgtmh .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ndcxkmgtmh .gt_first_summary_row {
+  border-top-style: solid;
+  border-top-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_first_summary_row.thick {
+  border-top-width: 2px;
+}
+
+#ndcxkmgtmh .gt_last_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ndcxkmgtmh .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ndcxkmgtmh .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding-left: 4px;
+  padding-right: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ndcxkmgtmh .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ndcxkmgtmh .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ndcxkmgtmh .gt_left {
+  text-align: left;
+}
+
+#ndcxkmgtmh .gt_center {
+  text-align: center;
+}
+
+#ndcxkmgtmh .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ndcxkmgtmh .gt_font_normal {
+  font-weight: normal;
+}
+
+#ndcxkmgtmh .gt_font_bold {
+  font-weight: bold;
+}
+
+#ndcxkmgtmh .gt_font_italic {
+  font-style: italic;
+}
+
+#ndcxkmgtmh .gt_super {
+  font-size: 65%;
+}
+
+#ndcxkmgtmh .gt_footnote_marks {
+  font-style: italic;
+  font-weight: normal;
+  font-size: 75%;
+  vertical-align: 0.4em;
+}
+
+#ndcxkmgtmh .gt_asterisk {
+  font-size: 100%;
+  vertical-align: 0;
+}
+
+#ndcxkmgtmh .gt_indent_1 {
+  text-indent: 5px;
+}
+
+#ndcxkmgtmh .gt_indent_2 {
+  text-indent: 10px;
+}
+
+#ndcxkmgtmh .gt_indent_3 {
+  text-indent: 15px;
+}
+
+#ndcxkmgtmh .gt_indent_4 {
+  text-indent: 20px;
+}
+
+#ndcxkmgtmh .gt_indent_5 {
+  text-indent: 25px;
+}
+</style>
+
+<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead class="gt_col_headings">
+<tr class="header">
+<th id="value" class="gt_col_heading gt_columns_bottom_border gt_center" data-quarto-table-cell-role="th" scope="col">value</th>
+<th id="label" class="gt_col_heading gt_columns_bottom_border gt_left" data-quarto-table-cell-role="th" scope="col">label</th>
+</tr>
+</thead>
+<tbody class="gt_table_body">
+<tr class="odd">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>-10 bis -1 und 1</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">t.n.z./k.A.</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>2</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Schule beendet ohne Abschluss</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>3</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Sonder-/Foerderschulabschluss</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>4</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Volks-/Hauptschulabschluss bzw: POS 8./9. Klasse</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>5</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Mittlere Reife/Realschulabschluss bzw. POS 10. Klasse</td>
+</tr>
+<tr class="even">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>6</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Fachhochschulreife</td>
+</tr>
+<tr class="odd">
+<td class="gt_row gt_center" headers="value"><div class="gt_from_md">
+<p><code>7</code></p>
+</div></td>
+<td class="gt_row gt_left" headers="label">Allgem. oder fachgeb. Hochschulreife (Abitur)/EOS 12. Klasse</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<ul>
+<li>Achten Sie darauf, dass <code>schul2</code> als <code>factor</code> definiert ist. Vergeben Sie für die Levels 2-7 die Labels “ohne”, “Förderschule”,“Hauptschule”,“Mittlere Reife”,“FOS/BOS”,“Abi” und legen sie den <code>factor</code> als Variable <code>schul2_fct</code> in Ihrem <code>data.frame</code> ab - siehe Code-Hilfe unten:</li>
+</ul>
+<div class="cell">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>pend_ue08<span class="sc">$</span>schul2_fct <span class="ot">&lt;-</span>  </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">factor</span>(pend_ue08<span class="sc">$</span>schul2,<span class="at">levels =</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">7</span>, <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">"ohne"</span>,<span class="st">"Förderschule"</span>,<span class="st">"Hauptschule"</span>,<span class="st">"Mittlere Reife"</span>,<span class="st">"FOS/BOS"</span>,<span class="st">"Abi"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<ul>
+<li>Erstellen Sie das Regressionsmodell mit dieser neuen factor-Variable für <code>schul2_fct</code> als unabhängiger Variablen.</li>
+<li>Ändern Sie die Referenzkategorie auf die Ausprägung <em>Mittlere Reife</em> (<code>schul2</code> = 5) und schätzen Sie das Modell erneut.</li>
+</ul>
+</section>
+<section id="reg4" class="level3" data-number="8.8.4">
+<h3 data-number="8.8.4" class="anchored" data-anchor-id="reg4"><span class="header-section-number">8.8.4</span> Übung 4: mehrere UVs &amp; Koeffizientenplot</h3>
+<ul>
+<li>Passen Sie das <code>lm()</code>-Modell <code>mod1</code> (mit allen Fällen aus <code>pend_u08</code>) so an, dass neben der Arbeitszeit zusätzlich den Schulabschluss (<code>schul2</code>) als unabhängige Variable mit aufgenommen werden.</li>
+<li>Erstellen Sie auch eine grafische Gegenüberstellung der beiden Modelle mit und ohne den Schulabschluss</li>
+</ul>
+<!-- ### Übung 5: Interaktionen {#reg5} -->
+<!-- ### Übung 6: quad. Terme {#reg6} -->
+<!-- + Erstellen Sie ein Modell `m4` mit einem quadratischen Term: -->
+<!-- $$\texttt{F518\_SUF} = \beta0 + \beta1 \times \texttt{az} + \beta2 \times \texttt{az}^2 + \varepsilon$$ -->
+</section>
+</section>
+<section id="anhang" class="level2" data-number="8.9">
+<h2 data-number="8.9" class="anchored" data-anchor-id="anhang"><span class="header-section-number">8.9</span> Anhang</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> dat1 <span class="sc">%&gt;%</span> <span class="fu">select</span>(<span class="sc">-</span><span class="fu">matches</span>(<span class="st">"compl"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="pred" class="level3" data-number="8.9.1">
+<h3 data-number="8.9.1" class="anchored" data-anchor-id="pred"><span class="header-section-number">8.9.1</span> Vorhergesagte Werte</h3>
+<p>Die vorhergesagten Werte von <code>lm()</code> finden sich unter <code>$fitted.values</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>fitted.values</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>        1         2         3         4         5         6         7         8 
+ 1.337972 -0.500994  1.337972  6.854871 10.532803 12.371769 14.210736  6.854871 </code></pre>
+</div>
+</div>
+<p>Diese vorhergesagten Werte entsprechen einfach der Summe aus dem Wert unter <code>Intercept</code> und dem Wert unter <code>var1</code> multipliziert mit dem jeweiligen Wert für <code>var1</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>m1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = var2 ~ var1, data = dat1)
+
+Coefficients:
+(Intercept)         var1  
+     -2.340        1.839  </code></pre>
+</div>
+</div>
+<p>Für die erste Zeile aus <code>dat1</code> ergibt sich also <code>m1</code> folgender vorhergesagter Wert: <code>2.1351+0.5811*1=</code>2.7162</p>
+<p>Die Werte unter <code>fitted.values</code> folgen der Reihenfolge im Datensatz, sodass wir sie einfach als neue Spalte in <code>dat1</code> ablegen können:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_vorhersagen <span class="ot">&lt;-</span> m1<span class="sc">$</span>fitted.values</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id var1 var2 educ gend  x ed_fct lm_vorhersagen
+1  1    2    2    3    2  2   high       1.337972
+2  2    1    2    1    1  1  basic      -0.500994
+3  3    2    1    2    1  2 medium       1.337972
+4  4    5    9    2    2  4 medium       6.854871
+5  5    7    7    1    1  1  basic      10.532803
+6  6    8    4    3    2 NA   high      12.371769
+7  7    9   25    2    1 NA medium      14.210736
+8  8    5    3   -1    2 NA   &lt;NA&gt;       6.854871</code></pre>
+</div>
+</div>
+<p>Die Grafik zeigt wie Vorhersagen auf Basis von <code>m1</code> aussehen: Sie entsprechen den Werten auf der blauen Geraden (der sog. Regressionsgeraden) an den jeweiligen Stellen für <code>var1</code>.</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span>      </span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid figure-img" width="288"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="res2" class="level3" data-number="8.9.2">
+<h3 data-number="8.9.2" class="anchored" data-anchor-id="res2"><span class="header-section-number">8.9.2</span> Residuen</h3>
+<p>Die hellblauen Punkte (also die Vorhersagen von <code>m1</code>) liegen in der Nähe der tatsächlichen Punkte. Trotzdem sind auch die hellblauen Punkte nicht deckungsgleich mit den tatsächlichen Werten. Diese Abweichungen zwischen den vorhergesagten und tatsächlichen Werten werden als Residuen bezeichnet: <span class="math display">\[Residuum = beobachteter\, Wert \; - \; vorhergesagter\,Wert\]</span> <span class="math display">\[\varepsilon_{\text{i}} = \text{y}_{i} - \hat{y}_{i}\]</span> Wir können diese per Hand berechnen als Differenz zwischen dem tatsächlichen und dem vorhergesagten Wert oder einfach unter <code>m1$residuals</code> aufrufen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>m1<span class="sc">$</span>residuals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>         1          2          3          4          5          6          7 
+ 0.6620278  2.5009940 -0.3379722  2.1451292 -3.5328032 -8.3717694 10.7892644 
+         8 
+-3.8548708 </code></pre>
+</div>
+</div>
+<p>Auch die Residuen für <code>lm</code> können wir in <code>dat1</code> ablegen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>lm_residuen <span class="ot">&lt;-</span> m1<span class="sc">$</span>residuals</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>dat1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  id var1 var2 educ gend  x ed_fct lm_vorhersagen lm_residuen
+1  1    2    2    3    2  2   high       1.337972   0.6620278
+2  2    1    2    1    1  1  basic      -0.500994   2.5009940
+3  3    2    1    2    1  2 medium       1.337972  -0.3379722
+4  4    5    9    2    2  4 medium       6.854871   2.1451292
+5  5    7    7    1    1  1  basic      10.532803  -3.5328032
+6  6    8    4    3    2 NA   high      12.371769  -8.3717694
+7  7    9   25    2    1 NA medium      14.210736  10.7892644
+8  8    5    3   -1    2 NA   &lt;NA&gt;       6.854871  -3.8548708</code></pre>
+</div>
+</div>
+<p>Hier sind die Residuen für <code>lm</code> hellblau eingezeichnet:</p>
+<div class="cell" data-layout-align="center">
+<details>
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat1, <span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> var2)) <span class="sc">+</span> </span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">color =</span> <span class="st">"darkblue"</span> , <span class="at">se =</span> <span class="cn">FALSE</span>,<span class="at">size =</span>.<span class="dv">65</span>) <span class="sc">+</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_segment</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">xend =</span> var1, <span class="at">y =</span> var2, <span class="at">yend =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> .<span class="dv">65</span>, <span class="at">linetype =</span> <span class="dv">1</span>) <span class="sc">+</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> var1, <span class="at">y =</span> lm_vorhersagen), <span class="at">color =</span> <span class="st">"dodgerblue3"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expand_limits</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>),<span class="at">y=</span><span class="fu">c</span>(<span class="dv">0</span>,<span class="dv">8</span>)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid figure-img" width="264"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="annahmen-checken" class="level3" data-number="8.9.3">
+<h3 data-number="8.9.3" class="anchored" data-anchor-id="annahmen-checken"><span class="header-section-number">8.9.3</span> Annahmen checken</h3>
+<p><a href="https://easystats.github.io/easystats/reference/model_dashboard.html">model dashboard</a></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"performance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a>model_test <span class="ot">&lt;-</span> <span class="fu">check_model</span>(m4)</span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(model_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="09_reg_files/figure-html/reg02-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="test-auf-normalverteilung-der-residuen" class="level3" data-number="8.9.4">
+<h3 data-number="8.9.4" class="anchored" data-anchor-id="test-auf-normalverteilung-der-residuen"><span class="header-section-number">8.9.4</span> Test auf Normalverteilung der Residuen</h3>
+<p>Grafische Überprüfung: Q-Q-Plot</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggfortify)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(m1,<span class="at">which =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid figure-img" style="width:60.0%"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Überprüfen lässt sich die NV-Annahme mit dem Shapiro-Wilk-Test &amp; <code>shapiro.test()</code>. Dieser testet die <span class="math inline">\(H_0\)</span>: “Die Residuen sind normalverteilt” gegen die <span class="math inline">\(H_A\)</span>: “Die Residuen weichen signifikant von der Normalverteilung ab”</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">shapiro.test</span>(m1<span class="sc">$</span>residuals) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Shapiro-Wilk normality test
+
+data:  m1$residuals
+W = 0.95346, p-value = 0.746</code></pre>
+</div>
+</div>
+</section>
+<section id="test-auf-homoskedastizität" class="level3" data-number="8.9.5">
+<h3 data-number="8.9.5" class="anchored" data-anchor-id="test-auf-homoskedastizität"><span class="header-section-number">8.9.5</span> Test auf Homoskedastizität</h3>
+<p>Homoskedastizität ist gegeben, wenn die vorhergesagten Werte über den kompletten Wertebereich (ungefähr) gleich weit von den tatsächlichen Werten (<code>m1\$fitted.values</code>) entfernt sind. Auch hier gibt es eine graphische Überprüfungsmethode sowie einen Test. Zur graphischen Überprüfung werden die vorhergesagten Werten und die Residuen als Scatterplot dargestellt. Auch hier hilft uns <code>autoplot()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(m1, <span class="at">which =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/unnamed-chunk-38-1.png" style="height:50.0%" width="672" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Der dazugehörige Test ist der <code>Breusch-Pagan-Test</code>. Dieser testet die <span class="math inline">\(H_0\)</span> “Homoskedastizität” gegen die <span class="math inline">\(H_A\)</span> “Heteroskedastizität”, der p-Wert gibt also an mit welcher Irrtumswahrscheinlichkeit wir die Homoskedastizitäts-Annahme verwerfen müssen. In R können wir dafür <code>bptest</code> aus dem Paket <code>lmtest</code> verwenden:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"lmtest"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmtest)</span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(m3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    studentized Breusch-Pagan test
+
+data:  m3
+BP = 3.6069, df = 2, p-value = 0.1647</code></pre>
+</div>
+</div>
+</section>
+<section id="test-auf-multikollinearität" class="level3" data-number="8.9.6">
+<h3 data-number="8.9.6" class="anchored" data-anchor-id="test-auf-multikollinearität"><span class="header-section-number">8.9.6</span> Test auf Multikollinearität</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"car"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># library(car)</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>pendx <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>,<span class="at">n_max =</span> <span class="dv">300</span>)  <span class="sc">%&gt;%</span> <span class="fu">filter</span>(netges <span class="sc">&gt;</span><span class="dv">0</span>, palter <span class="sc">&gt;</span><span class="dv">0</span> )</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>mox <span class="ot">&lt;-</span> <span class="fu">lm</span>(netges <span class="sc">~</span> palter <span class="sc">+</span> azges1,<span class="at">data=</span>pendx)</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">vif</span>(mox)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  palter   azges1 
+1.000133 1.000133 </code></pre>
+</div>
+</div>
+<p>Interpretation:</p>
+<!-- + Als Daumenregel zur Beurteilung der Toleranz gilt ein Wert von 0,10 (also 10\% eigenständiger Varianzanteil), der nicht unterschritten werden sollte. Häufig wird jedoch ein strikterer Grenzwert von 0,20 bis 0,25 empfohlen. Nach unserer Beispielrechnung oben besteht also kein Problem. -->
+<ul>
+<li>Ein verbreiteter Schwellenwert des VIF beträgt 10,00. Werte des VIF über 10 deuten auf ein schwerwiegendes Multikollinearitätsproblem, oftmals werden Gegenmaßnahmen schon ab einem strikteren Grenzwert von ca. 5,00 empfohlen. Im konkreten Beispiel ist für alle UVs also nach beiden Grenzwerten alles in Ordnung.</li>
+<li>Beim Vorliegen von Mulitkollinearität gibt es mehrere Möglichkeiten, das zu beheben: Wir können eine oder mehrere unabh. Variablen aus dem Modell ausschließen. Das ist letztlich eine inhaltliche Frage und kann nicht mit einem Standardrezept gelöst werden. Alternativ können wir die kollinearen unabh. Variablen zu Indexvariablen zusammenfassen. Wir würden also einen gemeinsamen Index, bspw. der Mittelwert über die jeweiligen unabh. Variablen, erstellen.</li>
+</ul>
+</section>
+<section id="regressionsmodelle-vergleichen" class="level3" data-number="8.9.7">
+<h3 data-number="8.9.7" class="anchored" data-anchor-id="regressionsmodelle-vergleichen"><span class="header-section-number">8.9.7</span> Regressionsmodelle vergleichen</h3>
+<p>Mit dem Paket <code>{performance}</code> können wir auch einen umfassenden Modellvergleich bekommen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"performance"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(performance)</span>
+<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_performance</span>(m1,m4,<span class="at">metrics =</span> <span class="fu">c</span>(<span class="st">"R2"</span>,<span class="st">"R2_adj"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: When comparing models, please note that probably not all models were fit
+  from same data.</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Comparison of Model Performance Indices
+
+Name | Model |    R2 | R2 (adj.)
+--------------------------------
+m1   |    lm | 0.486 |     0.400
+m4   |    lm | 0.700 |     0.400</code></pre>
+</div>
+</div>
+</section>
+<section id="broomplt" class="level3" data-number="8.9.8">
+<h3 data-number="8.9.8" class="anchored" data-anchor-id="broomplt"><span class="header-section-number">8.9.8</span> Individuelle Koeffizientenplots mit <code>{broom}</code></h3>
+<p><code>modelplot()</code> bietet eine schnelle Art, Koeffizientenplots zu erstellen, allerdings verwende ich häufig <a href="https://broom.tidyverse.org/"><code>{broom}</code></a>. Mit <code>broom::tidy(..., conf.int = TRUE)</code> bekommen wir einen <code>data.frame</code> mit den Ergebnissen des Regressionsmodells, die wir bspw. in einem <code>{ggplot2}</code> weiterverarbeiten können - wenn uns die Standardlösung von <a href="./09_reg.html#modelplot"><code>modelplot()</code></a> nicht weiterhilft/gefällt:</p>
+<div class="cell" data-layout-align="center">
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(broom) <span class="do">## schon geladen als Teil des tidyverse</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 7
+  term         estimate std.error statistic p.value conf.low conf.high
+  &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;
+1 (Intercept)      4.5       6.26     0.719   0.512    -12.9      21.9
+2 ed_fctmedium     7.17      8.08     0.887   0.425    -15.3      29.6
+3 ed_fcthigh      -1.5       8.85    -0.170   0.874    -26.1      23.1</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(m3, <span class="at">conf.int =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">term =</span> <span class="fu">str_replace</span>(term, <span class="st">"ed_fct"</span>, <span class="st">"Education: "</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> term, <span class="at">x =</span> estimate)) <span class="sc">+</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="fu">aes</span>(<span class="at">xintercept =</span> <span class="dv">0</span>), <span class="at">linetype =</span> <span class="st">"dashed"</span>, <span class="at">color =</span> <span class="st">"navy"</span>) <span class="sc">+</span></span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> conf.low, <span class="at">xmax  =</span> conf.high), <span class="at">height =</span> .<span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb70-6"><a href="#cb70-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">color =</span> <span class="st">"orange"</span>, <span class="at">shape =</span> <span class="dv">18</span>,<span class="at">size =</span> <span class="dv">7</span>) <span class="sc">+</span></span>
+<span id="cb70-7"><a href="#cb70-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>(<span class="at">base_size =</span> <span class="dv">16</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="09_reg_files/figure-html/mod1_tidy-1.png" style="width:90.0%;height:50.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation column-body">
+  <div class="nav-page nav-page-previous">
+      <a href="./07_inferenz.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Inferenzstatistik &amp; Zusammenhangsmaße</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09_reg2.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Regressionsmodelle: Erweiterungen</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+      &nbsp;
+    </div>   
+    <div class="nav-footer-center">Alle Kursinhalte <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> 2023 von <a href="https://afilser.netlify.app/">Andreas Filser</a><br> <a href="https://creativecommons.org/licenses/by-nc/4.0/">CC Lizenz mit Namensnennung <i class="fa-brands fa-creative-commons" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-by" aria-hidden="true"></i> <i class="fa-brands fa-creative-commons-nc" aria-hidden="true"></i></a><br> Erstellt mit <i class="fa-brands fa-r-project" aria-hidden="true"></i>, Code <a href="https://github.com/filius23/R_IAB">hier einsehbar <i class="fa-brands fa-github" aria-hidden="true"></i></a></div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
+
+
+
+</body></html>

@@ -6,6 +6,8 @@ knitr::opts_chunk$set(echo = TRUE, cache = F, dpi=500)
 # purrr::map(c("tidyverse", "fixest", "marginaleffects",
 #                "modelsummary", "kableExtra"),library)
 
+
+
 mark_color <- "grey25"
 color1x =  "#00519E" # uol farbe
 colorhex <- "#FCFCFC" #"#FCF9F0FF"7
@@ -69,7 +71,7 @@ Wenn wir die beiden Modelle `m1` und `m3` vergleichen, sehen wir unterschiedlich
 ```{r}
 m1 <- lm(var2~ var1, data = dat1)  
 m4 <- lm(var2 ~ ed_fct  + var1, dat1)
-modelsummary(list("m1"=m1,"m4"=m4),gof_omit = "IC|RM|Log|F")
+modelsummary(list("m1"=m1,"m4"=m4),gof_omit = "IC|RM|Log|F",output = "flextable")
 ```
 
 
@@ -143,7 +145,7 @@ dat1 %>% filter(compl_m1 == T & compl_m4 == F)
 Außerdem können wir jetzt auch das Modell `m1` so erstellen, dass wir nur die Fälle miteinbeziehen, die auch in Modell2 berücksichtigt werden:
 ```{r}
 m1_m4vars <- lm(var2 ~ var1     , data = filter(dat1,compl_m4 == T))
-modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|Log|F")
+modelsummary(list("m1"=m1,"m1 mit m4vars"=m1_m4vars,"m4"=m4),gof_omit = "IC|RM|Log|F",output = "flextable")
 ```
 
 Jetzt haben wir also in `m1 mit m4vars` und `m4` die gleiche Fallzahl und können so die Ergebnisse direkt miteinander vergleichen.
@@ -221,36 +223,24 @@ ggpredict(m6, terms = c("var1")) %>% plot()
 #| message: false
 #| warning: false
 library(survey)
-etb18 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta") 
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") %>% filter(netges > 0 , palter > 0)
+wgt_df <- haven::read_dta("./orig/pweights_cf_W13.dta")
+head(wgt_df)
+pend_wgt <- pend %>% left_join(wgt_df, by = join_by(pnr,welle))
 
-etb18_k9 <- etb18 %>% filter(F518_SUF < 99998, zpalter < 100)
-modx <- lm(F518_SUF ~ zpalter + I(zpalter^2),data=etb18_k9)
 
-etb18_weighted <- svydesign(id      = ~intnr,
-                            weights = ~gew2018,
-                            data    = etb18_k9)
+modx <- lm(netges ~ palter + I(palter^2),data=pend)
+
+pend_weighted <- svydesign(id      = ~pnr,
+                           weights = ~wqp,
+                           data    = pend_wgt)
+
 # family = gaussian() bekommen wir ein lineares Regressionsmodell, wie bei lm() - mit gewichtet
-survey_modx <- svyglm(F518_SUF ~ zpalter + I(zpalter^2), 
-                    family = gaussian(), data = etb18,design = etb18_weighted)
+survey_modx <- svyglm(netges ~ palter + I(palter^2), 
+                    family = gaussian(), data = etb18,design = pend_weighted)
 
-modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log")
+modelsummary(list("lm()"=modx,"svyglm()"= survey_modx),gof_omit = "RM|IC|Log",output = "flextable")
 ```
-
-
-
-<!-- ## Weitere Beispiele mit `starwars` -->
-
-<!-- Die folgenden Beispiele basieren vornehmlich auf dem `starwars`-Datensatz aus `{dplyr}`, hier ein kurzer Blick in die Daten: -->
-
-<!-- ```{r starwars} -->
-<!-- starwars %>% select(name,height,mass,hair_color,gender) -->
-<!-- ``` -->
-
-<!-- Unser Beispiel ist ein simples: der Zusammenhang zwischen Größe und Gewicht der Star Wars Helden: -->
-<!-- ```{r mod1} -->
-<!-- mod1 <- lm(mass ~ height, data = starwars) -->
-<!-- ``` -->
-
 
 ## "Robuste" Standardfehler {#rbst}
 
@@ -270,11 +260,16 @@ Eine Option ist auch `stata`, um Ergebnisse aus Statas `, robust` zu replizieren
 [Hier mehr](https://declaredesign.org/r/estimatr/articles/stata-wls-hat.html) zu den Hintergründen und Unterschieden.
 
 Basierend auf [den oben eingelesenen Daten](#gew) können wir folgendes Modell schätzen:
-```{r mod1_robust_stata}
-mod1 <- lm(F518_SUF ~ zpalter + I(zpalter^2),data=etb18_k9) 
+```{r}
+mod1 <- lm(netges ~ palter + I(palter^2),data=pend) 
 
 library(modelsummary)
-modelsummary(list(mod1,mod1,mod1,mod1),vcov = c("classical","HC","HC2","stata"),gof_omit = "RM|IC|Log")
+modelsummary(list(mod1,mod1,mod1,mod1),vcov = c("classical","HC","HC2","stata"),gof_omit = "RM|IC|Log",output = "flextable")
+```
+
+Für geclusterste SE geben wir `~clustervariable` an;
+```{r}
+modelsummary(mod1, vcov = c("classical",~pnr), stars = T,gof_omit = "RM|IC|Log|F",output = "flextable")
 ```
 
 ## Fixed effects Modelle mit `{fixest}` {#fe}
@@ -294,31 +289,31 @@ Wir fügen lediglich mit `|` die Variable hinzu, welche die FEs festlegt:
 
 ```{r ols_fe, message=FALSE}
 library(fixest)
-fe_mod1 <- feols(F518_SUF ~ zpalter + I(zpalter^2) | Bula, data = etb18_k9)
+fe_mod1 <- feols(netges ~ palter + I(palter^2) | pnr, data = pend)
 fe_mod1
 ```
 
-`{fixest}` clustert automatisch die Standardfehler entlang der FE-Variable (hier also `Bula`).
+`{fixest}` clustert automatisch die Standardfehler entlang der FE-Variable (hier also `pnr`).
 Wenn wir das mal nicuth möchten, können wir mit der `se`-Option `= "standard"` ungeclusterte SE anfordern:
 ```{r ols_fe_standard_et, message=FALSE}
 summary(fe_mod1, se = 'standard')
-summary(fe_mod1, cluster = ~Bula)
+summary(fe_mod1, cluster = ~pnr)
 ```
 
 `{modelsummary}` zeigt die geclusterten SE:
-```{r modsum_se, message=FALSE}
-modelsummary(list(fe_mod1),gof_omit = "R|IC|Log|F")
+```{r, message=FALSE}
+modelsummary(list(fe_mod1),gof_omit = "R|IC|Log|F",output = "flextable")
 ```
 
 ## Mehrebenenmodelle mit `{lme4}` {#mlvl}
 
 
-Mit `lmer()` können wir ein Random Intercept Modell berechnen, indem wir mit `( 1 | Bula)` angeben, dass für `Bula` jeweils ein eigenes Random Intercept berechnet werden soll:
+Mit `lmer()` können wir ein Random Intercept Modell berechnen, indem wir mit `( 1 | pnr)` angeben, dass für `pnr` jeweils ein eigenes Random Intercept berechnet werden soll:
 ```{r}
 library(lme4)
-ml_m3 <- lmer(F518_SUF ~ zpalter + I(zpalter^2) + ( 1 | Bula), data=etb18_k9)
+ml_m3 <- lmer(netges ~ palter + I(palter^2) + ( 1 | pnr), data=pend)
 
-modelsummary(list(ml_m3),gof_omit = "R|IC|Log|F")
+modelsummary(list(ml_m3),gof_omit = "R|IC|Log|F",output = "flextable")
 ```
 
 Mehr zu Mehrebenenmodellen und `{lme4}` in Blogposts von [Rense Nieuwenhuis ](http://www.rensenieuwenhuis.nl/r-sessions-16-multilevel-model-specification-lme4/) und [Tristan Mahr](https://www.tjmahr.com/plotting-partial-pooling-in-mixed-effects-models/).
@@ -366,35 +361,29 @@ Für den `ggplot()` verwenden wir dann `geom_line()` zusammen mit
 + mit `geom_ribbon()` erhalten wir die Konfidenzintervalle als Konfidenzbänder (hier müssen wir mit `alpha = ` die Deckkraft der etwas heruntersetzen und die Farbe mit `fill=` angeben um den Bereich einzufärben). 
 ```{r}
 #| layout-ncol: 2
-ggplot(data= data.frame(p),
-       aes(x = var1, 
-           y =  estimate, 
-           ymin = conf.low,ymax = conf.high,
-           color = g_fct)) + 
-  geom_line() + 
-  geom_errorbar(width = .1) +
-  scale_color_manual(values = c("orange","lightskyblue3"),breaks = c("women","men"),labels=c("Frauen","Männer")) +
-  labs(title = "Vorhergesagte Werte für var2",
-       color = "Gender",
-       x = "Werte für var1",
-       y = "Vorhergesagte Werte für var1") +
-  theme_minimal()
+pred_plt <- 
+    ggplot(data= data.frame(p),
+           aes(x = var1, 
+               y =  estimate, 
+               ymin = conf.low,ymax = conf.high,
+               color = g_fct)) + 
+      geom_line() + 
+      scale_color_manual(values = c("orange","lightskyblue3"),breaks = c("women","men"),labels=c("Frauen","Männer")) +
+      labs(title = "Vorhergesagte Werte für var2",
+           color = "Gender",
+           x = "Werte für var1",
+           y = "Vorhergesagte Werte für var1") +
+      theme_minimal()
 
+# Konfidenzintervalle
+pred_plt + 
+  geom_point(size = 2.75) +
+  geom_errorbar(width = .1)
 
-ggplot(data= data.frame(p),
-       aes(x = var1, 
-           y =  estimate, 
-           ymin = conf.low,ymax = conf.high,
-           color = g_fct, fill = g_fct)) + 
-  geom_line() + 
-  geom_ribbon(alpha = .1, color = NA) +
-  scale_color_manual(values = c("orange","lightskyblue3"),breaks = c("women","men"),labels=c("Frauen","Männer")) +
+# mit Konfidenzbändern
+pred_plt + 
+  geom_ribbon(alpha = .1, color = NA,aes(fill = g_fct)) +
   scale_fill_manual(values = c("orange","lightskyblue3"),breaks = c("women","men"),labels=c("Frauen","Männer")) +
-  labs(title = "Vorhergesagte Werte für var2",
-       color = "Gender", fill = "Gender",
-       x = "Werte für var1",
-       y = "Vorhergesagte Werte für var1") +
-  theme_minimal()
-
+  labs(fill = "Gender")
 ```
 
