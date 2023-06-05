@@ -110,9 +110,11 @@ dat4
 
 Wenn wir logische Variablen mit `as.numeric()` in numerische Variablen umformatieren erhalten wir eine Dummy-Codierung:
 ```{r}
-as.numeric(dat3$prom_recht )
+
 dat3 %>% 
-  mutate(prom_dummy = as.numeric(prom_recht ) )
+  mutate(prom_dummy = as.numeric(prom_recht ),
+         over10k    = as.numeric(studs > 10000) # Abgleich direkt in numeric
+         )
 ```
 
 :::
