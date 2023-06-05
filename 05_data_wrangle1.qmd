@@ -1,4 +1,4 @@
-# Data Wrangling I: Labels {#wrang1}
+# Data Wrangling I: Labels & factor {#wrang1}
 
 
 ```{r setup05, echo = F, include=FALSE}
@@ -12,9 +12,10 @@ theme_set(theme_gray() + theme(axis.text.x = element_text(size=rel(1.45))))
 ```
 ```{r}
 library(tidyverse)
-etb18_kap5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01","az","zpalter")) %>% 
-  filter(F411_01<9, zpalter < 100)
+
+pend_kap5 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                             col_select = c("pnr","welle", "zpsex", "PSM0100","azges1","palter")) %>% 
+  filter(welle == 8, palter > 0,azges1 > 0)
 ```
 
 
@@ -26,21 +27,21 @@ Wenn wir bspw. die Ansicht mit `View()` öffnen oder eine Auszählung mit `count
 
 ```{r}
 #| eval: false
-View(etb18_kap5)
-etb18_kap5 %>% count(S1)
+View(pend_kap5)
+pend_kap5 %>% count(zpsex)
 ```
 
 Diese sind als `attributes()` Variablen zugeordnet:
 
 ```{r}
-attributes(etb18_kap5$S1)
+attributes(pend_kap5$zpsex)
 ```
 ...leider machen die `attributes()` immer wieder Probleme:
 ```{r}
 #| error: true
 library(ggplot2)
 
-ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1 )) + 
+ggplot(data = pend_kap5, aes(x = palter, y = azges1, color = zpsex )) + 
   geom_point()
 ```
 In den beiden vorherigen Kapiteln haben wir schon gesehen, dass Labels in R immer etwas extra Aufwand bedeuten.
@@ -54,9 +55,10 @@ Wie können wir die Labels `attributes()` verwenden und so Tipparbeit sparen?
 #| warning: false
 library(labelled)
 library(gt)
-tibble(value = 1:2,
-           `.` = "",
-           label = names(val_labels(unique(etb18_kap5$S1)))) %>% 
+attributes(pend_kap5$zpsex)$labels %>% 
+  enframe(name = "label") %>% 
+  relocate(value) %>% 
+  filter(value > 0) %>% 
   flextable::flextable() %>% 
   flextable::border_remove() %>% 
   flextable::autofit()
@@ -66,81 +68,59 @@ tibble(value = 1:2,
 
 [^2]: Nicht zu verwechseln mit `as.factor()` aus base R - der `_` macht einen Unterschied!
 ```{r}
-etb18_kap5$S1_fct <- as_factor(etb18_kap5$S1)
+pend_kap5$zpsex_fct <- as_factor(pend_kap5$zpsex)
 
 # ansehen:
-etb18_kap5 %>% select(contains("S1")) %>% head()
+pend_kap5 %>% select(contains("zpsex")) %>% head()
 ```
 
 ```{r}
-ggplot(data = etb18_kap5, aes(x = zpalter, y = az, color = S1_fct )) + 
+ggplot(data = pend_kap5, aes(x = palter, y = azges1, color = zpsex_fct )) + 
   geom_point()
 ```
 
 ## `factor` selbst erstellen oder bearbeiten
 
-Für `m1202` sind die Labels aber etwas lang:
+Alternativ können wir auch mit `factor()` sowie den Optionen `levels` und `labels` selber labeln. Die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen.
 ```{r}
-tab1 <- etb18_kap5 %>% count(m1202) %>% mutate(m1202_fct = as_factor(m1202))
-tab1
-```
-Alternativ können wir auch mit `factor()` und `levels` und `labels` selber labeln. Die `labels` werden dann der Reihenfolge nach den Zahlen aus `levels` zugewiesen. Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
-```{r}
-tab1$m1202_fct2 <- factor(tab1$m1202, 
-                        levels = c(1,2,3,4), 
-                        labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
-tab1
+pend_kap5$zpsex_fct2 <- factor(pend_kap5$zpsex,
+                               levels = c(1,2),
+                               labels = c("Männer","Frauen"))
+
+# ansehen:
+pend_kap5 %>% select(contains("zpsex")) %>% head()
 ```
 
 
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- theme_set(theme_gray(base_size = 15) + theme(axis.title.x = element_text(size = rel(1.15),face = "bold",family = "mono")))  -->
-<!-- ``` -->
-<!-- ```{r} -->
-<!-- #| out-height: 60% -->
-<!-- #| out-width: 60% -->
-<!-- #| fig-align: "center" -->
-<!-- #| layout-ncol: 2 -->
-<!-- tab1 %>%  -->
-<!--   ggplot(data = ., aes(y = m1202_fct, x = n)) + -->
-<!--   geom_col(position=position_dodge(), fill = "sienna1") + -->
-<!--   labs(y="") -->
 
-<!-- tab1 %>%  -->
-<!--   ggplot(data = ., aes(y = m1202_fct2, x = n)) + -->
-<!--   geom_col(position=position_dodge(), fill = "mediumturquoise") + -->
-<!--   labs(y="") -->
-<!-- ``` -->
+Außerdem wird aus allen nicht angegebenen `levels` automatisch `NA`:
+```{r}
+attributes(pend_kap5$PSM0100)
 
-<!-- **[Blogbeitrag zu labels in R](https://www.pipinghotdata.com/posts/2022-09-13-the-case-for-variable-labels-in-r/)** -->
+pend_kap5 %>% select(PSM0100) %>% head()
+pend_kap5$PSM0100_fct <- 
+  factor(pend_kap5$PSM0100, 
+         levels = 1:2, 
+         labels = c("Nutzt soziale Netzwerke","Nutzt keine soziale Netzwerken"))
+
+# Ergebnis ansehen:
+pend_kap5 %>% select(contains("PSM0100")) %>% head()
+```
 
 Oder wir nutzen die Funktionen aus `{forcats}` zur recodierung eines `factors`.
 `{forcats}` ist Teil des `{tidyverse}`.
 Mit `fct_recode()` können wir die `levels` verändern:
 ```{r}
-levels(tab1$m1202_fct)[3]
+levels(pend_kap5$PSM0100_fct)
 
-tab1$m1202_fct3 <- fct_recode(tab1$m1202_fct,
-  `duale / schulische Ausb.` = "duale o. schulische Berufsausbildung/einf.,mittl. Beamte", # bei Leerzeichen `` um die Wörter
+pend_kap5$PSM0100_fct2 <- fct_recode(pend_kap5$PSM0100_fct,
+  `Ja, nutzt soziale Netzwerke` = "Nutzt soziale Netzwerke", # bei Leerzeichen `` um die Wörter
   )
 ```
 
 
 ```{r}
-#| eval: false
-tab1 %>% select(m1202_fct,m1202_fct2,m1202_fct3)
-```
-```{r}
-#| echo: false
-#| warning: false
-library(systemfonts)
-library(flextable)
-tab1 %>% select(m1202_fct,m1202_fct2,m1202_fct3) %>% flextable() %>% 
-  autofit() %>% border_remove() %>% 
-  bg(i = ~m1202_fct2 == "dual/schul.",bg = "#CFFFDF") %>%
-  flextable::font(part = "header",fontname = "Azeret Mono")
-    
+pend_kap5 %>% select(contains("PSM0100")) %>% head()
 ```
 
 [Weitere `fct_....()` Funktionen aus `{forcats}`](#fct_cats), einen Überblick gibt das [Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/factors.pdf).
@@ -148,46 +128,30 @@ tab1 %>% select(m1202_fct,m1202_fct2,m1202_fct3) %>% flextable() %>%
 ## Übung
 
 ```{r}
-etb18_ue5 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                               col_select = c("intnr", "S1", "m1202", "Bula","F411_01")) %>% 
-  filter(F411_01<9)
+pend_ue5 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                               col_select = c("pnr","welle","PD0400")) %>% 
+  filter(PD0400>0)
 ```
 
-Bearbeiten Sie die labels dieses Diagramms:
-
-**`F411_01`: `r str_wrap(attributes(etb18_kap5$F411_01)$label)`iten?**
-
+Bearbeiten Sie die *value labels* von `PD0400`: `r str_wrap(attributes(pend_ue5$PD0400)$label)`
 
 ```{r}
 #| echo: false
 #| warning: false
-library(labelled)
-data.frame(value = 1:4,
-           label = names(val_labels(etb18_kap5$F411_01)[-5])) %>% 
+
+attributes(pend_ue5$PD0400)$labels %>% 
+  enframe(name = "label") %>% 
+  relocate(value) %>% 
+  filter(value > 0) %>% 
   kableExtra::kable()
 ```
 
-```{r}
-#| code-fold: show
-#| out-width: "50%"
-#| out-height: "50%"
-#| warning: false
-tab_ue5 <- 
-  etb18_ue5 %>% 
-  count(F411_01)
-tab_ue5
 
-tab_ue5 %>%
-  ggplot(data = ., aes(x = F411_01, y = n)) +
-  geom_col(fill = "steelblue3")
-```
++ Verschaffen Sie sich zunächst mit `head()` und einer Auszählung mit `count()` einen Überblick.
++ Wie können Sie die labels aus den `attributes()` mit `as_factor()` in eine Variable `PD0400_fct` übernehmen?
++ Erstellen Sie einen `factor()` Variable `F411_01_fct2` mit *value labels*: `1 = Überhaupt nicht`, `2 = Eher nicht`,`3 = Eher schon`,`4 = Sehr`
 
-+ Erstellen Sie dafür zunächst einen `data.frame` mit der Auszählung durch `count()` und legen diese als Objekt ab.
-+ Wie können Sie die labels aus den `attributes()` mit `as_factor()` in eine Variable `F411_01_fct` übernehmen?
-+ Erstellen Sie einen `factor()` Variable `F411_01_fct2` mit den den gewünschten Beschriftungen mit Hilfe von `labels =`. (Sie können die Labels der Variable `F411_01` mit `attributes(etb18_kap5$F411_01)$labels` nachsehen.) 
-+ Verwenden Sie die gelabelten Variablen für die Grafik.
-
-**Bonusübung:** Was müssten wir ändern, um die Grafik nach Geschlecht (`S1`) zu erstellen?
+**Bonusübung:** Verwenden Sie die gelabelte Variable für eine Balkengrafik.
 
 ## Anhang
 
@@ -196,8 +160,13 @@ tab_ue5 %>%
 Häufig führen die Label-`attributes()` zu Problemen in der weiteren Verarbeitung.
 Mit `haven::zap_labels()` können wir die Value labels aus einem Datensatz löschen mit `haven::zap_label()` können wir die Variable labels entfernen.
 ```{r}
-etb18_kap5
-etb18_kap5 %>% 
+#| echo: false
+pend_kap5 <- pend_kap5 %>% select(c("pnr","welle", "zpsex", "PSM0100","azges1","palter"))
+```
+
+```{r}
+pend_kap5
+pend_kap5 %>% 
   haven::zap_labels() # value labels raus
 ```
 
@@ -207,32 +176,23 @@ etb18_kap5 %>%
 Ein alternativer Weg geht über einen kleinen Label-`data.frame` und `left_join()` (mehr zu `left_join()` später.)
 
 ```{r}
-tab2 <- etb18_kap5 %>% count(m1202)
+tab2 <- pend_kap5 %>% count(PSM0100)
+tab2
 ```
 ```{r}
-lab_df <- data.frame(m1202=1:4)
+lab_df <- data.frame(PSM0100=1:2)
 lab_df
-lab_df$m1202_lab <- factor(lab_df$m1202,levels = 1:4,
-                           labels = c("ohne Abs.", "dual/schul.", "Aufstiegsfortb.", "FH/Uni"))
+lab_df$PD0400_lab <- factor(lab_df$PSM0100,levels = 1:2,
+                           labels = c("Nutzt soziale Netzwerke",
+                                      "Nutzt keine soziale Netzwerken"))
 lab_df
 ```
 
 
 ```{r}
 tab2 %>% 
-  left_join(lab_df,by = "m1202")
+  left_join(lab_df,by = "PSM0100")
 ```
-In `ggplot()` geben wir dann `m1202_lab` an, um diese auf die x-Achse zu setzen:
-```{r}
-#| out-width: "80%"
-#| out-height: "50%"
-tab2 %>% 
-  left_join(lab_df,by = "m1202") %>% 
-  ggplot(data = ., aes(x = m1202_lab, y = n)) +
-  geom_col(position=position_dodge(), fill = "turquoise3")
-```
-
-
 
 ### Labels in R erstellen und nach bspw. Stata exportieren
 Wenn wir aber beispielsweise einen Datensatz für Stata labeln wollen, hilft uns wieder `{labelled}`:
@@ -241,23 +201,23 @@ library(labelled)
 ```
 
 ```{r}
-etb18_kap5$S1_num2 <- as.numeric(etb18_kap5$S1)
-attributes(etb18_kap5$S1_num2)
-val_labels(etb18_kap5$S1_num2) <- c("Mann"=1,"Frau"=2)
-attributes(etb18_kap5$S1_num2)
-etb18_kap5 %>% count(S1_num2)
+pend_kap5$zpsex_num2 <- as.numeric(pend_kap5$zpsex)
+attributes(pend_kap5$zpsex_num2)
+val_labels(pend_kap5$zpsex_num2) <- c("Männer"=1,"Frauen"=2)
+attributes(pend_kap5$zpsex_num2)
+pend_kap5 %>% count(zpsex_num2)
 ```
 ```{r}
 #| eval: false
-etb18_kap5 %>% 
-  select(S1_num2) %>% 
-  haven::write_dta(.,path = "./data/etb18_kap5.dta")
+pend_kap5 %>% 
+  select(zpsex_num2) %>% 
+  haven::write_dta(.,path = "./data/pend_kap5.dta")
 ```
 
 ...in *Stata*:
 ```{stata}
-use "./data/etb18_kap5.dta" 
-tab S1_num2
+use "./data/pend_kap5.dta" 
+tab zpsex_num2 
 ```
 
 [Mehr zu `labels` in `{labelled}`](https://joseph.larmarange.net/intro_labelled.html).

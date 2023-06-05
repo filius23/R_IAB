@@ -41,7 +41,7 @@ Zunächst sehen wir uns den Weg zu einem Scatterplot an:
 #| warning: false
 library(haven)
 pend %>%
-  slice(1:1000) %>% 
+  filter(welle==13) %>% 
   mutate(zpsex_fct = factor(zpsex, levels = 1:2, labels = c("Männer","Frauen")),
          palter = ifelse(palter < 0,NA,palter),
          azges1  = ifelse(azges1 < 0,NA,azges1)
@@ -65,10 +65,15 @@ pend <- read_dta("./orig/PENDDAT_cf_W13.dta")
 pend %>% select(azges1,zpsex,palter) %>% head()
 ```
 
-Um die Grafik nicht zu groß zu machen, verwenden wir nur die ersten 100 Beobachtungen:
+Um die Grafik nicht zu groß zu machen, verwenden wir nur die Beobachtungen aus Welle 13:
 ```{r}
-pend$palter[pend$palter>100] <- NA # missing in palter mit NA überschreiben
-pend_small <- pend %>% slice(1:100)
+# missings mit NA überschreiben (wir sehen später noch in Kap6 wie das schneller geht)
+pend$palter[pend$palter>100] <- NA 
+pend$casmin[pend$casmin<0] <- NA
+pend$PAS0100[pend$PAS0100<0] <- NA
+pend$azges1[pend$azges1<0] <- NA
+
+pend_small <- pend %>% filter(welle==13)
 ```
 
 
@@ -191,19 +196,15 @@ Außerdem können wir mit `theme_` ein anderes Design auswählen, zB. mit `theme
 
 ## Kombination aus allem
 ```{r fllplt1}
-#| out-height: 100%
+#| out-height: 60%
 #| out-width: 100%
 #| cache: true
-
-pend_small$casmin[pend_small$casmin<0] <- NA
-pend_small$PAS0100[pend_small$PAS0100<0] <- NA
-pend_small$azges1[pend_small$azges1<0] <- NA
 ggplot(data = pend_small, aes(x = palter, y = azges1, 
                                shape = as.factor(zpsex),
                                color = as_factor(PAS0100))) + 
   geom_point(size = 2) + 
-  scale_color_manual(values = c("lightskyblue","#007ACF","navy","orange") ) +
-  scale_shape_manual(values = c(17:18),
+  scale_color_manual(values = c("#007ACF","navy","lightskyblue","orange") ) +
+  scale_shape_manual(values = c(18,20),
                     breaks = c(1,2), labels = c("Männer", "Frauen")
                      ) +
   labs(color = "", 
@@ -226,26 +227,32 @@ Wenn wir nichts anderes angeben, wird automatisch die gerade offene Grafik[^plot
 Besser ist es aber explizit zu sein und die gewünschte Grafik als Objekt abzulegen und dann in `ggsave()` anzugeben:
 
 ```{r}
-#| eval: false
-plot_objekt1 <- ggplot(data = pend_small, aes(x = palter, y = azges1, 
-                               color = factor(zpsex),
-                               shape = factor(casmin))) + 
+plot_objekt1 <- 
+  ggplot(data = pend_small, aes(x = palter, y = azges1, 
+                               shape = as.factor(zpsex),
+                               color = as_factor(PAS0100))) + 
   geom_point(size = 2) + 
-  scale_color_manual(values = c("lightskyblue3","navy"),
-                    breaks = c(1,2), labels = c("Männer", "Frauen") ) +
-  scale_shape_manual(values = c(15:18),breaks = c(1:4), 
-                     labels = c("ohne Aus", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  labs(color = "Geschlecht",shape = "Ausbildung", fill = "Geschlecht",
-       y = "Arbeitszeit/Woche",x = "Alter",
-       title = "Arbeitszeit und Alter", subtitle = "Nach Geschlecht",caption = "Quelle: ETB 2018") 
+  scale_color_manual(values = c("lightskyblue","#007ACF","navy","orange") ) +
+  scale_shape_manual(values = c(18,20),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")
+                     ) +
+  labs(color = "", 
+       fill = "",
+       shape = "Geschlecht",
+       y = "Arbeitszeit/Woche",
+       x = "Alter",
+       title = "Arbeitszeit und Alter",
+       subtitle = "Nach Geschlecht",
+       caption = "Quelle: PASS CF 0619"
+       ) 
 ```
 
 
 ```{r}
-#| eval: false
-ggsave(plot = plot_objekt1,filename = "./results/plot1.png",
+ggsave(plot = plot_objekt1,
+       filename = "./results/plot1.png",
        dpi = 800, # auflösung
-       # width = 9, height = 7, # falls angepasst werden soll
+       width = 25, height = 11, units = "cm" # falls angepasst werden soll
        )
 ```
 Die richtige Kombination aus Auflösung, Textgröße und Gesamtgröße des Plots zu finden hat einige Fallstricke. [Hier mehr dazu.](https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/)
@@ -371,76 +378,84 @@ ggplot(data = pend_small, aes(x = azges1, fill = factor(zpsex))) +
 
 Im Folgenden sehen wir uns eine Möglichkeit an, die Kontingenztabelle aus [Kapitel 2](03_desc.qmd#crosscount) zu visualisieren:
 ```{r}
-pend$casmin[pend$casmin<0] <- NA # missings ausschließen
-pend %>% 
-  count(zpsex,casmin) %>% 
-  filter(!is.na(casmin))
+pend_small$PD0400[pend_small$PD0400<0] <- NA # missings ausschließen
+pend_small %>% 
+  count(zpsex,PD0400) 
 ```
 
-Da wir mit `count()` einen `data.frame` erhalten, können wir diesen direkt in `ggplot()` schicken und mit `geom_col()` Säulen darstellen:
-```{r colcount}
+Mit `geom_bar()` können wir Säulen darstellen, indem wir `..count..` für y die Höhe als Anzahl der Beobachtungen festlegen:
+```{r barcount}
 #| cache: true
-pend %>% 
-  count(zpsex,casmin) %>% 
-  filter(!is.na(casmin)) %>% 
-  ggplot(data = ., aes(x = casmin, y = n, fill = factor(zpsex))) +
-  geom_col(position=position_dodge()) 
+pend_small %>% 
+  filter(!is.na(PD0400)) %>% 
+  ggplot(data = ., aes(x = as_factor(PD0400), fill = factor(zpsex),
+                       y = ..count..)) +
+  geom_bar(position=position_dodge()) 
 ```
 
-Wie kommen wir jetzt an die relativen Häufigkeiten? Wir erweitern einfach die Pipeline vor `ggplot()` um den `prop.table()`-Befehl aus Kapitel 2. Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem die y-Achse in Prozentwerten angezeigen lassen:
+Wie kommen wir jetzt an die relativen Häufigkeiten? Wir passen unsere `aes` auf `y = (..count..)/sum(..count..)` an.
+Mit `scale_y_continuous(labels = scales::label_percent(accuracy = 1)) ` können wir außerdem auf der y-Achse die Prozentwerte anzeigen lassen:
 ```{r scalepct}
 #| cache: true
-pend %>% 
-  filter(!is.na(casmin)) %>% 
-  count(zpsex,casmin) %>% 
-  group_by(zpsex) %>% 
-  mutate(pct_gender = prop.table(n)) %>% 
-  ggplot(data = ., aes(x = casmin, y = pct_gender, fill = factor(zpsex))) +
-  geom_col(position=position_dodge())  +
+pend_small %>% 
+  filter(!is.na(PD0400)) %>% 
+  ggplot(data = ., aes(x = as_factor(PD0400), fill = factor(zpsex),
+                       y = (..count..)/sum(..count..) )) +
+  geom_bar(position=position_dodge()) +
   scale_y_continuous(labels = scales::label_percent(accuracy = 1)) 
 ```
-
-
-```{r backup_dotdotdot}
+Um jetzt ein Balken- statt einem Säulendiagramm zu erhalten, tauschen wir einfach `x` und `y` sowie die Prozentbeschriftung auf `scale_x_continuous`:
+```{r balkenpct}
 #| cache: true
-#| layout-ncol: 2
-#| include: false
-ggplot(data = pend , 
-       aes(x = casmin, fill = factor(zpsex) )) + 
-  geom_bar(  position=position_dodge()) + 
-  labs(title = "Absolute Häufigkeit")
-
-
-ggplot(data = pend , 
-       aes(x = casmin, fill = factor(zpsex),
-           y = ..count../sum(..count..)
-           )) + 
-  geom_bar(  position=position_dodge()) + 
-  labs(title = "Relative Häufigkeit") 
+pend_small %>% 
+  filter(!is.na(PD0400)) %>% 
+  ggplot(data = ., aes(y = as_factor(PD0400), fill = factor(zpsex),
+                       x = (..count..)/sum(..count..) )) +
+  geom_bar(position=position_dodge()) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1)) 
 ```
 
-Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg: 
+Auch diese Grafiken können wir dann wieder mit `scale_...` anpassen und mit `labs()` ausführlich labeln - alle Optionen sind konsistent über alle Darstellungsformen hinweg.
+Außerdem können wir die Kategorien mit `breaks =` und `labels =` auch selbst labeln, wenn uns die definierten Labels nicht gefallen:
 ```{r fullplot}
 #| cache: true
-pend %>% 
-  filter(!is.na(casmin)) %>% 
-  count(zpsex,casmin) %>% 
-  group_by(zpsex) %>% 
-  mutate(pct_gender = prop.table(n)) %>% 
-  ggplot(data = ., aes(x = casmin, y = pct_gender, fill = factor(zpsex))) +
-  geom_col(position=position_dodge())  +
-  scale_y_continuous(labels = scales::label_percent(accuracy = 1))  + 
+#| layout-ncol: 2
+
+pend_small %>% 
+  filter(!is.na(PD0400)) %>% 
+  ggplot(data = ., aes(y = as_factor(PD0400), fill = factor(zpsex),
+                       x = (..count..)/sum(..count..) )) +
+  geom_bar(position=position_dodge()) +
   scale_fill_manual(values = c("navajowhite","navy"),
                     breaks = c(1,2), labels = c("Männer", "Frauen")) +
-  scale_x_continuous(breaks = 1:4 , labels = c("ohne Ausb.", "duale Ausb.","Aufstiegsfortb.","FH/Uni")) +
-  scale_y_continuous(labels = scales::label_percent(accuracy = 1)) +
-  labs(title = "Ausbildungsabschlüsse nach Geschlecht",
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1)) +
+  labs(title = "Religiösität nach Geschlecht",
        subtitle = "Relative Häufigkeiten",
-       caption = "Quelle: ETB 2018",
-       x = "Ausbildung",
-       y = "Relative Häufigkeit",
+       caption = "Quelle: PASS-CF 0619",
+       y = "Religiösität",
+       x = "Relative Häufigkeit",
        fill = "Geschlecht" ) 
 
+
+pend_small %>% 
+  filter(!is.na(PD0400)) %>% 
+  ggplot(data = ., aes(y = PD0400, fill = factor(zpsex),
+                       x = (..count..)/sum(..count..) )) +
+  geom_bar(position=position_dodge()) +
+  scale_fill_manual(values = c("navajowhite","navy"),
+                    breaks = c(1,2), labels = c("Männer", "Frauen")) +
+  scale_x_continuous(labels = scales::label_percent(accuracy = 1)) +
+  scale_y_continuous(breaks = 1:4, 
+                     labels = c("Überhaupt nicht",
+                                "Eher nicht",
+                                "Eher schon",
+                                "Sehr")) +
+  labs(title = "Religiösität nach Geschlecht",
+       subtitle = "Relative Häufigkeiten",
+       caption = "Quelle: PASS-CF 0619",
+       y = "Religiösität",
+       x = "Relative Häufigkeit",
+       fill = "Geschlecht" ) 
 ```
 
 
@@ -452,16 +467,23 @@ Nutzen Sie für alle Aufgaben die ersten 150 Beobachtungen (`pend_small`), um de
 ```{r}
 #| eval: false
 pend <-
-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-    col_select = c("h1216d", "S2_j", "zpsex", "casmin", "F518_SUF", "nt", "gkpol")
+  haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+    col_select = c("zpsex","welle","bilzeit","PA0445","PG1270","PEO0400c")
     )
-pend_small <-
-  pend %>% filter(S2_j < 9999, h1216d > 0, F518_SUF < 99998) %>% slice(1:150)
 ```
+
+
 
 ### Übung 1 {#pltue1}
 
-+ Erstellen Sie einen Scatterplot für die Variablen Geburtsjahr (`S2_j`, x-Achse) und Dauer der Ausbildung (`h1216d`, y-Achse). 
+```{r}
+#| eval: false
+pend_u41 <-
+  pend %>% 
+  filter(welle == 13, bilzeit > 0, PA0445 >0) 
+```
+
++ Erstellen Sie einen Scatterplot für die Variablen Dauer der gesamten Arbeitslosigkeitserfahrung in Monaten (`PA0445`, y-Achse) und Dauer der Ausbildung (`bilzeit`, x-Achse). 
 + Legen Sie die Farbe so fest, dass Männer und Frauen unterschiedliche Farben gekennzeichnet werden (`zpsex`)
 + Verändern Sie die Farben auf `goldenrod1` und `dodgerblue4` fest ([oder eine beliebige andere](http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf))
 + Beschriften Sie die Achsen und Legende!
@@ -471,35 +493,46 @@ pend_small <-
 
 ### Übung 2 {#pltue2}
 
-+ Erstellen Sie einen Boxplot oder Histogramm für die Verteilung des Einkommens (`F518_SUF`).
-+ Passen Sie diese Grafik so an, dass die Einkommensverteilungen für Männer und Frauen getrennt dargestellt werden. 
+```{r}
+#| eval: false
+pend_u42 <-
+  pend %>% 
+  filter(welle == 9, PG1270 >0) 
+```
+
++ Erstellen Sie einen Boxplot oder Histogramm für die Verteilung der Anzahl gerauchter Zigaretten und Zigarillos pro Tag (i.d. letzten
+Woche) (`PG1270`).
++ Passen Sie diese Grafik so an, dass die Verteilungen für Männer und Frauen getrennt dargestellt werden. 
 + Wie können Sie auch die Farben nach dem Geschlecht getrennt anlegen? (Denken Sie an `color =` und `fill =`) 
 + Verändern Sie die Farben der Balken mit Hilfe von `scale_fill_manual` oder `scale_fill_brewer` oder `scale_fill_viridis` (Siehe Abschnitte [Farben](#farben) und [ColorBreweR](#brewer) und [viridis](#viridis) unter "weitere Optionen")
 
 [Zurück nach oben](#ue4_02)
 
 ### Übung 3 {#pltue3}
-
-
-+ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`)
-+ Erstellen Sie ein Säulen-Diagramm für die Größenklasse des Wohnorts der Befragten (`gkpol`) getrennt nach der Variable `nt` - färben Sie die Säulen nach `nt`. Die Variable `nt` erfasst, ob die Befragten einer Nebentätigkeit nachgehen (1 = ja/ 0 = nein).
-
-Kleine Hilfe: das sind die Labels für `gkpol` 1-7:
-```{r}
-#| echo: false
-pend %>% count(F100_wib2,gkpol) %>% pull(gkpol) %>% as_factor() %>% levels() %>% 
-  str_remove_all(.," Einwohner") %>% 
-  str_replace_all(.,pattern = "\\.000","k") %>% 
-  str_replace(.,pattern = "unter ","<") %>% 
-  dput()
-```
 ```{r}
 #| eval: false
-#| code-fold: true
-scale_x_continuous(breaks = 1:7,
-                   labels = c("<2k", "2k bis <5k", "5k bis <20k", "20k bis <50k", 
-                              "50k bis <100k", "100k bis <500k", "500k und mehr"))
+pend_u43 <-
+  pend %>% 
+  filter(welle == 11, PEO0400c >0) 
+```
 
++ Erstellen Sie ein Säulen-Diagramm für die Antworten auf die Frage "Eine berufstätige Mutter kann ein genauso herzliches Verhältnis zu ihren Kindern haben, wie eine Mutter, die nicht erwerbstätig ist." (`PEO0400c`)
++ Erstellen Sie ein Säulen-Diagramm für d(`PEO0400c`) getrennt nach der Variable `migration`, legen Sie also die Farbe der Säulen nach `migration` fest. Die Variable `migration` erfasst, ob die Befragten einer Nebentätigkeit nachgehen (1 = ja/ 0 = nein).
+
+
+```{r}
+#| echo: false
+library(gt)
+c(attributes(pend$PEO0400c)$labels,
+  attributes(pend$migration)$labels) %>%
+  enframe(name = "label") %>%
+  filter(value > 0) %>%
+  mutate(Variable = c("`PEO0400c`",rep("",3),
+                      "`migration`",rep("",3)) ) %>% 
+  relocate(Variable,value) %>%
+  gt() %>% 
+  tab_options(table.font.size = 11) %>% 
+  fmt_markdown(columns = "Variable")
 ```
 
 [Zurück nach oben](#ue4_03)
@@ -510,7 +543,7 @@ scale_x_continuous(breaks = 1:7,
 ### Aesthetics {#aes_list}
 
 ```{r}
-#| fig-asp: 0.35
+#| fig-asp: 0.3
 #| echo: false
 #| warning: false
 #| message: false
@@ -748,6 +781,10 @@ ggplot(lt_df, aes(x,y,linetype = factor(lty))) +
 
 ## Linksammlung
 
++ Das [Graph Kapitel des R Cookbooks](www.cookbook-r.com/Graphs/) ist eine hervorragende Quelle für alle möglichen Optionen und eine grundlegende Übersicht - bspw. zur Anpassung der [Legende](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)), [Linien- und Punktvarianten](http://www.cookbook-r.com/Graphs/Shapes_and_line_types) oder den [Achsen](http://www.cookbook-r.com/Graphs/Axes_(ggplot2))
+
++ Schriftgröße und -farbe anpassen: [Hier](https://cmdlinetips.com/2021/05/tips-to-customize-text-color-font-size-in-ggplot2-with-element_text/) findet sich eine gute Übersicht, wie die Schriftgröße und -farbe in `{ggplot2}` angepasst werden kann.
+
 + [From Data to Viz ](https://www.data-to-viz.com/#explore) bietet einen Entscheidungsbaum für verschiedene Zusammenhänge und Deskriptionen mit Beispiel-Syntax
 
 ```{r,echo=FALSE}
@@ -755,11 +792,6 @@ ggplot(lt_df, aes(x,y,linetype = factor(lty))) +
 #| out-height: 80%
 knitr::include_graphics("./pic/104_decision.png")
 ```
-
-+ Schriftgröße und -farbe anpassen: [Hier](https://cmdlinetips.com/2021/05/tips-to-customize-text-color-font-size-in-ggplot2-with-element_text/) findet sich eine gute Übersicht, wie die Schriftgröße und -farbe in `{ggplot2}` angepasst werden kann.
-
-+ Das [Graph Kapitel des R Cookbooks](www.cookbook-r.com/Graphs/) ist eine hervorragende Quelle für alle möglichen Optionen und eine grundlegende Übersicht - bspw. zur Anpassung der [Legende](http://www.cookbook-r.com/Graphs/Legends_(ggplot2)), [Linien- und Punktvarianten](http://www.cookbook-r.com/Graphs/Shapes_and_line_types) oder den [Achsen](http://www.cookbook-r.com/Graphs/Axes_(ggplot2))
-
 
 + Die [R Graph Gallery](https://r-graph-gallery.com/) ist noch etwas umfangreicher und bietet noch weitere Visualisierungsideen
 

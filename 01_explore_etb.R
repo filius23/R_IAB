@@ -7,6 +7,10 @@ knitr::opts_chunk$set(collapse = F)
 # load etb -------------
 pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta")
 
+hhend <- haven::read_dta("./orig/HHENDDAT_cf_W13.dta")
+
+
+
 # distinct values ----
 
 ndis <- 
@@ -22,10 +26,48 @@ ndis <-
         map_dfr(pend,~attributes(.x)$label) %>% 
           t(.) %>% data.frame("lab"=.) %>% 
           rownames_to_column(.,var = "var") )
+hhndis <- 
+    hhend %>% 
+      summarise(
+      across(everything(), ~ length(unique(.x)), .names = "n0_{col}"),
+      across(!matches("^n0"), ~ length(unique(.x[.x >= 0])), .names = "n1_{col}")
+      ) %>%
+      pivot_longer(cols = everything(),values_to = "ndis") %>%
+      separate(name, into = c("n","var"),sep = "(?<=(0|1))_") %>% 
+      pivot_wider(names_from = n,values_from = ndis) %>% 
+      left_join(
+        map_dfr(hhend,~attributes(.x)$label) %>% 
+          t(.) %>% data.frame("lab"=.) %>% 
+          rownames_to_column(.,var = "var") )
 
 ndis %>% filter(n0 %in% 3:4) %>% print(n=Inf)
 ndis %>% filter(n1 %in% 3:4) %>% print(n=Inf)
-ndis %>% filter(grepl("[B,b]ild",lab))
+ndis %>% filter(n1 > 20) %>% print(n=Inf)
+
+
+# val_dis <- 
+    map_dfr(pend,.f = function(var) {
+      
+      attributes(var)$labels %>% 
+        enframe(name = "val_lab") %>% 
+        mutate(across(dplyr::everything(),~as.character(.x)),
+               var_lab = attributes(var)$label,
+               var     = unique(var)
+               )
+      }) %>% 
+    mutate(nchar = nchar(val_lab),.by = "var") 
+    
+val_dis %>% filter(nchar == max(nchar))
+
+ndis
+
+
+
+
+hhndis %>% filter(n1 %in% 3:4) %>% print(n=Inf)
+
+
+ndis %>% filter(grepl("[g,G]eb",lab))
 
 pend %>% count(erwerb)
 pend %>% count(statakt)
@@ -43,6 +85,10 @@ min_val <-
   pend %>% 
     summarise(across(everything(),~min(.x,na.rm = T))) %>% 
     pivot_longer(cols = everything())
+
+min_val %>% filter(value >= 0)
+
+
 
 
 etb %>% select(matches("F1450_")) %>% 

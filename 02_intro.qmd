@@ -330,7 +330,7 @@ Das kann umgangen werden, wenn gewisse Pakte gar nicht vollständig geladen, son
 
 
 :::{.callout-tip collapse="true"}
-# Wenn keine Internetverbindung besteht
+# Allgemeine Lösung für `install.packages()` wenn keine Internetverbindung besteht
 
 Unter [R Packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) können die benötigten Pakete heruntergeladen werden. Nachdem wir das Paket als .zip-Datei gespeichert haben, wir mit folgendem Befehl das Paket in der R-Umgebung installieren:
 
@@ -917,9 +917,9 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 -   Wie viele Befragte (Zeilen) enthält der Datensatz?
 -   Lassen Sie sich die Variablennamen von `pend` mit `names()` anzeigen!
 -   Wie können Sie sich die Zeilen anzeigen lassen, welche den/die Befragte\*n mit der `pnr` 1000908201 enthält?
--   Wählen Sie alle Befragten aus, die nach 1960 geboren wurden legen Sie diese Auswahl unter `nach_1960` ab.
--   Wie müssen Sie den Befehl anpassen, sodass `nach_1960` nur die Variablen `pnr`, `hnr`, `welle`, `pintjahr` und `palter` enthält?
--   Wie viele Spalten hat `nach_1960`? Wie viele Zeilen?
+-   Wählen Sie alle Befragten aus, die älter als 60 (Alter: `palter`) sind legen Sie diese Auswahl unter `ue_1960` ab.
+-   Wie müssen Sie den Befehl anpassen, sodass `ue_1960` nur die Variablen `pnr`, `hnr`, `welle`, `pintjahr` und `palter` enthält?
+-   Wie viele Spalten hat `ue_1960`? Wie viele Zeilen?
 
 **Bonusübungen**: 
 
@@ -930,9 +930,9 @@ c("RWTH Aachen","Uni Freiburg","Uni Bonn","FH Aachen","FH Bonn-Rhein-Sieg")
 
 ### Übung 5 {#data5}
 
--  Exportieren Sie den `data.frame` mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (`nach_1960`) als `.Rdata`-Datei.
--  Laden Sie die eben exportierte `.Rdata`-Datei unter einem beliebigen Namen, bspw. `nach_1960_neu`. 
--  Hat alles geklappt? Vergleichen Sie das neu geladene mit dem ursprünglichen Objekt: `identical(nach_1960,nach_1960_neu)` - sind beide Objekte identisch?
+-  Exportieren Sie den `data.frame` mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (`ue_1960`) als `.Rdata`-Datei.
+-  Laden Sie die eben exportierte `.Rdata`-Datei unter einem beliebigen Namen, bspw. `ue_1960_neu`. 
+-  Hat alles geklappt? Vergleichen Sie das neu geladene mit dem ursprünglichen Objekt: `identical(ue_1960,ue_1960_neu)` - sind beide Objekte identisch?
 
 [Zurück nach oben](#ue_5)
 

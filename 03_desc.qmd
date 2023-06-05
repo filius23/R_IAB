@@ -38,7 +38,8 @@ table(pend$statakt)
 Wir bekommen hier die absoluten Häufigkeiten angezeigt. In der ersten Zeile werden die verschiedenen Ausprägungen aufgelistet, in der zweiten Zeile stehen dann die Häufigkeiten. 
 
 Allerdings werden sowohl für `table()` die Labels in der Ausgabe erstmal ignoriert. 
-Mit `as_factor()` aus dem Paket `{haven}` können wir die Labels aus dem Datensatz abrufen. Bspw. steht `1` dafür, dass der*die Befragte erwerbstätig ist:
+Mit `as_factor()` aus dem Paket `{haven}` können wir die Labels aus dem Datensatz abrufen und die numerischen Werte mit den Labels überschreiben. 
+Der `table()` zeigt dann die Labels als Beschriftungen an:
 ```{r}
 #| label: tab_as_factor
 table(as_factor(pend$statakt))
@@ -48,7 +49,7 @@ table(as_factor(pend$statakt))
 t1 <- table(pend$statakt)
 ```
 
-`r as.numeric(t1[2])` Befragte haben keinen Berufsabschluss, `r as.numeric(t1[4])` Befragte haben Aufstiegsfortbildung usw. (Zu labels und die Arbeit mit value labels in R später mehr)
+`r as.numeric(t1[4])` Befragte sind erwerbstätig, `r as.numeric(t1[6])` Befragte sind inaktiv usw. (Zu labels und die Arbeit mit value labels in R später mehr)
 
 Mit `count()` aus `{dplyr}` bekommen wir die labels direkt angezeigt, auch hier verwenden wir wieder die Schreibweise [mit der Pipe `%>%`](#pipe):
 ```{r}
@@ -250,7 +251,7 @@ pend %>% count(zpsex,statakt)
 Hier ist `count()` informativer als `table()`. Hier werden die Labels verwendet. Der Übersichtlichkeit halber verwende ich meistens `count()`, auch wenn das *long shape* Format etwas gewöhnungsbedürftig ist. 
 
 
-### [Übung](#descue3) {#ue3_3}
+### [Übung](#descue2) {#ue3_2}
 
 ::: {.callout-tip collapse=true}
 # Bei langen Tabellen gibt `count()` nicht alle Zeilen aus
@@ -399,7 +400,7 @@ pend %>%
 
 <!-- ::: -->
 
-### [Übung](#descue4) {#ue3_4}
+### [Übung](#descue3) {#ue3_3}
 
 
 ## Übungen
@@ -423,7 +424,6 @@ Wir interessieren uns für die Variable `famstand`, welche den Familienstand der
 # table(pend$famstand)
 library(gt)
 pend %>% count(famstand) %>% 
-  filter(famstand > 0) %>% 
   mutate(label = haven::as_factor(famstand)) %>% 
   select(-n) %>% gt() %>% tab_options(  table.font.size = 9)
 # %>% kable(.) %>% 
@@ -442,18 +442,15 @@ pend %>% count(famstand) %>%
 
 ### Übung 2 {#descue2}
 
-  
-### Übung 3 {#descue3}
-  
 + Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten für `famstand`. Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.
 + Erstellen Sie eine Kontingenztabelle für `famstand` und `zpsex`
 + Wie viel Prozent der Befragten sind geschiedene Frauen? 
 + Wie viel Prozent der Frauen sind geschieden?
 + Wie viel Prozent der Geschiedenen sind Frauen?
   
-[Zurück nach oben](#ue3_3)
+[Zurück nach oben](#ue3_2)
 
-### Übung 4 {#descue4}
+### Übung 3 {#descue3}
 
 Beschreiben Sie das Alter der Befragten (`palter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.
 
@@ -467,7 +464,7 @@ pend$palter[pend$palter>100] <- NA
   + Erstellen Sie einen Überblick mit dem Minimum, Median, arith. Mittel, Varianz und Maximum der Alterswerte mit Hilfe von `summarise()`
   + Erweitern Sie diesen Überblick dann so, dass sie einen Vergleich der Kennzahlen für die verschiedenen `famstand`-Kategorien ausgegeben bekommen.
 
-[Zurück nach oben](#ue3_4)
+[Zurück nach oben](#ue3_3)
 
 ## Hinweise 
 

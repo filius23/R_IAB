@@ -14,8 +14,8 @@ book:
     - 01_intro.qmd
     - 02_intro.qmd
     - 03_desc.qmd
-    # - 04_viz.qmd
-    # - 05_data_wrangle1.qmd
+    - 04_viz.qmd
+    - 05_data_wrangle1.qmd
     # - 06_data_wrangle2.qmd
     # - 07_inferenz.qmd
     # - 09_reg.qmd
@@ -37,7 +37,7 @@ book:
       Erstellt mit {{< fa brands r-project >}}, Code [hier einsehbar {{< fa brands github >}}](https://github.com/filius23/R_IAB)
       
       
-
+callout-appearance: simple
 
 bibliography: references.bib
 

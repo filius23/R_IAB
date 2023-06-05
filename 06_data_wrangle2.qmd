@@ -63,7 +63,8 @@ dat3
 
 ### {dplyr}: `mutate(neue_var= )`
 
-Mit `mutate(neu_variable = )` können wir neue Variablen in einen `data.frame()` hinzufügen:
+
+Eine alternative Möglichkeit, Variablen zu erstellen ist `mutate(neu_variable = )` aus `{dplyr}` (`{tidyverse}`):
 ```{r, echo = F, out.height="90%",out.width="90%", fig.align="center"}
 #| echo: false
 knitr::include_graphics("./pic/103_mutate.png")
