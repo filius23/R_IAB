@@ -223,9 +223,9 @@ ggpredict(m6, terms = c("var1")) %>% plot()
 #| message: false
 #| warning: false
 library(survey)
-pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") %>% filter(netges > 0 , palter > 0)
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") %>% filter(netges > 0 , palter > 0, azges1 > 0) %>% 
+  mutate(zpsex_fct = factor(zpsex, levels = 1:2, labels = c("M","W")))
 wgt_df <- haven::read_dta("./orig/pweights_cf_W13.dta")
-head(wgt_df)
 pend_wgt <- pend %>% left_join(wgt_df, by = join_by(pnr,welle))
 
 
@@ -294,7 +294,7 @@ fe_mod1
 ```
 
 `{fixest}` clustert automatisch die Standardfehler entlang der FE-Variable (hier also `pnr`).
-Wenn wir das mal nicuth möchten, können wir mit der `se`-Option `= "standard"` ungeclusterte SE anfordern:
+Wenn wir das mal nicht möchten, können wir mit der `se`-Option `= "standard"` ungeclusterte SE anfordern:
 ```{r ols_fe_standard_et, message=FALSE}
 summary(fe_mod1, se = 'standard')
 summary(fe_mod1, cluster = ~pnr)
@@ -302,7 +302,7 @@ summary(fe_mod1, cluster = ~pnr)
 
 `{modelsummary}` zeigt die geclusterten SE:
 ```{r, message=FALSE}
-modelsummary(list(fe_mod1),gof_omit = "R|IC|Log|F",output = "flextable")
+modelsummary(fe_mod1,gof_omit = "R|IC|Log|F",stars = T,output = "flextable")
 ```
 
 ## Mehrebenenmodelle mit `{lme4}` {#mlvl}

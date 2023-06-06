@@ -20,7 +20,7 @@ book:
     - 07_inferenz.qmd
     - 09_reg.qmd
     - 09_reg2.qmd
-    # - 10_log_reg.qmd
+    - 10_log_reg.qmd
     # - 11_data_wrangle3.qmd
     # - 12_apply_loop.qmd
     # - 14_tabellenexport.qmd
