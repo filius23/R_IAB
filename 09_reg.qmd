@@ -313,7 +313,7 @@ pend_ue08 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") %>%
 
 ### Übung 3: kat. UVs {#reg3}
 
-+ Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (`netges`) als abhängiger und dem Schulabschluss der Befragten `m1202` als unabhängiger Variable:
++ Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (`netges`) als abhängiger und dem Schulabschluss der Befragten `schul` als unabhängiger Variable:
 
 ```{r}
 #| echo: false

@@ -5,20 +5,24 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 library(tidyverse)
 library(marginaleffects)
 library(broom)
-pend11_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
+pend12_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
 
 ```
 
 ```{r}
-pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
-                         col_select = c("pnr","welle","netges","schul2","azges1","palter","famstand")) %>% 
-  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
-  mutate(m1202_fct = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
-         S1_fct = factor(S1,levels = 1:2,labels =c("m","w")))
+pend12 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                         col_select = c("pnr","welle","netges","schul2","azges1","palter","famstand","zpsex","statakt")) %>% 
+  filter(netges > 0, schul2 %in% 2:7, palter > 0, famstand > 0, azges1 > 0 , welle == 13) %>% 
+  mutate(
+    across(matches("palter|netges|azges1"),~as.numeric(.x)),
+    famstand_fct = factor(famstand,levels = 1:5,labels = c("Ledig","Verheiratet", "Verheiratet getr. lebd.", "Geschieden", "Verwitwet")),
+    schul2_fct = factor(schul2,levels = 2:7, labels = c("ohne","Förderschule","Hauptschule","Mittlere Reife","FOS/BOS","Abi")),
+    statakt_fct = factor(statakt,levels = 1:3, labels = c("erbwerbstätig","arbeitslos","inaktiv")),
+    zpsex_fct = factor(zpsex,levels = 1:2,labels =c("Männer","Frauen")))
 ```
 
 Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. 
-Stattdessen werden meist Funktionen `function(...)` mit Hilfe von `map()` aus `{purrr}`/`{tidyverse}` [^lapply] über eine Reihe von Werten geschleift.
+Stattdessen werden meist Funktionen `function(...)` mit Hilfe von `lapply()` bzw. `map()` aus `{purrr}`/`{tidyverse}` [^lapply] über eine Reihe von Werten geschleift.
 
 [^lapply]: in base R gibt es `lapply()`, das ungefähr das gleiche macht.
 
@@ -29,49 +33,150 @@ Die grundlegende Idee ist zunächst die gleiche wie bei klassischen `for()`-Loop
 3. und wenden die `function()` auf diese an
 
 Grundsätzlich können wir in R solche Schleife auf wirklich alles anwenden: `data.frames()`, Vektoren, `list`s.
-Das macht das Vorgehen sehr flexibel und kann uns beispielsweise helfen, eine Modellserie zu erstellen. 
+Das macht das Vorgehen sehr flexibel und kann uns beispielsweise helfen, eine Modellserie zu erstellen, Grafiken für verschiedene Untergruppen erstellen, oder ...
 
+## Plot-Serien
+
+Wir möchten die gleiche für eine Reihe unterschiedlicher Untergruppen erstellen: beispielsweise möchten wir folgende Grafik für alle Ausprägungskombinationen von `famstand` und `zpsex` erstellen:
+
+```{r}
+#| warning: false
+#| fig-width: 3
+#| fig-height: 3
+pend12 %>%
+  ggplot(aes(x = azges1,  y = netges)) + 
+  geom_point() + 
+  theme_minimal()
+```
+
+Wir erstellen zunächst eine `function()`, welche zwei Argumente enthält. 
+Diese geben wir dann in einen `filter()`-Befehl innerhalb der `function()` an und verwenden sie außerdem, um einen Titel zu generieren. Das können wir mit `paste0()`, welches fixe Inputs und Vektoren-Inputs zu einem `character` zusammenfügt.[^paste]
+
+[^paste]: Es können auch mehrere  `character` das Ergebnis eines `paste0()` sein: siehe bspw. `paste0("no",1:5)`
+```{r pltfun1def}
+plot_fun1 <- function(famstat_filter){
+  pend12 %>%
+    filter(famstand_fct == famstat_filter) %>% 
+    ggplot(aes(x = azges1,  y = netges)) + 
+    geom_point() + 
+    theme_minimal() +
+    labs(title = paste0("Familienstatus: ",famstat_filter))
+}
+```
+
+Mit dieser `function()` können wir nur leicht die jeweiligen Plots erstellen:
+```{r plfn1}
+#| fig-width: 3
+#| fig-height: 3
+plot_fun1(famstat_filter = "Ledig")
+```
+
+Wie kommen wir jetzt aber an alle Kombinationen?
+In einem ersten Schritt können wir mit `lapply()` eine Schleife über die Ausprägungen von `famstat_fct` erstellen und die Plots für die Frauen erstellen:
+```{r plotlapply}
+#| fig-width: 3
+#| fig-height: 3
+levels(pend12$famstand_fct)
+fam_plots <- lapply(levels(pend12$famstand_fct), plot_fun1)
+class(fam_plots)
+
+fam_plots[[1]] # ersten Plot aus der fam_plots-Liste aufrufen
+```
+
+Etwas übersichtlicher ist das ganze, wenn wir die Plots in einem `data.frame`( bzw. einem `tibble`) ablegen neben einer Spalte mit den Ausprägungen:
+```{r plotex1}
+#| fig-width: 3
+#| fig-height: 3
+#| warning: false
+plot_df <- 
+  data.frame(famstand_fct = levels(pend12$famstand_fct)) %>% 
+  mutate(plots = map(famstand_fct,plot_fun1))
+
+# head(plot_df)
+
+plot_df %>% filter(famstand_fct ==  "Verheiratet") %>% pull(plots)
+```
+
+
+Was jetzt aber, wenn wir mehrere Variablen berücksichtigen möchten?
+
+Dazges1u erstellen wir zunächst eine neue `function()` mit mehreren Argumenten und erweitern auch den `filter()` und `paste0()`-Befehl innerhalb der Funktionen:
+```{r}
+plot_fun2 <- function(famstat_filter, zpsex_filter){
+  pend12 %>%
+    filter(famstand_fct == famstat_filter, zpsex_fct == zpsex_filter) %>% 
+    ggplot(aes(x = azges1,  y = netges)) + 
+    geom_point() + 
+    theme_minimal() +
+    labs(title = paste0("Familienstatus: ",famstat_filter, " Geschlecht: ", zpsex_filter))
+}
+```
+
+Mit `expand_grid` können wir sehr schnell einen `data.frame` mit allen Kombinationen der angegebenen Vektoren erstellen:
+```{r}
+expand_grid(famstand_fct = levels(pend12$famstand_fct),
+            zpsex_fct = levels(pend12$zpsex_fct))
+```
+
+Diese beiden Spalten geben wir jetzt in unseren `map()`-Befehl - allerdings haben wir ja jetzt zwei Input-Argumente, nicht nur eines. Daher verwenden wir `pmap()`, welches mehrere Inputs verwenden kann:
+```{r}
+plot_df2 <- 
+  expand_grid(famstand_fct = levels(pend12$famstand_fct),
+              zpsex_fct = levels(pend12$zpsex_fct)) %>% 
+    mutate(plots = pmap(list(famstat_filter= famstand_fct,zpsex_filter = zpsex_fct),  # Variablen mit = den Funktions-Argumenten zuweisen
+                        plot_fun2))
+```
+```{r}
+#| warning: false
+#| fig-width: 5
+#| fig-height: 3
+plot_df2 %>% filter(famstand_fct ==  "Verheiratet",zpsex_fct ==  "Frauen") %>% pull(plots)
+plot_df2 %>% filter(famstand_fct ==  "Verheiratet",zpsex_fct ==  "Männer") %>% pull(plots)
+```
+
+
+### [Übung](#manyplts) {#ue12_00}
 
 ## Verschiedene Modelle auf die gleichen Daten als `function()` mit `map()` anwenden
 
-Wir möchten folgende Modelle alls auf Basis der ETB2018 schätzen:
+Wir möchten folgende Modelle alls auf Basis des PASS CampusFiles schätzen:
 
-+ Modell 1 = `F518_SUF ~ az`
-+ Modell 2 = `F518_SUF ~ az + S1_fct`
-+ Modell 3 = `F518_SUF ~ az + S1_fct + m1202_fct`
-+ Modell 4 = `F518_SUF ~ az + S1_fct + m1202_fct + zpalter`
++ Modell 1 = `netges ~ azges1`
++ Modell 2 = `netges ~ azges1 + zpsex_fct`
++ Modell 3 = `netges ~ azges1 + zpsex_fct + schul2_fct`
++ Modell 4 = `netges ~ azges1 + zpsex_fct + schul2_fct + palter`
 
 Natürlich würde so etwas funktionieren, würde aber vier separate Modelle erstellen:
-```{r}
+```{r modonebyone}
 #| eval: false
-mod1 <- lm(F518_SUF ~ az, data = etb_k12)
-mod2 <- lm(F518_SUF ~ az + S1, data = etb_k12)
-mod3 <- lm(F518_SUF ~ az + S1 + m1202, data = etb_k12)
-mod4 <- lm(F518_SUF ~ az + S1 + m1202 + zpalter, data = etb_k12)
+mod1 <- lm(netges ~ azges1, data = pend12)
+mod2 <- lm(netges ~ azges1 + zpsex_fct, data = pend12)
+mod3 <- lm(netges ~ azges1 + zpsex_fct + schul2_fct, data = pend12)
+mod4 <- lm(netges ~ azges1 + zpsex_fct + schul2_fct + palter, data = pend12)
 ```
 
 Wir definieren dann eine `function()`, in der wir angeben, dass das angegebene Argument die Formel für ein `lm()` sein soll - das Ergebnis dieses `lm()` lassen wir uns dann ausgeben.
 
-```{r}
+```{r fundef}
 mod_function <- function(modx){
-  mx <- lm(formula = modx,data = etb_k12)
+  mx <- lm(formula = modx,data = pend12)
   return(mx) 
 }
 ```
 
 Als Test können wir `mod_function()` jetzt einmal verwenden:
-```{r}
-mod_function("F518_SUF ~ az") %>% summary() # sieht gut aus
+```{r funtest}
+mod_function("netges ~ azges1") %>% summary() # sieht gut aus
 ```
 
 
 Im nächsten Schritt erstellen wir jetzt einen Vektor mit verschiedenen Modellvarianten:
 ```{r}
 mdls <- c(
-  "Modell 1" = "F518_SUF ~ az",
-  "Modell 2" = "F518_SUF ~ az + S1_fct",
-  "Modell 3" = "F518_SUF ~ az + S1_fct + m1202_fct",
-  "Modell 4" = "F518_SUF ~ az + S1_fct + m1202_fct + zpalter"
+  "Modell 1" = "netges ~ azges1",
+  "Modell 2" = "netges ~ azges1 + zpsex_fct",
+  "Modell 3" = "netges ~ azges1 + zpsex_fct + schul2_fct",
+  "Modell 4" = "netges ~ azges1 + zpsex_fct + schul2_fct + palter"
 )
 ```
 
@@ -92,7 +197,7 @@ modelsummary(mods,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
 ```
 
 
-### [Übung](#ue12_01) {#manymod}
+### [Übung](#manymod) {#ue12_01}
 
 ## Das gleiche Modell auf verschiedene Datensets anwenden
 
@@ -102,28 +207,33 @@ Der zweite Fall ist das gleiche Modell auf verschiedene Datensätze anzuwenden -
 
 
 ...dafür hilft uns `nest(.by =)` - damit können wir den Datensatz entlang einer Variable splitten und zusammenfassen:
-```{r}
-etb_k12_ow <- 
-  etb_k12 %>%
-      mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
-      nest(.by=east)
+```{r eastwestnest}
+hh_dat <- haven::read_dta("./orig/HHENDDAT_cf_W13.dta", col_select = c("hnr","welle","region"))
+p_reg <- haven::read_dta("./orig/p_register_cf_W13.dta", col_select = c("pnr","hnr"))
 
-etb_k12_ow
+pend12_ow <- 
+  pend12 %>%
+    left_join(p_reg,by = c("pnr")) %>% 
+    left_join(hh_dat,by = c("hnr","welle")) %>% 
+     mutate(east = ifelse(region == 2,"east","west")) %>% 
+  select(netges,azges1,schul2_fct,palter,zpsex_fct, east)
+
+pend12_ow_nest <- 
+  pend12_ow %>% 
+      nest(.by=east)
 ```
 In der Spalte `data` sind jetzt also die Datensätze für Ost und West enthalten:
 ```{r}
-head(etb_k12_ow$data[[1]],n=3)
-head(etb_k12_ow$data[[2]],n=3)
+head(pend12_ow_nest$data[[1]],n=3)
+head(pend12_ow_nest$data[[2]],n=3)
 ```
 
 Auf den so gesplitteten Datensatz können wir mit `map()` ein `lm()`-Modell anwenden:
-```{r}
+```{r modow}
 mod_ow <- 
-  etb_k12 %>%
-    mutate(east = ifelse(Bula > 10,"east","west")) %>% # Berlin = east
-    nest(.by = east) %>% 
+  pend12_ow_nest %>% 
     mutate(model = map(data, function(data) {
-      lm("F518_SUF ~ az + m1202_fct + zpalter + S1_fct", data = data) # ad-hoc function --> siehe tip)
+      lm("netges ~ palter + zpsex_fct", data = data) # ad-hoc function --> siehe tip)
     })) 
 ```
 
@@ -150,6 +260,8 @@ mod_ow$model[1]
 
 
 ```{r}
+#| fig-width: 4
+#| fig-height: 3
 modelsummary::modelplot(mod_ow$model,coef_omit = "Intercept") +
   geom_vline(aes(xintercept = 0), linetype = 2, alpha = .5) +
   scale_color_manual(values = c("orange","navy")) 
@@ -161,48 +273,48 @@ modelsummary::modelplot(mod_ow$model,coef_omit = "Intercept") +
 modelsummary(mod_ow$model,stars = T,gof_omit = "IC|RM|Log",output = "flextable")
 ```
 
-### [Übung](#ue12_02) {#manydata}
+### [Übung](#manydata) {#ue12_02) 
 
-## `if` und mehrere Argumente in `function()`
+<!-- ## `if` und mehrere Argumente in `function()` -->
 
-Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if`-Statements[^else] einbauen. 
+<!-- Wir können unsere `function()` auch weitere Argumente aufnehmen und auch `if`-Statements[^else] einbauen.  -->
 
-[^else]: auch `else` ist möglich
+<!-- [^else]: auch `else` ist möglich -->
 
-Wir könnten beispielsweise noch einen zusätzlichen Schritt in unsere Modell-`function()` einbauen, welcher `tidy()` auf das Modell anwendet und eine vereinfachte Regressionstabelle als `data.frame` erstellt.
+<!-- Wir könnten beispielsweise noch einen zusätzlichen Schritt in unsere Modell-`function()` einbauen, welcher `tidy()` auf das Modell anwendet und eine vereinfachte Regressionstabelle als `data.frame` erstellt. -->
 
-```{r}
-mod_function2 <- function(modx){
-  mx <- lm(formula = modx,data = etb_k12)
-  mx <- tidy(mx,conf.int = T)
-  return(mx)
-}
-mod_function2("F518_SUF ~ az")
-```
-Wenn wir jetzt über ein zweites Argument bestimmen wollen, ob der Schritt mit `tidy()` ausgeführt werden soll, hilft uns ein zweites Argument in `function()`:
+<!-- ```{r} -->
+<!-- mod_function2 <- function(modx){ -->
+<!--   mx <- lm(formula = modx,data = pend12) -->
+<!--   mx <- tidy(mx,conf.int = T) -->
+<!--   return(mx) -->
+<!-- } -->
+<!-- mod_function2("netges ~ azges1") -->
+<!-- ``` -->
+<!-- Wenn wir jetzt über ein zweites Argument bestimmen wollen, ob der Schritt mit `tidy()` ausgeführt werden soll, hilft uns ein zweites Argument in `function()`: -->
 
-```{r}
-mod_function3 <- function(modx, dotidy){
-  mx <- lm(formula = modx,data = etb_k12)
-  if(dotidy == T) mx <- tidy(mx,conf.int = T)
-  return(mx)
-}
-mod_function3("F518_SUF ~ az",dotidy=T)
-mod_function3("F518_SUF ~ az",dotidy=F)
-```
+<!-- ```{r} -->
+<!-- mod_function3 <- function(modx, dotidy){ -->
+<!--   mx <- lm(formula = modx,data = pend12) -->
+<!--   if(dotidy == T) mx <- tidy(mx,conf.int = T) -->
+<!--   return(mx) -->
+<!-- } -->
+<!-- mod_function3("netges ~ azges1",dotidy=T) -->
+<!-- mod_function3("netges ~ azges1",dotidy=F) -->
+<!-- ``` -->
 
 
-Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben.
+<!-- Wenn wir einen Standardwert für ein Argument vergeben möchten, dann können wir das mit `=` angeben. -->
 
-```{r ifelse_default}
-mod_function4 <- function(modx, dotidy = T){
-  mx <- lm(formula = modx,data = etb_k12)
-  if(dotidy == T) mx <- tidy(mx,conf.int = T)
-  return(mx)
-}
-mod_function4("F518_SUF ~ az")
-mod_function4("F518_SUF ~ az",dotidy=F)
-```
+<!-- ```{r ifelse_default} -->
+<!-- mod_function4 <- function(modx, dotidy = T){ -->
+<!--   mx <- lm(formula = modx,data = pend12) -->
+<!--   if(dotidy == T) mx <- tidy(mx,conf.int = T) -->
+<!--   return(mx) -->
+<!-- } -->
+<!-- mod_function4("netges ~ azges1") -->
+<!-- mod_function4("netges ~ azges1",dotidy=F) -->
+<!-- ``` -->
 
 
 
@@ -239,39 +351,51 @@ mod_function4("F518_SUF ~ az",dotidy=F)
 
 ## Übungen
 
-
-### Übung 1 {#manymod}
 ```{r}
-etb_ue12 <- 
-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                  col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e")) %>% 
-  filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>%  # missings raus
-  mutate(m1202_fct = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
-         S1_fct = factor(S1,levels = 1:2,labels =c("m","w"))) %>% # factor setzen
-  haven::zap_labels() %>%  # labels rauswerfen um Probleme zu vermeiden
-  haven::zap_label()
+#| eval: false
+pend_ue12 <- 
+  haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                  col_select = c("pnr","welle","zpsex","netges","schul2","bilzeit","azges1","palter") ) %>% 
+  filter(netges > 0, schul2 %in% 2:7, palter > 0, bilzeit > 0, azges1 > 0 , welle == 13) %>% 
+  mutate(
+    across(matches("palter|netges|azges1|bilzeit"),~as.numeric(.x)),
+    schul2_fct = factor(schul2,levels = 2:7, labels = c("ohne","Förderschule","Hauptschule","Mittlere Reife","FOS/BOS","Abi")),
+    zpsex_fct = factor(zpsex,levels = 1:2,labels =c("Männer","Frauen")))
+
+
+
 
 ```
 
+
+### Übung 1 {#manyplots}
+
+
++ Erstellen Sie einen Scatterplot für die Variablen `bilzeit` und `palter`
+
+[Zurück nach oben](#ue12_00)
+
+### Übung 2 {#manymod}
+
 + Erstellen Sie eine Funktion, welche den `data.frame` `etb_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel:   
-`az ~ S1 + ausb + zpalter` (Denken Sie daran, die Formula in `""` zu setzen).
+`azges1 ~ zpsex_fct + ausb + palter` (Denken Sie daran, die Formula in `""` zu setzen).
 
 + Erstellen Sie eine Liste mit folgenden Modellen:
-    +  Modell 1 `"az ~ S1",`
-    +  Modell 2 `"az ~ S1 + m1202_fct",`
-    +  Modell 3 `"az ~ S1 + m1202_fct + zpalter"`
+    +  Modell 1 `"azges1 ~ zpsex_fct",`
+    +  Modell 2 `"azges1 ~ zpsex_fct + schul2_fct",`
+    +  Modell 3 `"azges1 ~ zpsex_fct + schul2_fct + palter"`
 
 + Verwenden Sie `map()` und die erstellte Funktion, um die Modelle zu schätzen und in `modelsummary()` anzuzeigen
 
 [Zurück nach oben](#ue12_01)
 
-### Übung 2 {#manydata}
+### Übung 3 {#manydata}
 
-Berechnen Sie das Modell `"az ~ m1202_fct + zpalter + I(zpalter^2)"` getrennt für Männer und Frauen `S1_fct`.
+Berechnen Sie das Modell `"azges1 ~ schul2_fct + palter + I(palter^2)"` getrennt für Männer und Frauen (`zpsex_fct`).
 
 [Zurück nach oben](#ue12_02)
 
-## [Mehr zu `map()`](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html)
+**[Mehr zu `map()`](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html)**
 
 ##  Anhang 
 
@@ -280,7 +404,7 @@ Berechnen Sie das Modell `"az ~ m1202_fct + zpalter + I(zpalter^2)"` getrennt f�
 Im `{tidyverse}` stellt das Paket `{purrr}` `map()` zur Verfügung, das `function(x) { ... x}` auf  `~` und `.x` abkürzen lässt:
 
 ```{r}
-mods <- map(mdls,~lm(formula = .x,data = etb_k12))
+mods <- map(mdls,~lm(formula = .x,data = pend12))
 ```
 
 Wer mehr über `{purrr}` und `map()` erfahren möchte, findet [hier](https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1) eine hervorragende Einführung. 
@@ -301,31 +425,6 @@ daten_list <-
   })
 ```
 
-#### Grafiken für unterschiedliche Jahre/Untergruppen zu erstellen
-
-```{r,out.height="45%", out.width="55%", fig.align="center"}
-#| warning: false
-#| message: false
-#| layout-ncol: 2
-
-plots_nach_Bula <- 
-  map(1:16, function(bl){
-    plot_data <- etb_k12 %>% filter(Bula == bl) # daten für Bundesland auswählen
-    title_var <- as_factor(unique(plot_data$Bula)) # Titel aus Bula-Variable 
-      # eigentlicher plot
-    plot_data %>% 
-      ggplot(aes(x=az,y=F518_SUF, color = S1_fct)) +
-      geom_point(size = 1.5) +
-      scale_color_manual(values = c("darkkhaki","deepskyblue3")) + 
-      labs(title = title_var, color = "Geschlecht") +
-      theme_minimal(base_size = 12)
-  })
-
-plots_nach_Bula[[3]]
-plots_nach_Bula[[12]]
-```
-
-
 ### Loop mit `for`
 
 
@@ -341,16 +440,16 @@ Möchten wir über Variablen loopen, müssen wir R explizit mitteilen, dass die 
 
 ```{r}
 #| error: true
-for(v in c("m1202_fct","S1","F1605e")){
-  etb_k12 %>% count(v) %>% print()
+for(v in c("schul2_fct","zpsex_fct","statakt_fct")){
+  pend12 %>% count(v) %>% print()
 }
 ```
 
 Das können wir mit `!!rlang::sym(v)`:
 
 ```{r}
-for(v in c("m1202_fct","S1","F1605e")){
-  etb_k12 %>% count(!!rlang::sym(v)) %>% print()
+for(v in c("schul2_fct","zpsex_fct","statakt_fct")){
+  pend12 %>% count(!!rlang::sym(v)) %>% print()
 }
 ```
 

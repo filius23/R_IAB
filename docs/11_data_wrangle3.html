@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./references.html" rel="next">
+<link href="./12_apply_loop.html" rel="next">
 <link href="./10_log_reg.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
@@ -209,6 +209,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
@@ -304,10 +316,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>ids_df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;   pnr Bula
-#&gt; 1   1    2
-#&gt; 2   7    1
+#&gt; 1   8    2
+#&gt; 2   5    1
 #&gt; 3   9   14
-#&gt; 4   5   15</code></pre>
+#&gt; 4   6   15</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>alo_bula</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -324,10 +336,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>ids_df <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_bula,<span class="at">by =</span> <span class="fu">c</span>(<span class="st">"Bula"</span><span class="ot">=</span><span class="st">"bundesland"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>#&gt;   pnr Bula Werte
-#&gt; 1   1    2     m
-#&gt; 2   7    1     g
+#&gt; 1   8    2     m
+#&gt; 2   5    1     g
 #&gt; 3   9   14  &lt;NA&gt;
-#&gt; 4   5   15  &lt;NA&gt;</code></pre>
+#&gt; 4   6   15  &lt;NA&gt;</code></pre>
 </div>
 </div>
 <p>Ein sehr hilfreiche Checkmöglichkeit, die ich häufig verwende:</p>
@@ -416,36 +428,76 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="11.3" class="anchored" data-anchor-id="übungen"><span class="header-section-number">11.3</span> Übungen</h2>
 <section id="join_ue" class="level3" data-number="11.3.1">
 <h3 data-number="11.3.1" class="anchored" data-anchor-id="join_ue"><span class="header-section-number">11.3.1</span> Übung 1</h3>
-<p>Verknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit <a href="https://www.regionalstatistik.de/genesis//online?operation=table&amp;code=AI008-1">Arbeitsmarktstatistiken</a> von Destatis. Lesen die ETB mit folgendem Befehl ein:</p>
-<!-- ```{r jnue} -->
-<!-- #| eval: false -->
-<!-- etb_ue11 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", -->
-<!--                        col_select = c("intnr","int_jahr","Bula")) %>%  -->
-<!--   slice(34:35,68:69,62,687,625,684,599:600) -->
-<!-- etb_ue11 -->
-<!-- ``` -->
-<!-- So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein): -->
-<!-- ```{r jndat1} -->
-<!-- alo <- readRDS(file = "./data/alo_bula1.Rdata") -->
-<!-- alo -->
-<!-- ``` -->
-<!-- Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten? -->
-<!-- ```{r jndat2} -->
-<!-- alo_j <- readRDS(file = "./data/alo_bula1_jahr.Rdata") -->
-<!-- alo_j -->
-<!-- ``` -->
+<p>Verknüpfen Sie die ausgewählten Beobachtungen des PASS CF mit der Haushalts-Information, in welcher Region (<code>region</code>) die Befragten wohnen. Mergen Sie dazu die <code>hnr</code> aus <code>p_register_cf_W13.dta</code> basiernd auf der <code>pnr</code> und mergen dann die <code>region</code> basierend auf der <code>hnr</code> und <code>welle</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pend_ue11 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>,</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"pnr"</span>,<span class="st">"welle"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>pend_ue11</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 10 × 2
+#&gt;           pnr welle                  
+#&gt;         &lt;dbl&gt; &lt;dbl+lbl&gt;              
+#&gt;  1 1000001901 1 [Welle 1 (2006/2007)]
+#&gt;  2 1000001902 1 [Welle 1 (2006/2007)]
+#&gt;  3 1000001901 3 [Welle 3 (2008/2009)]
+#&gt;  4 1000002001 1 [Welle 1 (2006/2007)]
+#&gt;  5 1000002002 1 [Welle 1 (2006/2007)]
+#&gt;  6 1000002002 2 [Welle 2 (2007/2008)]
+#&gt;  7 1000002001 2 [Welle 2 (2007/2008)]
+#&gt;  8 1000002002 3 [Welle 3 (2008/2009)]
+#&gt;  9 1000002001 3 [Welle 3 (2008/2009)]
+#&gt; 10 1000002001 4 [Welle 4 (2010)]</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>hh_dat <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/HHENDDAT_cf_W13.dta"</span>, <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"hnr"</span>,<span class="st">"welle"</span>,<span class="st">"region"</span>))</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>p_reg <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/p_register_cf_W13.dta"</span>, <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"pnr"</span>,<span class="st">"hnr"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="pivot_ue" class="level3" data-number="11.3.2">
 <h3 data-number="11.3.2" class="anchored" data-anchor-id="pivot_ue"><span class="header-section-number">11.3.2</span> Übung 2</h3>
-<!-- ```{r uepvit} -->
-<!-- alo_wide <- readRDS(file = "./data/alo_bula2.Rdata") -->
-<!-- alo_wide -->
-<!-- ``` -->
-<!-- Bringen Sie `alo_wide` in das long shape: -->
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- alo_wide %>% pivot_longer(cols = 3:4,names_to = "jahr",values_to = "alo_quote",names_prefix = "alo_") -->
-<!-- ``` -->
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pend_ue11b <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">"pnr"</span>,<span class="st">"welle"</span>,<span class="st">"famstand"</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">slice</span>(<span class="dv">200</span><span class="sc">:</span><span class="dv">210</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(welle <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>)</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>pend_ue11b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 6 × 3
+#&gt;          pnr welle                   famstand                                   
+#&gt;        &lt;dbl&gt; &lt;dbl+lbl&gt;               &lt;dbl+lbl&gt;                                  
+#&gt; 1 1000014501 2 [Welle 2 (2007/2008)] -4 [Frage irrtuemlich nicht gestellt]      
+#&gt; 2 1000014501 3 [Welle 3 (2008/2009)]  3 [Verheiratet/eing. Lebensp., getr. lebd…
+#&gt; 3 1000014701 2 [Welle 2 (2007/2008)]  2 [Verheiratet/eing. Lebensp., zus. lebd.]
+#&gt; 4 1000014702 2 [Welle 2 (2007/2008)]  2 [Verheiratet/eing. Lebensp., zus. lebd.]
+#&gt; 5 1000014702 3 [Welle 3 (2008/2009)]  2 [Verheiratet/eing. Lebensp., zus. lebd.]
+#&gt; 6 1000014701 3 [Welle 3 (2008/2009)]  2 [Verheiratet/eing. Lebensp., zus. lebd.]</code></pre>
+</div>
+</div>
+<p>Bringen Sie <code>pend_ue11b</code> in das long shape:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 3
+#&gt;          pnr `2`                                         `3`                    
+#&gt;        &lt;dbl&gt; &lt;dbl+lbl&gt;                                   &lt;dbl+lbl&gt;              
+#&gt; 1 1000014501 -4 [Frage irrtuemlich nicht gestellt]       3 [Verheiratet/eing. L…
+#&gt; 2 1000014701  2 [Verheiratet/eing. Lebensp., zus. lebd.] 2 [Verheiratet/eing. L…
+#&gt; 3 1000014702  2 [Verheiratet/eing. Lebensp., zus. lebd.] 2 [Verheiratet/eing. L…</code></pre>
+</div>
+</div>
+<p>Tipp: mit <code>,names_prefix = "wave"</code> in <code>pivot_wider()</code> können wir ein Präfix angeben:</p>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>#&gt; # A tibble: 3 × 3
+#&gt;          pnr wave2                                       wave3                  
+#&gt;        &lt;dbl&gt; &lt;dbl+lbl&gt;                                   &lt;dbl+lbl&gt;              
+#&gt; 1 1000014501 -4 [Frage irrtuemlich nicht gestellt]       3 [Verheiratet/eing. L…
+#&gt; 2 1000014701  2 [Verheiratet/eing. Lebensp., zus. lebd.] 2 [Verheiratet/eing. L…
+#&gt; 3 1000014702  2 [Verheiratet/eing. Lebensp., zus. lebd.] 2 [Verheiratet/eing. L…</code></pre>
+</div>
+</div>
 
 
 </section>
@@ -698,8 +750,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./references.html" class="pagination-link">
-        <span class="nav-page-text">Links &amp; Weiterführendes</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="./12_apply_loop.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

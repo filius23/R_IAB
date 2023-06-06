@@ -672,9 +672,9 @@ pend_small2
 
 
 + Nutzen Sie `ifelse()`, um Personen ab 50 Jahren mit "ü50" zu kennzeichnen - lassen Sie für Personen bis unter 50 Jahren "u50" eintragen.
-+ Führen Sie eine Dreiteilung durch: Personen bis unter 40 bekommen "u40", Personen bis <50 "u50" und Personen über 50 Jahren "ü50". Wie würden Sie mit `case_when()` vorgehen?
++ Führen Sie eine Dreiteilung durch: Personen bis unter 40 bekommen "u40", Personen bis <50 "u50" und Personen ab 50 Jahren "ü50". Wie würden Sie mit `case_when()` vorgehen?
 + Nutzen Sie `ifelse()`, um Werte < 0 in den Variablen `PEO0400a`, `PEO0400b`, `PEO0400c` und `statakt` in `pend_small2` mit `NA` zu überschreiben.
-+ Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `PEO0400a` alle Werte < 0 mit `NA` überschreibt und ansonsten den Ausgangswert `F1450_01` einsetzt.
++ Schreiben Sie zunächst eine `ifelse()`-Funktion, die für `PEO0400a` alle Werte < 0 mit `NA` überschreibt und ansonsten den Ausgangswert `PEO0400a` einsetzt.
 + Wie würde die Funktion aussehen, wenn Sie sie mit `across()` auf `PEO0400a`, `PEO0400b`, `PEO0400c`  und `statakt` gleichzeitig anwenden?
 
 [Zurück nach oben](#ue06_5)

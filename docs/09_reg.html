@@ -206,6 +206,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./10_log_reg.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">10</span>&nbsp; <span class="chapter-title">Logistische Regressionsmodelle</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11_data_wrangle3.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">11</span>&nbsp; <span class="chapter-title">Data Wrangling III</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12_apply_loop.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Schleifen &amp; Funktionen</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./14_tabellenexport.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
@@ -365,8 +389,8 @@ var1         1.838966  0.7727028  2.3799139 0.05477457</code></pre>
 <p>Wir können uns die einzelnen Werte mit <code>View(m1)</code> ansehen:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-2e9dfdb35c10c5c30bb0" style="width:100%;height:10%;"></div>
-<script type="application/json" data-for="htmlwidget-2e9dfdb35c10c5c30bb0">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e5353965f5ee3e27c614" style="width:100%;height:10%;"></div>
+<script type="application/json" data-for="htmlwidget-e5353965f5ee3e27c614">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Bspw. finden sich unter <code>fitted.values</code> die vorhergesagten Werte für jeden Fall.</p>
@@ -882,17 +906,17 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
 <section id="reg3" class="level3" data-number="8.8.3">
 <h3 data-number="8.8.3" class="anchored" data-anchor-id="reg3"><span class="header-section-number">8.8.3</span> Übung 3: kat. UVs</h3>
 <ul>
-<li>Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (<code>netges</code>) als abhängiger und dem Schulabschluss der Befragten <code>m1202</code> als unabhängiger Variable:</li>
+<li>Erstellen Sie ein Regressionsmodell mit de Einkommen der Befragen (<code>netges</code>) als abhängiger und dem Schulabschluss der Befragten <code>schul</code> als unabhängiger Variable:</li>
 </ul>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="ndcxkmgtmh" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="waacxwotwa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ndcxkmgtmh .gt_table {
+#waacxwotwa .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -917,7 +941,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_heading {
+#waacxwotwa .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -929,12 +953,12 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_caption {
+#waacxwotwa .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ndcxkmgtmh .gt_title {
+#waacxwotwa .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -946,7 +970,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-width: 0;
 }
 
-#ndcxkmgtmh .gt_subtitle {
+#waacxwotwa .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -958,13 +982,13 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-width: 0;
 }
 
-#ndcxkmgtmh .gt_bottom_border {
+#waacxwotwa .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_col_headings {
+#waacxwotwa .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -979,7 +1003,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_col_heading {
+#waacxwotwa .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -999,7 +1023,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#ndcxkmgtmh .gt_column_spanner_outer {
+#waacxwotwa .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1011,15 +1035,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 4px;
 }
 
-#ndcxkmgtmh .gt_column_spanner_outer:first-child {
+#waacxwotwa .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ndcxkmgtmh .gt_column_spanner_outer:last-child {
+#waacxwotwa .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ndcxkmgtmh .gt_column_spanner {
+#waacxwotwa .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1031,7 +1055,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   width: 100%;
 }
 
-#ndcxkmgtmh .gt_group_heading {
+#waacxwotwa .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1057,7 +1081,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   text-align: left;
 }
 
-#ndcxkmgtmh .gt_empty_group_heading {
+#waacxwotwa .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1072,15 +1096,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: middle;
 }
 
-#ndcxkmgtmh .gt_from_md > :first-child {
+#waacxwotwa .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ndcxkmgtmh .gt_from_md > :last-child {
+#waacxwotwa .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ndcxkmgtmh .gt_row {
+#waacxwotwa .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1099,7 +1123,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#ndcxkmgtmh .gt_stub {
+#waacxwotwa .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1112,7 +1136,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#ndcxkmgtmh .gt_stub_row_group {
+#waacxwotwa .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1126,11 +1150,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: top;
 }
 
-#ndcxkmgtmh .gt_row_group_first td {
+#waacxwotwa .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ndcxkmgtmh .gt_summary_row {
+#waacxwotwa .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1140,16 +1164,16 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#ndcxkmgtmh .gt_first_summary_row {
+#waacxwotwa .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_first_summary_row.thick {
+#waacxwotwa .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ndcxkmgtmh .gt_last_summary_row {
+#waacxwotwa .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1159,7 +1183,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_grand_summary_row {
+#waacxwotwa .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1169,7 +1193,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#ndcxkmgtmh .gt_first_grand_summary_row {
+#waacxwotwa .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1179,11 +1203,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_striped {
+#waacxwotwa .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ndcxkmgtmh .gt_table_body {
+#waacxwotwa .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1192,7 +1216,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_footnotes {
+#waacxwotwa .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1206,7 +1230,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_footnote {
+#waacxwotwa .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1215,7 +1239,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#ndcxkmgtmh .gt_sourcenotes {
+#waacxwotwa .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1229,7 +1253,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#ndcxkmgtmh .gt_sourcenote {
+#waacxwotwa .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1237,64 +1261,64 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#ndcxkmgtmh .gt_left {
+#waacxwotwa .gt_left {
   text-align: left;
 }
 
-#ndcxkmgtmh .gt_center {
+#waacxwotwa .gt_center {
   text-align: center;
 }
 
-#ndcxkmgtmh .gt_right {
+#waacxwotwa .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ndcxkmgtmh .gt_font_normal {
+#waacxwotwa .gt_font_normal {
   font-weight: normal;
 }
 
-#ndcxkmgtmh .gt_font_bold {
+#waacxwotwa .gt_font_bold {
   font-weight: bold;
 }
 
-#ndcxkmgtmh .gt_font_italic {
+#waacxwotwa .gt_font_italic {
   font-style: italic;
 }
 
-#ndcxkmgtmh .gt_super {
+#waacxwotwa .gt_super {
   font-size: 65%;
 }
 
-#ndcxkmgtmh .gt_footnote_marks {
+#waacxwotwa .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#ndcxkmgtmh .gt_asterisk {
+#waacxwotwa .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ndcxkmgtmh .gt_indent_1 {
+#waacxwotwa .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ndcxkmgtmh .gt_indent_2 {
+#waacxwotwa .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ndcxkmgtmh .gt_indent_3 {
+#waacxwotwa .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ndcxkmgtmh .gt_indent_4 {
+#waacxwotwa .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ndcxkmgtmh .gt_indent_5 {
+#waacxwotwa .gt_indent_5 {
   text-indent: 25px;
 }
 </style>

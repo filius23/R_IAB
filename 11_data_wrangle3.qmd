@@ -158,51 +158,49 @@ bsp_df2 %>% pivot_wider(names_from = alter,values_from = alo)
 ```
 
 
-
-
-
-
-
-
 ## Übungen
 
 ### Übung 1 {#join_ue}
-Verknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit [Arbeitsmarktstatistiken](https://www.regionalstatistik.de/genesis//online?operation=table&code=AI008-1) von Destatis.
-Lesen die ETB mit folgendem Befehl ein:
+Verknüpfen Sie die ausgewählten Beobachtungen des PASS CF mit der Haushalts-Information, in welcher Region (`region`) die Befragten wohnen.
+Mergen Sie dazu die `hnr` aus `p_register_cf_W13.dta` basiernd auf der `pnr` und mergen dann die `region` basierend auf der `hnr` und `welle`.
 
-<!-- ```{r jnue} -->
-<!-- #| eval: false -->
-<!-- etb_ue11 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", -->
-<!--                        col_select = c("intnr","int_jahr","Bula")) %>%  -->
-<!--   slice(34:35,68:69,62,687,625,684,599:600) -->
-<!-- etb_ue11 -->
-<!-- ``` -->
+```{r jnue}
+pend_ue11 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                             col_select = c("pnr","welle")) %>%
+  slice(1:10)
 
-<!-- So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein): -->
-<!-- ```{r jndat1} -->
-<!-- alo <- readRDS(file = "./data/alo_bula1.Rdata") -->
-<!-- alo -->
-<!-- ``` -->
+pend_ue11
 
-<!-- Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten? -->
-<!-- ```{r jndat2} -->
-<!-- alo_j <- readRDS(file = "./data/alo_bula1_jahr.Rdata") -->
-<!-- alo_j -->
-<!-- ``` -->
+hh_dat <- haven::read_dta("./orig/HHENDDAT_cf_W13.dta", col_select = c("hnr","welle","region"))
+p_reg <- haven::read_dta("./orig/p_register_cf_W13.dta", col_select = c("pnr","hnr"))
+```
+
 
 
 
 ### Übung 2 {#pivot_ue}
 
-<!-- ```{r uepvit} -->
-<!-- alo_wide <- readRDS(file = "./data/alo_bula2.Rdata") -->
-<!-- alo_wide -->
-<!-- ``` -->
+```{r}
+pend_ue11b <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                             col_select = c("pnr","welle","famstand")) %>%
+  slice(200:210) %>% 
+  filter(welle %in% 2:3)
 
-<!-- Bringen Sie `alo_wide` in das long shape: -->
 
-<!-- ```{r} -->
-<!-- #| echo: false -->
-<!-- alo_wide %>% pivot_longer(cols = 3:4,names_to = "jahr",values_to = "alo_quote",names_prefix = "alo_") -->
-<!-- ``` -->
+pend_ue11b
+```
+
+Bringen Sie `pend_ue11b` in das long shape:
+
+```{r}
+#| echo: false
+pend_ue11b %>% pivot_wider(names_from = welle, values_from = famstand)
+```
+
+Tipp: mit `,names_prefix = "wave"` in `pivot_wider()` können wir ein Präfix angeben:
+```{r}
+#| echo: false
+pend_ue11b %>% pivot_wider(names_from = welle, values_from = famstand,names_prefix = "wave")
+```
+
 
