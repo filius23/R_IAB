@@ -5,11 +5,13 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 library(tidyverse)
 library(marginaleffects)
 library(broom)
+pend11_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
+
 ```
 
 ```{r}
-etb_k12 <-  haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                         col_select = c("S1","F518_SUF","m1202","az","zpalter","F1605e","Bula")) %>% 
+pend <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                         col_select = c("pnr","welle","netges","schul2","azges1","palter","famstand")) %>% 
   filter(F518_SUF < 99998, m1202 %in% 1:4, zpalter < 9999 ) %>% 
   mutate(m1202_fct = factor(m1202, levels = 1:4, labels = c("ohne","dual/schul.","Aufst.","FH/Uni")),
          S1_fct = factor(S1,levels = 1:2,labels =c("m","w")))
@@ -133,7 +135,7 @@ Wir können die Funktion auch im gleichen Zug wie `map()` definieren, indem wir 
 ```{r}
 #| eval: false
 map(input, function(x) {
-  ... # letzter Schritt in function wird das Ergebnis ausgegeben
+  ... # letzter Schritt in function wird als Ergebnis ausgegeben
 })
 ```
 

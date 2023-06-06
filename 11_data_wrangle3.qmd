@@ -23,7 +23,7 @@ windowsFonts(Roboto=windowsFont("Roboto"))
 ```
 
 
-## Datensätze verbinden
+## Datensätze verbinden {#join}
 
 > A mutating join allows you to combine variables from two tables. It first matches observations by their keys, then copies across variables from one table to the other.  
 [R for Data Science: Mutating joins](http://r4ds.had.co.nz/relational-data.html#mutating-joins)
@@ -58,7 +58,7 @@ g
 
 ```{r inner-join}
 #| echo: false
-source("tidyexplain/inner_join.R")
+# source("tidyexplain/inner_join.R")
 ```
 ```{r left-join}
 #| echo: false
@@ -66,7 +66,7 @@ source("tidyexplain/inner_join.R")
 ```
 ```{r left-join-extra}
 #| echo: false
-source("tidyexplain/left_join_extra.R")
+# source("tidyexplain/left_join_extra.R")
 ```
 ```{r right-join}
 #| echo: false
@@ -74,7 +74,7 @@ source("tidyexplain/left_join_extra.R")
 ```
 ```{r full-join}
 #| echo: false
-source("tidyexplain/full_join.R")
+# source("tidyexplain/full_join.R")
 ```
 
 
@@ -93,13 +93,11 @@ Für eine tiefergehende Einführung lohnt sich das Kapitel [Relational Data](htt
 Eine sehr hilfreiche Option in den `..._join()` ist die Verbindung unterschiedlicher Variablen.
 Bspw. haben wir hier einige Fälle aus der ETB18 und 
 
-```{r exmap}
+```{r exmap1}
 #| code-fold: true
-etb18_int_bl <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                                col_select = c("intnr","Bula") # mit col_select() können Variablen ausgewählt werden
-                                )
-
-etb_ids <-  etb18_int_bl %>% slice(c(1,125,1230,21010,8722) )
+#| cache: false
+ids_df <-  data.frame(pnr = sample(1:9,4),
+                       Bula = c(2,1,14,15))
 
 set.seed(90459)
 alo_bula <- data.frame(bundesland = seq(1:8),
@@ -107,17 +105,15 @@ alo_bula <- data.frame(bundesland = seq(1:8),
                        )
 ```
 
-
 ```{r join_by}
-etb_ids
+ids_df
 alo_bula
-etb_ids %>% left_join(alo_bula,by = c("Bula"="bundesland"))
+ids_df %>% left_join(alo_bula,by = c("Bula"="bundesland"))
 ```
 
 Ein sehr hilfreiche Checkmöglichkeit, die ich häufig verwende:
-Für alle `Bula` in `etb_ids` findet sich eine Entsprechung in `alo$bundesland`:
 ```{r tabx_in}
-table(etb_ids$Bula %in% alo_bula$bundesland)
+table(ids_df$Bula %in% alo_bula$bundesland)
 ```
 
 
@@ -173,38 +169,40 @@ bsp_df2 %>% pivot_wider(names_from = alter,values_from = alo)
 ### Übung 1 {#join_ue}
 Verknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit [Arbeitsmarktstatistiken](https://www.regionalstatistik.de/genesis//online?operation=table&code=AI008-1) von Destatis.
 Lesen die ETB mit folgendem Befehl ein:
-```{r jnue}
-etb_ue11 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                       col_select = c("intnr","int_jahr","Bula")) %>% 
-  slice(34:35,68:69,62,687,625,684,599:600)
-etb_ue11
-```
 
-So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein):
-```{r jndat1}
-alo <- readRDS(file = "./data/alo_bula1.Rdata")
-alo
-```
+<!-- ```{r jnue} -->
+<!-- #| eval: false -->
+<!-- etb_ue11 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta", -->
+<!--                        col_select = c("intnr","int_jahr","Bula")) %>%  -->
+<!--   slice(34:35,68:69,62,687,625,684,599:600) -->
+<!-- etb_ue11 -->
+<!-- ``` -->
 
-Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten?
-```{r jndat2}
-alo_j <- readRDS(file = "./data/alo_bula1_jahr.Rdata")
-alo_j
-```
+<!-- So können Sie die aufbereiteten Arbeitslosendaten einlesen (die Zahlencodes in beiden Datensätzen stimmen überein): -->
+<!-- ```{r jndat1} -->
+<!-- alo <- readRDS(file = "./data/alo_bula1.Rdata") -->
+<!-- alo -->
+<!-- ``` -->
+
+<!-- Wie müssten Sie vorgehen, wenn Sie nun jahresgenaue Angaben haben und dementsprechend zusätzlich auch nach dem Jahr mergen möchten? -->
+<!-- ```{r jndat2} -->
+<!-- alo_j <- readRDS(file = "./data/alo_bula1_jahr.Rdata") -->
+<!-- alo_j -->
+<!-- ``` -->
 
 
 
 ### Übung 2 {#pivot_ue}
 
-```{r uepvit}
-alo_wide <- readRDS(file = "./data/alo_bula2.Rdata")
-alo_wide
-```
+<!-- ```{r uepvit} -->
+<!-- alo_wide <- readRDS(file = "./data/alo_bula2.Rdata") -->
+<!-- alo_wide -->
+<!-- ``` -->
 
-Bringen Sie `alo_wide` in das long shape:
+<!-- Bringen Sie `alo_wide` in das long shape: -->
 
-```{r}
-#| echo: false
-alo_wide %>% pivot_longer(cols = 3:4,names_to = "jahr",values_to = "alo_quote",names_prefix = "alo_")
-```
+<!-- ```{r} -->
+<!-- #| echo: false -->
+<!-- alo_wide %>% pivot_longer(cols = 3:4,names_to = "jahr",values_to = "alo_quote",names_prefix = "alo_") -->
+<!-- ``` -->
 

@@ -656,5 +656,33 @@
     "title": "10  Logistische Regressionsmodelle",
     "section": "",
     "text": "Leseempfehlung: Logistische Regression von Henning Best & Christof Wolf, S. 827-854 in “Handbuch der sozialwissenschaftlichen Datenanalyse”↩︎\nfamily=\"binomial\" ist dabei entscheidend: glm(soc_med ~ palter, data = pend11) oder glm(soc_med ~ palter, family = gaussian(), data = pend11) ist gleichbedeutend mit lm(soc_med ~ palter, data = pend11): es wird ein lineares OLS-Modell berechnet.↩︎\n\\(\\widehat{Logit(soc\\_med=1)} = \\widehat{ln\\left(\\frac{P(soc\\_med=1)}{1-P(soc\\_med=1)}\\right)} = \\hat\\beta0 + \\hat{\\beta1}\\times \\texttt{palter}\\)↩︎"
+  },
+  {
+    "objectID": "11_data_wrangle3.html#join",
+    "href": "11_data_wrangle3.html#join",
+    "title": "11  Data Wrangling III",
+    "section": "11.1 Datensätze verbinden",
+    "text": "11.1 Datensätze verbinden\n\nA mutating join allows you to combine variables from two tables. It first matches observations by their keys, then copies across variables from one table to the other.\nR for Data Science: Mutating joins\n\nEin Überblick zu den wichtigsten Befehlen:1\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nEs gibt natürlich auch right_join() oder anti_join(). Für eine tiefergehende Einführung lohnt sich das Kapitel Relational Data aus R for Data Science.\nEine sehr hilfreiche Option in den ..._join() ist die Verbindung unterschiedlicher Variablen. Bspw. haben wir hier einige Fälle aus der ETB18 und\n\n\nCode\nids_df &lt;-  data.frame(pnr = sample(1:9,4),\n                       Bula = c(2,1,14,15))\n\nset.seed(90459)\nalo_bula &lt;- data.frame(bundesland = seq(1:8),\n                       Werte = sample(letters,size = 8) # mit sample() kann eine zufällige Auswahl getroffen werden \n                       )\n\n\n\nids_df\n\n#&gt;   pnr Bula\n#&gt; 1   1    2\n#&gt; 2   7    1\n#&gt; 3   9   14\n#&gt; 4   5   15\n\nalo_bula\n\n#&gt;   bundesland Werte\n#&gt; 1          1     g\n#&gt; 2          2     m\n#&gt; 3          3     n\n#&gt; 4          4     z\n#&gt; 5          5     w\n#&gt; 6          6     r\n#&gt; 7          7     t\n#&gt; 8          8     h\n\nids_df %&gt;% left_join(alo_bula,by = c(\"Bula\"=\"bundesland\"))\n\n#&gt;   pnr Bula Werte\n#&gt; 1   1    2     m\n#&gt; 2   7    1     g\n#&gt; 3   9   14  &lt;NA&gt;\n#&gt; 4   5   15  &lt;NA&gt;\n\n\nEin sehr hilfreiche Checkmöglichkeit, die ich häufig verwende:\n\ntable(ids_df$Bula %in% alo_bula$bundesland)\n\n#&gt; \n#&gt; FALSE  TRUE \n#&gt;     2     2\n\n\n\n11.1.1 Übung"
+  },
+  {
+    "objectID": "11_data_wrangle3.html#reshape-pivot_longer-pivot_wider",
+    "href": "11_data_wrangle3.html#reshape-pivot_longer-pivot_wider",
+    "title": "11  Data Wrangling III",
+    "section": "11.2 Reshape: pivot_longer() & pivot_wider()",
+    "text": "11.2 Reshape: pivot_longer() & pivot_wider()\n\nbsp_df &lt;- \n  data.frame(\n    bula    = c(\"NRW\",\"NDS\"),\n    alo2018 = c(2,2),\n    alo2017 = c(1,1)\n    )\n\nbsp_df\n\n#&gt;   bula alo2018 alo2017\n#&gt; 1  NRW       2       1\n#&gt; 2  NDS       2       1\n\n\nMit pivot_longer() können wir aus einem wide shape data.frame einen long shape machen:\n\nbsp_df %&gt;% pivot_longer(cols = c(\"alo2018\",\"alo2017\"),names_to = \"year\",values_to = \"alo\")\n\n#&gt; # A tibble: 4 × 3\n#&gt;   bula  year      alo\n#&gt;   &lt;chr&gt; &lt;chr&gt;   &lt;dbl&gt;\n#&gt; 1 NRW   alo2018     2\n#&gt; 2 NRW   alo2017     1\n#&gt; 3 NDS   alo2018     2\n#&gt; 4 NDS   alo2017     1\n\n\nMit names_prefix = \"alo\" können wir das alo direkt löschen lassen:\n\nbsp_df %&gt;% pivot_longer(cols = c(\"alo2018\",\"alo2017\"),names_to = \"year\",values_to = \"alo\",names_prefix = \"alo\")\n\n#&gt; # A tibble: 4 × 3\n#&gt;   bula  year    alo\n#&gt;   &lt;chr&gt; &lt;chr&gt; &lt;dbl&gt;\n#&gt; 1 NRW   2018      2\n#&gt; 2 NRW   2017      1\n#&gt; 3 NDS   2018      2\n#&gt; 4 NDS   2017      1\n\n\nMit pivot_wider() können wir den umgekehrten Weg gehen:\n\nbsp_df2 &lt;- \n  data.frame(land = c(\"NRW\",\"NDS\",\"NRW\",\"NDS\"),\n             alo = c(2.1,1.8,2.4,2.2),\n             alter = c(\"age_1825\",\"age_1825\",\"age_2630\",\"age_2630\"))\nbsp_df2\n\n#&gt;   land alo    alter\n#&gt; 1  NRW 2.1 age_1825\n#&gt; 2  NDS 1.8 age_1825\n#&gt; 3  NRW 2.4 age_2630\n#&gt; 4  NDS 2.2 age_2630\n\n\n\nbsp_df2 %&gt;% pivot_wider(names_from = alter,values_from = alo)\n\n#&gt; # A tibble: 2 × 3\n#&gt;   land  age_1825 age_2630\n#&gt;   &lt;chr&gt;    &lt;dbl&gt;    &lt;dbl&gt;\n#&gt; 1 NRW        2.1      2.4\n#&gt; 2 NDS        1.8      2.2"
+  },
+  {
+    "objectID": "11_data_wrangle3.html#übungen",
+    "href": "11_data_wrangle3.html#übungen",
+    "title": "11  Data Wrangling III",
+    "section": "11.3 Übungen",
+    "text": "11.3 Übungen\n\n11.3.1 Übung 1\nVerknüpfen Sie die ausgewählten Beobachtungen der ETB 2018 mit Arbeitsmarktstatistiken von Destatis. Lesen die ETB mit folgendem Befehl ein:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n11.3.2 Übung 2"
+  },
+  {
+    "objectID": "11_data_wrangle3.html#footnotes",
+    "href": "11_data_wrangle3.html#footnotes",
+    "title": "11  Data Wrangling III",
+    "section": "",
+    "text": "Illustrationen mit tidyexplain↩︎"
   }
 ]
