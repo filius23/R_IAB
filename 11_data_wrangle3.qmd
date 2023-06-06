@@ -162,7 +162,7 @@ bsp_df2 %>% pivot_wider(names_from = alter,values_from = alo)
 
 ### Übung 1 {#join_ue}
 Verknüpfen Sie die ausgewählten Beobachtungen des PASS CF mit der Haushalts-Information, in welcher Region (`region`) die Befragten wohnen.
-Mergen Sie dazu die `hnr` aus `p_register_cf_W13.dta` basiernd auf der `pnr` und mergen dann die `region` basierend auf der `hnr` und `welle`.
+Mergen Sie dazu  die `region` aus `HHENDDAT_cf_W13.dta` basierend auf der `hnr` und `welle`.
 
 ```{r jnue}
 pend_ue11 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
@@ -172,7 +172,6 @@ pend_ue11 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
 pend_ue11
 
 hh_dat <- haven::read_dta("./orig/HHENDDAT_cf_W13.dta", col_select = c("hnr","welle","region"))
-p_reg <- haven::read_dta("./orig/p_register_cf_W13.dta", col_select = c("pnr","hnr"))
 ```
 
 

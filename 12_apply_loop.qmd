@@ -11,7 +11,7 @@ pend12_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
 
 ```{r}
 pend12 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
-                         col_select = c("pnr","welle","netges","schul2","azges1","palter","famstand","zpsex","statakt")) %>% 
+                         col_select = c("pnr","welle","netges","schul2","azges1","palter","famstand","zpsex","statakt","hnr")) %>% 
   filter(netges > 0, schul2 %in% 2:7, palter > 0, famstand > 0, azges1 > 0 , welle == 13) %>% 
   mutate(
     across(matches("palter|netges|azges1"),~as.numeric(.x)),
@@ -22,6 +22,7 @@ pend12 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
 ```
 
 Schleifen im Sinne von `for()`-Loops werden in R selten verwendet. 
+
 Stattdessen werden meist Funktionen `function(...)` mit Hilfe von `lapply()` bzw. `map()` aus `{purrr}`/`{tidyverse}` [^lapply] über eine Reihe von Werten geschleift.
 
 [^lapply]: in base R gibt es `lapply()`, das ungefähr das gleiche macht.
@@ -209,11 +210,10 @@ Der zweite Fall ist das gleiche Modell auf verschiedene Datensätze anzuwenden -
 ...dafür hilft uns `nest(.by =)` - damit können wir den Datensatz entlang einer Variable splitten und zusammenfassen:
 ```{r eastwestnest}
 hh_dat <- haven::read_dta("./orig/HHENDDAT_cf_W13.dta", col_select = c("hnr","welle","region"))
-p_reg <- haven::read_dta("./orig/p_register_cf_W13.dta", col_select = c("pnr","hnr"))
+# p_reg <- haven::read_dta("./orig/p_register_cf_W13.dta", col_select = c("pnr","hnr"))
 
 pend12_ow <- 
   pend12 %>%
-    left_join(p_reg,by = c("pnr")) %>% 
     left_join(hh_dat,by = c("hnr","welle")) %>% 
      mutate(east = ifelse(region == 2,"east","west")) %>% 
   select(netges,azges1,schul2_fct,palter,zpsex_fct, east)

@@ -166,6 +166,9 @@ t2x <- cumsum(prop.table(table(pend$statakt)))
 
 `r sprintf("%2.3f",round(t2x[2]*100,3))`% aller Befragten sind erwerbstätig oder arbeitslos (und nicht inaktiv).
 
+
+::: {.callout-tip collapse="true"}
+
 ## Mehrere Kennzahlen in einer Tabelle
 
 Aus Stata kennen viele sicherlich folgende Ansicht mit `tab statakt`:
@@ -207,6 +210,7 @@ tab_statakt2$Cum <- cumsum(tab_statakt2$pct)
 tab_statakt2
 ```
 
+:::
 
 ## Kontingenztabellen
 
@@ -216,6 +220,12 @@ table(pend$zpsex, pend$statakt)
 ```
 
 Wir erkennen aus dieser Tabelle beispielsweise, dass `r table(pend$zpsex, pend$statakt)[6]` Befragte weiblich (`zpsex=2`) und inaktiv (`statakt = 3`) sind.
+
+Mit `addmargins()` können wir die Tabelle um die Summenwerte erweitern:
+```{r}
+table(pend$zpsex, pend$statakt) %>% addmargins()
+```
+
 
 Möchten wir jetzt die relativen Häufigkeiten, dann wenden wir wieder `prop.table()` an:
 ```{r}
@@ -241,6 +251,11 @@ table(pend$zpsex, pend$statakt) %>% prop.table(margin = 2)
 
 > `r format(t2,digits = 4)`% der inaktiven Befragten (`statakt = 3`) sind weiblich (`zpsex=2`).
 
+
+Übrigens funktioniert auch hier `addmargins()`:
+```{r}
+table(pend$zpsex, pend$statakt) %>% prop.table(margin = 2) %>% addmargins()
+```
 
 Für eine Kontingenztabelle mit `count()` geben wir einfach die Variablen in `count()` an. Das Ergebnis wird immer im "long shape" Format ausgegeben:
 
@@ -434,30 +449,31 @@ pend %>% count(famstand) %>%
 
 + Lassen Sie sich eine Tabelle mit den absoluten Häufigkeiten anzeigen, nutzen Sie dafür sowohl `table()` als auch `count()` (Denken Sie daran, `{tidyverse}` zu laden für `count()`). 
 + Überschreiben Sie Missing-Codes mit `NA`.
++ Hat das Überschreiben der Missings mit NA geklappt? Erstellen Sie die Tabelle erneut.
 + Lassen Sie sich der relativen Häufigkeiten (Anteile) ausgeben. Verwenden Sie `prop.table()` auf Basis des `table()`.
 + Erstellen Sie eine Kontingenztabelle, indem Sie neben `famstand` auch das Geschlecht `zpsex` (2 = Frauen, 1 = Männer) mit einbeziehen
-+ Wie viel Prozent der Befragten sind Frauen, die in einer Gemeinde mit unter 2000 Einwohnern leben? Berechnen Sie die relativen Häufigkeiten.
 
 [Zurück nach oben](#ue3_1)
 
 ### Übung 2 {#descue2}
 
-+ Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten für `famstand`. Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu.
+<!-- + Erstellen Sie mit Hilfe von `count()` eine Tabelle mit absoluten, relativen und kumulierten relativen Häufigkeiten für `famstand`. Erstellen Sie zunächst eine Auszählung mit `count()` und fügen Sie dann die relativen und kumulierten relativen Häufigkeiten hinzu. -->
 + Erstellen Sie eine Kontingenztabelle für `famstand` und `zpsex`
 + Wie viel Prozent der Befragten sind geschiedene Frauen? 
-+ Wie viel Prozent der Frauen sind geschieden?
-+ Wie viel Prozent der Geschiedenen sind Frauen?
++ Wie viel Prozent der befragten Frauen sind geschieden? Nutzen Sie die `margin =`-Option
++ Wie viel Prozent der befragten Geschiedenen sind Frauen? Nutzen Sie die `margin =`-Option
   
 [Zurück nach oben](#ue3_2)
 
 ### Übung 3 {#descue3}
 
-Beschreiben Sie das Alter der Befragten (`palter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Gemeindegrößen erlaubt.
+Beschreiben Sie das Alter der Befragten (`palter`) mit `summary` und erstellen Sie selbst einen Überblick mit Hilfe von `summarise()`, der einen Vergleich des Befragtenalters nach Familienstand erlaubt.
 
   + Überschreiben Sie zunächst die Missings mit `NA`: 
 ```{r}
 #| eval: false
-pend$palter[pend$palter>100] <- NA
+pend$palter[pend$palter<0] <- NA
+pend$famstand[pend$famstand<0] <- NA
 ```
   
   + Erstellen Sie einen Überblick mit `summary()`

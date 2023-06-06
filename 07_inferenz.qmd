@@ -1,4 +1,4 @@
-# Inferenzstatistik & Zusammenhangsmaße
+# Inferenzstatistik & Gewichtung
 
 ```{r inf01, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
@@ -161,7 +161,7 @@ Für [Regressionsmodelle](#reg) gibt es bspw. `survey::svyglm()`
 ```{r}
 pend_ue7 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
                             col_select = c("pnr","welle","zpsex","palter","netges")) %>% 
-  mutate(across(everything(), ~ifelse(.x < 4,NA,.x))) # missings  mit NA überschreiben
+  mutate(across(everything(), ~ifelse(.x < 0,NA,.x))) # missings  mit NA überschreiben
 ```
 
 Testen Sie die Hypothese, dass ein signifikanter Unterschied im Alter (`palter`) zwischen Männern und Frauen besteht (`zpsex`). Die Missings beider Variablen wurden im `mutate()` der Befehle oben schon mit `NA` überschrieben - Sie können direkt los legen.
