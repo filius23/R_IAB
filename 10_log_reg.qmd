@@ -18,9 +18,9 @@ color1x =  "#00519E" # uol farbe
 colorhex <- "#FCFCFC" #"#FCF9F0FF"7
 colorhex <- NA #"#FCF9F0FF"7
 
-# pend11 <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF","m1202","zpalter")) 
-pend11_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
-# pend11 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+# pend10 <- haven::read_dta("D:/Datenspeicher/BIBB_BAuA/BIBBBAuA_2018_suf1.0.dta",col_select = c("S1","F605","F518_SUF","m1202","zpalter")) 
+pend10_lab <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",n_max = 1)
+# pend10 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
 #                           col_select = c("pnr","welle","zpsex","famstand","palter","PAS0400")) %>% 
 #   mutate(across(everything(),~ifelse(.x<0,NA,.x)))
 
@@ -61,18 +61,18 @@ Schauen wir uns beispielsweise die Frage nach der Social Media-Nutzung der Befra
 
 
 
-**`r attributes(pend11_lab$PSM0100)$label`**
+**`r attributes(pend10_lab$PSM0100)$label`**
    
 Die 1 steht dabei jeweils für "ja", die `2` für "nein". Wir verändern die Codierung aber so, dass die "nein"-Antworten mit `0` versehen werden. Die neue Variable nennen wir `soc_med`. 
 <!-- Außerdem teilen wir `F518_SUF` durch 100 und legen die so erstellte Variable "Einkommen in 100EUR" in `palter` ab, um die Nachkommastellen des Koeffizienten zu reduzieren: -->
 
 ```{r}
-pend11 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+pend10 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
                           col_select = c("pnr","welle","zpsex","famstand","palter","PSM0100")) %>% 
   mutate(across(everything(),~ifelse(.x<0,NA,.x)),
          soc_med = 2- PSM0100)
 
-pend11 %>% count(soc_med,PSM0100)
+pend10 %>% count(soc_med,PSM0100)
 ```
 
 ## Das logistische Regressionsmodell {#logmod}
@@ -86,9 +86,9 @@ Somit sieht unser logistisches Regressionsmodell in der allgemeinen Schreibweise
 In R können wir ein solches Modell mit `glm()` und der Option `family="binomial"` berechnen:[^log_fam]
 
 
-[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(soc_med ~ palter, data = pend11)` oder `glm(soc_med ~ palter, family = gaussian(), data = pend11)` ist gleichbedeutend mit `lm(soc_med ~ palter, data = pend11)`: es wird ein lineares OLS-Modell berechnet.
+[^log_fam]: `family="binomial"` ist dabei entscheidend: `glm(soc_med ~ palter, data = pend10)` oder `glm(soc_med ~ palter, family = gaussian(), data = pend10)` ist gleichbedeutend mit `lm(soc_med ~ palter, data = pend10)`: es wird ein lineares OLS-Modell berechnet.
 ```{r}
-m2 <- glm(soc_med ~ palter, family = "binomial", data = pend11)
+m2 <- glm(soc_med ~ palter, family = "binomial", data = pend10)
 summary(m2)
 ```
 
@@ -134,7 +134,7 @@ Mit einem um 1 Jahr höheren Lebensalter geht im Durchschnitt eine um `r sprintf
 
 :::
 
-## Predictions 
+## Predictions {#pred}
 
 Alternativ können die Ergebnisse aus log. Regressionen auch als vorhergesagte Werte dargestellt werden.
 Vorhergesagte Werte können wir mit `predictions()` aus `{marginaleffects}` erstellen:
@@ -146,7 +146,7 @@ Das können wir in einem `ggplot()` grafisch darstellen:
 ```{r}
 #| fig-width: 6
 #| fig-height: 4
-avg_predictions(m2, variables = list(palter  = 18:65)) %>% # vorhergesagte Werte
+predictions(m2, newdata = datagrid(palter  = 18:65)) %>% # vorhergesagte Werte
   data.frame() %>% 
   ggplot(aes(y = estimate , x = palter)) + 
   geom_errorbar(aes(ymin = conf.low, ymax= conf.high), color = "slateblue",width = .1) + # konfidenzintervalle
@@ -165,9 +165,9 @@ Mit `feglm()` lassen sich auch logistische FE-Modelle schätzen:
 
 ```{r logit_fixest, warning = FALSE}
 library(fixest)
-feglm(soc_med ~ palter |pnr, data = pend11, family = binomial)
+feglm(soc_med ~ palter |pnr, data = pend10, family = binomial)
 
-fe_log1 <- feglm(soc_med ~ palter |pnr, data = pend11, family = binomial)
+fe_log1 <- feglm(soc_med ~ palter |pnr, data = pend10, family = binomial)
 avg_slopes(fe_log1,by = TRUE, variables = "palter")
 ```
 
@@ -175,21 +175,25 @@ avg_slopes(fe_log1,by = TRUE, variables = "palter")
 ## Übung {#ame1}
 ```{r}
 #| eval: false
-etb_ue10 <- haven::read_dta("./data/BIBBBAuA_2018_suf1.0.dta",
-                            col_select = c("F1605e","m1202")) %>% 
-  filter(F1605e < 4, !is.na(F1605e), m1202 %in% 1:4) %>% 
-  mutate(fam_beruf = 2-F1605e,
-         m1202 = factor(m1202))
+pend10 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
+                          col_select = c("pnr","welle","zpsex","palter","PAS0400")) %>% 
+  mutate(across(everything(),~ifelse(.x<0,NA,.x)),
+         zpsex_fct = factor(zpsex,levels = 1:2, labels = c("Männer","Frauen")),
+         search = 2- PAS0400) %>% 
+  filter(!is.na(search))
 ```
 
 
 + Erstellen Sie ein logistisches Regressionsmodell mit `PAS0400` basierend auf der Frage
 
-**`r attributes(pend11_lab$PAS0400)$label`**
+**`r attributes(pend10_lab$PAS0400)$label`**
 
-als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie die Ausbildung `palter` als unabhängige Variable.
+als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie das Alter `palter` als unabhängige Variable. 
 
 Berechnen Sie die AME mit `marginaleffects`.
+
+**Bonusübung**: Stellen Sie die *adjusted predictions* in einem Plot auf Basis der [Predictions](#pred) dar. 
+
 
 
 ## Anhang: Hintergrund zu log. Regression & average marginal effects
@@ -198,7 +202,7 @@ Wenn wir uns fragen, ob sich Befragte mit höherem Einkommen seltener im Freien 
 
 ```{r, fig.align="center", fig.width=3.5, fig.height=2.625, warning=FALSE, message=F}
 #| code-fold: true
-ggplot(pend11, aes(x = palter, y = soc_med)) +
+ggplot(pend10, aes(x = palter, y = soc_med)) +
   geom_point(color = "#172869") +
   theme(aspect.ratio = .75)
 ```
@@ -211,13 +215,13 @@ Um trotzdem ein Regressionsmodell zu berechnen, könnten wir die abhängige Vari
 Allerdings führt das zwangsläufig zu Verstößen gegen die Annahmen bzgl. der Residuen - die Fehler werden immer heteroskedastisch und nicht normalverteilt sein. Zudem wird es vorhergesagte Werte geben, die nicht sinnvoll interpretiert werden können, weil es mit 0 und 1 Grenzen gibt, jenseits derer Wahrscheinlichkeiten nicht existieren (zB gibt es keine negativen Wahrscheinlichkeiten).
 
 ```{r,include=F}
-m1 <- lm(soc_med ~ palter, data = pend11)
+m1 <- lm(soc_med ~ palter, data = pend10)
 summary(m1)
 ```
 
 ```{r, fig.align="center", fig.width=5, fig.height=3.5, warning=FALSE, message=F}
 #| code-fold: true
-ggplot(pend11, aes(x = palter, y = soc_med)) +
+ggplot(pend10, aes(x = palter, y = soc_med)) +
   geom_point(color = "#172869", size = .75) +
   geom_smooth(method = "lm", color = lacroix_palette("PeachPear",6)[2],se = F ) + 
   labs(y = "P(soc_med = 1)", x = "Einkommen (in 100 EUR)",
