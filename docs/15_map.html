@@ -242,14 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#map" id="toc-map" class="nav-link active" data-scroll-target="#map"><span class="header-section-number">14.1</span> Karten (“Choroplethen”)</a></li>
-  <li><a href="#modelplot" id="toc-modelplot" class="nav-link" data-scroll-target="#modelplot"><span class="header-section-number">14.2</span> Koeffizientenplots</a>
-  <ul class="collapse">
-  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">14.2.1</span> Übung</a></li>
-  </ul></li>
-  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">14.3</span> Übungen</a>
-  <ul class="collapse">
-  <li><a href="#reg1" id="toc-reg1" class="nav-link" data-scroll-target="#reg1"><span class="header-section-number">14.3.1</span> Übung 1: Regression</a></li>
-  </ul></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">14.2</span> Übung</a></li>
   </ul>
 </nav>
     </div>
@@ -277,13 +270,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="map" class="level2" data-number="14.1">
 <h2 data-number="14.1" class="anchored" data-anchor-id="map"><span class="header-section-number">14.1</span> Karten (“Choroplethen”)</h2>
 <p>Für Karten und Arbeiten mit räumlichen Daten steht das Paket <code>{sf}</code> zur Verfügung. Das tolle ist: wir können <code>{sf}</code>-Daten mit den bekannten <code>{tidyverse}</code> Befehlen bearbeiten. Um eine Karte zu erstellen, benötigen wir ein <em>shapefile</em>, welches Informationen zu den darzustellenden Gebieten enthält. Für Deutschland stellt das <a href="http://gdz.bkg.bund.de/">Geodatenzentrum des Bundesamts für Kartographie und Geodäsie</a> shapefiles für die Gemeinden, Kreise und Länder zur Verfügung.</p>
+<div class="callout callout-style-simple callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<a href="https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/">Hier</a> finden sich die shapefiles der verschiedenen Jahre.
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Konkret verwenden wir die Dateien <strong><code>vg250_01-01.utm32s.shape.ebenen.zip</code></strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+</div>
+</div>
 <p>Diese shapefiles können wir dann auf Basis der AGS (<a href="https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel">Amtlicher Gemeindeschlüssel</a>) mit Daten verbinden und dann als Karte darstellen:</p>
 <div class="cell">
 <div class="cell-output-display">
 <p><img src="15_map_files/figure-html/map1-1.png" class="img-fluid" width="384"></p>
 </div>
 </div>
-<p>Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern). <a href="https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/">Hier</a> finden sich die shapefiles der verschiedenen Jahre.</p>
+<p>Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern).</p>
 <p>Um ein shapefile zu laden, installieren wir zunächst <code>{sf}</code> und laden es dann mit <code>library()</code>. Das eigentliche Laden leistet dann der Befehl <code>read_sf()</code>, wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das <code>layer</code>, also die Ebene angeben müssen. In den shapefiles des BKG gibt es folgende Layer:</p>
 <ul>
 <li><code>VG250_LAN</code>: Bundesländer (2-stellige AGS)</li>
@@ -292,8 +298,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>Wenn wir also die Bundesländer laden möchten gehen wir wie folgt vor:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dpath17 <span class="ot">&lt;-</span> <span class="st">"D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen"</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lan17 <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(dpath17, <span class="at">layer=</span><span class="st">"VG250_LAN"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>lan17 <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(<span class="st">"D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen"</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">layer=</span><span class="st">"VG250_LAN"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Das Objekt <code>lan17</code> können wir nun für einen <code>ggplot()</code>-Befehl verwenden. <code>lan17</code> enthält außerdem die Seegebiete, diese können wir mittels eines <code>filter()</code>-Befehls auf die Landgebiete einschränken (<code>GF</code> = 4):</p>
 <div>
@@ -324,53 +330,69 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(alo_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ags   alq
-1  01 0.058
-2  02 0.047
-3  03 0.075
-4  04 0.068
-5  05 0.043
-6  06 0.067</code></pre>
+1  01 0.095
+2  02 0.051
+3  03 0.070
+4  04 0.087
+5  05 0.072
+6  06 0.068</code></pre>
 </div>
 </div>
-<p>Jetzt können wir den <code>alo_df</code> an das <code>lan17</code> shapefile heranspielen mit Hilfe eines <a href="11_data_wrangle3.html#join"><code>left_join()</code></a>:</p>
+<p>Jetzt können wir den <code>alo_df</code> an das <code>lan17</code> shapefile heranspielen mit Hilfe eines <a href="11_data_wrangle3.html#join"><code>left_join()</code></a>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_df,<span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"AGS"</span><span class="sc">==</span><span class="st">"ags"</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_sf</span>(<span class="at">size =</span> .<span class="dv">1</span>, <span class="fu">aes</span>(<span class="at">fill =</span> alq))  <span class="sc">+</span></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Arbeitslosenquote für Bundesländer"</span>,</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">subtitle =</span> <span class="st">"(keine echten Daten)"</span>,</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"Arbeitslosen-</span><span class="sc">\n</span><span class="st">quote"</span>) <span class="sc">+</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"mako"</span>,<span class="at">begin =</span> .<span class="dv">1</span>,<span class="at">end =</span> .<span class="dv">9</span>) <span class="sc">+</span></span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_df,<span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"AGS"</span><span class="sc">==</span><span class="st">"ags"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_df,<span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"AGS"</span><span class="sc">==</span><span class="st">"ags"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(AGS,GEN,alq) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 3 fields
+Geometry type: MULTIPOLYGON
+Dimension:     XY
+Bounding box:  xmin: 280371.1 ymin: 5471366 xmax: 674202.3 ymax: 6101444
+Projected CRS: ETRS89 / UTM zone 32N
+# A tibble: 6 × 4
+  AGS   GEN                   alq                                       geometry
+  &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;                             &lt;MULTIPOLYGON [m]&gt;
+1 01    Schleswig-Holstein  0.095 (((464810.7 6100447, 464936.7 6100389, 465073…
+2 02    Hamburg             0.051 (((578219 5954278, 578433.9 5954189, 578557.7…
+3 03    Niedersachsen       0.07  (((479451.1 5971302, 479365.8 5971220, 479213…
+4 04    Bremen              0.087 (((466930.3 5897851, 467015.7 5897733, 467379…
+5 05    Nordrhein-Westfalen 0.072 (((477607.3 5818769, 477708 5818638, 477758.9…
+6 06    Hessen              0.068 (((534242 5721822, 534214.5 5721748, 534149.4…</code></pre>
+</div>
+</div>
+<p>Die Syntax für den eigentlichen Plot ist dann wieder wie für jeden anderen <code>ggplot()</code> auch - mit <code>fill =</code> können wir eine Flächenfarbe angeben und mit <code>scale_fill_...</code> eine Farbpalette auswählen:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scico)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_df,<span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"AGS"</span><span class="sc">==</span><span class="st">"ags"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_sf</span>(<span class="at">size =</span> .<span class="dv">1</span>, <span class="fu">aes</span>(<span class="at">fill =</span> alq))  <span class="sc">+</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Arbeitslosenquote für Bundesländer"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">subtitle =</span> <span class="st">"(keine echten Daten)"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"Arbeitslosen-</span><span class="sc">\n</span><span class="st">quote"</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_fill_scico</span>(<span class="at">palette =</span> <span class="st">"oslo"</span>) <span class="sc">+</span> <span class="co"># setzt scico Paket voraus</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="15_map_files/figure-html/mapplot2-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </section>
-<section id="modelplot" class="level2" data-number="14.2">
-<h2 data-number="14.2" class="anchored" data-anchor-id="modelplot"><span class="header-section-number">14.2</span> Koeffizientenplots</h2>
-<section id="übung" class="level3" data-number="14.2.1">
-<h3 data-number="14.2.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.2.1</span> <a href="09_reg.html#reg4">Übung</a></h3>
-</section>
-</section>
-<section id="übungen" class="level2" data-number="14.3">
-<h2 data-number="14.3" class="anchored" data-anchor-id="übungen"><span class="header-section-number">14.3</span> Übungen</h2>
-<p>Verwenden Sie folgenden Subdatensatz des PASS CampusFiles:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pend_ue08 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(welle <span class="sc">==</span> <span class="dv">13</span>, netges <span class="sc">&gt;</span> <span class="dv">0</span>, azges1 <span class="sc">&gt;</span> <span class="dv">0</span>,schul2 <span class="sc">&gt;</span> <span class="dv">1</span>, palter <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<section id="reg1" class="level3" data-number="14.3.1">
-<h3 data-number="14.3.1" class="anchored" data-anchor-id="reg1"><span class="header-section-number">14.3.1</span> Übung 1: Regression</h3>
+<section id="übung" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.2</span> Übung</h2>
+<p>Erstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.</p>
 <ul>
-<li>Erstellen Sie ein Objekt <code>mod1</code> mit einem linearen Regressionsmodell (<code>lm</code>) mit <code>netges</code> (Monatsnetto in EUR) als abhängiger und <code>azges1</code> (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe <a href="09_reg.html#lm1">hier</a>)</li>
-<li>Betrachten Sie Ergebnisse <code>mod1</code> - was können Sie zum Zusammenhang zwischen <code>netges</code> und <code>azges1</code> erkennen?</li>
-<li>Visualisieren Sie Ihr Regressionsmodell mit <code>{ggplot2}</code>.</li>
-<li>Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable <code>pnr</code> und <code>geom_text()</code>.</li>
+<li>Das Shapefile für das Jahr 2017 finden Sie</li>
 </ul>
 
 
 </section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p><code>YYYY</code> steht aly Platzhalter für das jeweilige Jahr<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
 </section>
 
 </main> <!-- /main -->

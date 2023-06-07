@@ -224,6 +224,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./15_map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit <code>{ggplot2}</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
@@ -261,35 +267,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#ue_3" id="toc-ue_3" class="nav-link" data-scroll-target="#ue_3"><span class="header-section-number">2.10.1</span> Übung</a></li>
   </ul></li>
-  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import"><span class="header-section-number">2.11</span> Datensätze einlesen</a>
+  <li><a href="#rproj" id="toc-rproj" class="nav-link" data-scroll-target="#rproj"><span class="header-section-number">2.11</span> Projekt einrichten</a></li>
+  <li><a href="#import" id="toc-import" class="nav-link" data-scroll-target="#import"><span class="header-section-number">2.12</span> Datensätze einlesen</a>
   <ul class="collapse">
-  <li><a href="#rproj" id="toc-rproj" class="nav-link" data-scroll-target="#rproj"><span class="header-section-number">2.11.1</span> Projekt einrichten</a></li>
-  <li><a href="#der-einlesebefehl" id="toc-der-einlesebefehl" class="nav-link" data-scroll-target="#der-einlesebefehl"><span class="header-section-number">2.11.2</span> Der Einlesebefehl</a></li>
-  <li><a href="#ue_4" id="toc-ue_4" class="nav-link" data-scroll-target="#ue_4"><span class="header-section-number">2.11.3</span> Übung</a></li>
+  <li><a href="#der-einlesebefehl" id="toc-der-einlesebefehl" class="nav-link" data-scroll-target="#der-einlesebefehl"><span class="header-section-number">2.12.1</span> Der Einlesebefehl</a></li>
+  <li><a href="#ue_4" id="toc-ue_4" class="nav-link" data-scroll-target="#ue_4"><span class="header-section-number">2.12.2</span> Übung</a></li>
   </ul></li>
-  <li><a href="#objekte-exportieren" id="toc-objekte-exportieren" class="nav-link" data-scroll-target="#objekte-exportieren"><span class="header-section-number">2.12</span> Objekte exportieren</a>
+  <li><a href="#objekte-exportieren" id="toc-objekte-exportieren" class="nav-link" data-scroll-target="#objekte-exportieren"><span class="header-section-number">2.13</span> Objekte exportieren</a>
   <ul class="collapse">
-  <li><a href="#ue_5" id="toc-ue_5" class="nav-link" data-scroll-target="#ue_5"><span class="header-section-number">2.12.1</span> Übung</a></li>
+  <li><a href="#ue_5" id="toc-ue_5" class="nav-link" data-scroll-target="#ue_5"><span class="header-section-number">2.13.1</span> Übung</a></li>
   </ul></li>
-  <li><a href="#überblick-einlesen-und-exportieren" id="toc-überblick-einlesen-und-exportieren" class="nav-link" data-scroll-target="#überblick-einlesen-und-exportieren"><span class="header-section-number">2.13</span> Überblick: Einlesen und Exportieren</a>
+  <li><a href="#überblick-einlesen-und-exportieren" id="toc-überblick-einlesen-und-exportieren" class="nav-link" data-scroll-target="#überblick-einlesen-und-exportieren"><span class="header-section-number">2.14</span> Überblick: Einlesen und Exportieren</a>
   <ul class="collapse">
-  <li><a href="#datensätze-einlesen" id="toc-datensätze-einlesen" class="nav-link" data-scroll-target="#datensätze-einlesen"><span class="header-section-number">2.13.1</span> Datensätze einlesen</a></li>
-  <li><a href="#datensätze-exportieren" id="toc-datensätze-exportieren" class="nav-link" data-scroll-target="#datensätze-exportieren"><span class="header-section-number">2.13.2</span> Datensätze exportieren</a></li>
+  <li><a href="#datensätze-einlesen" id="toc-datensätze-einlesen" class="nav-link" data-scroll-target="#datensätze-einlesen"><span class="header-section-number">2.14.1</span> Datensätze einlesen</a></li>
+  <li><a href="#datensätze-exportieren" id="toc-datensätze-exportieren" class="nav-link" data-scroll-target="#datensätze-exportieren"><span class="header-section-number">2.14.2</span> Datensätze exportieren</a></li>
   </ul></li>
-  <li><a href="#hilfe-zu-paketen-und-funktionen" id="toc-hilfe-zu-paketen-und-funktionen" class="nav-link" data-scroll-target="#hilfe-zu-paketen-und-funktionen"><span class="header-section-number">2.14</span> Hilfe zu Paketen und Funktionen</a></li>
-  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">2.15</span> Übungen</a>
+  <li><a href="#hilfe-zu-paketen-und-funktionen" id="toc-hilfe-zu-paketen-und-funktionen" class="nav-link" data-scroll-target="#hilfe-zu-paketen-und-funktionen"><span class="header-section-number">2.15</span> Hilfe zu Paketen und Funktionen</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">2.16</span> Übungen</a>
   <ul class="collapse">
-  <li><a href="#data1" id="toc-data1" class="nav-link" data-scroll-target="#data1"><span class="header-section-number">2.15.1</span> Übung 1</a></li>
-  <li><a href="#data2" id="toc-data2" class="nav-link" data-scroll-target="#data2"><span class="header-section-number">2.15.2</span> Übung 2</a></li>
-  <li><a href="#data3" id="toc-data3" class="nav-link" data-scroll-target="#data3"><span class="header-section-number">2.15.3</span> Übung 3</a></li>
-  <li><a href="#data4" id="toc-data4" class="nav-link" data-scroll-target="#data4"><span class="header-section-number">2.15.4</span> Übung 4</a></li>
-  <li><a href="#data5" id="toc-data5" class="nav-link" data-scroll-target="#data5"><span class="header-section-number">2.15.5</span> Übung 5</a></li>
+  <li><a href="#data1" id="toc-data1" class="nav-link" data-scroll-target="#data1"><span class="header-section-number">2.16.1</span> Übung 1</a></li>
+  <li><a href="#data2" id="toc-data2" class="nav-link" data-scroll-target="#data2"><span class="header-section-number">2.16.2</span> Übung 2</a></li>
+  <li><a href="#data3" id="toc-data3" class="nav-link" data-scroll-target="#data3"><span class="header-section-number">2.16.3</span> Übung 3</a></li>
+  <li><a href="#data4" id="toc-data4" class="nav-link" data-scroll-target="#data4"><span class="header-section-number">2.16.4</span> Übung 4</a></li>
+  <li><a href="#data5" id="toc-data5" class="nav-link" data-scroll-target="#data5"><span class="header-section-number">2.16.5</span> Übung 5</a></li>
   </ul></li>
-  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"><span class="header-section-number">2.16</span> Anhang</a>
+  <li><a href="#anhang" id="toc-anhang" class="nav-link" data-scroll-target="#anhang"><span class="header-section-number">2.17</span> Anhang</a>
   <ul class="collapse">
-  <li><a href="#setwd" id="toc-setwd" class="nav-link" data-scroll-target="#setwd"><span class="header-section-number">2.16.1</span> Alternativen zu R-Projekten</a></li>
-  <li><a href="#selfiltbase" id="toc-selfiltbase" class="nav-link" data-scroll-target="#selfiltbase"><span class="header-section-number">2.16.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></a></li>
-  <li><a href="#select-vs" id="toc-select-vs" class="nav-link" data-scroll-target="#select-vs"><span class="header-section-number">2.16.3</span> <code>select()</code> vs <code>$</code></a></li>
+  <li><a href="#setwd" id="toc-setwd" class="nav-link" data-scroll-target="#setwd"><span class="header-section-number">2.17.1</span> Alternativen zu R-Projekten</a></li>
+  <li><a href="#selfiltbase" id="toc-selfiltbase" class="nav-link" data-scroll-target="#selfiltbase"><span class="header-section-number">2.17.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></a></li>
+  <li><a href="#select-vs" id="toc-select-vs" class="nav-link" data-scroll-target="#select-vs"><span class="header-section-number">2.17.3</span> <code>select()</code> vs <code>$</code></a></li>
   </ul></li>
   </ul>
 </nav>
@@ -459,12 +465,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="kttcbyfkdz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="oakmwslnin" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#kttcbyfkdz .gt_table {
+#oakmwslnin .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -489,7 +495,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-left-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_heading {
+#oakmwslnin .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -501,12 +507,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_caption {
+#oakmwslnin .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#kttcbyfkdz .gt_title {
+#oakmwslnin .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -518,7 +524,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-width: 0;
 }
 
-#kttcbyfkdz .gt_subtitle {
+#oakmwslnin .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -530,13 +536,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-width: 0;
 }
 
-#kttcbyfkdz .gt_bottom_border {
+#oakmwslnin .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_col_headings {
+#oakmwslnin .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -551,7 +557,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_col_heading {
+#oakmwslnin .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -571,7 +577,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#kttcbyfkdz .gt_column_spanner_outer {
+#oakmwslnin .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -583,15 +589,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 4px;
 }
 
-#kttcbyfkdz .gt_column_spanner_outer:first-child {
+#oakmwslnin .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#kttcbyfkdz .gt_column_spanner_outer:last-child {
+#oakmwslnin .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#kttcbyfkdz .gt_column_spanner {
+#oakmwslnin .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -603,7 +609,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   width: 100%;
 }
 
-#kttcbyfkdz .gt_group_heading {
+#oakmwslnin .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -629,7 +635,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   text-align: left;
 }
 
-#kttcbyfkdz .gt_empty_group_heading {
+#oakmwslnin .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -644,15 +650,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: middle;
 }
 
-#kttcbyfkdz .gt_from_md > :first-child {
+#oakmwslnin .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#kttcbyfkdz .gt_from_md > :last-child {
+#oakmwslnin .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#kttcbyfkdz .gt_row {
+#oakmwslnin .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -671,7 +677,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   overflow-x: hidden;
 }
 
-#kttcbyfkdz .gt_stub {
+#oakmwslnin .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -684,7 +690,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kttcbyfkdz .gt_stub_row_group {
+#oakmwslnin .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -698,11 +704,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   vertical-align: top;
 }
 
-#kttcbyfkdz .gt_row_group_first td {
+#oakmwslnin .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#kttcbyfkdz .gt_summary_row {
+#oakmwslnin .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -712,16 +718,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kttcbyfkdz .gt_first_summary_row {
+#oakmwslnin .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_first_summary_row.thick {
+#oakmwslnin .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#kttcbyfkdz .gt_last_summary_row {
+#oakmwslnin .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -731,7 +737,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_grand_summary_row {
+#oakmwslnin .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -741,7 +747,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kttcbyfkdz .gt_first_grand_summary_row {
+#oakmwslnin .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -751,11 +757,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-top-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_striped {
+#oakmwslnin .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#kttcbyfkdz .gt_table_body {
+#oakmwslnin .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -764,7 +770,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-bottom-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_footnotes {
+#oakmwslnin .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -778,7 +784,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_footnote {
+#oakmwslnin .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -787,7 +793,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kttcbyfkdz .gt_sourcenotes {
+#oakmwslnin .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -801,7 +807,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   border-right-color: #D3D3D3;
 }
 
-#kttcbyfkdz .gt_sourcenote {
+#oakmwslnin .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -809,64 +815,64 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   padding-right: 5px;
 }
 
-#kttcbyfkdz .gt_left {
+#oakmwslnin .gt_left {
   text-align: left;
 }
 
-#kttcbyfkdz .gt_center {
+#oakmwslnin .gt_center {
   text-align: center;
 }
 
-#kttcbyfkdz .gt_right {
+#oakmwslnin .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#kttcbyfkdz .gt_font_normal {
+#oakmwslnin .gt_font_normal {
   font-weight: normal;
 }
 
-#kttcbyfkdz .gt_font_bold {
+#oakmwslnin .gt_font_bold {
   font-weight: bold;
 }
 
-#kttcbyfkdz .gt_font_italic {
+#oakmwslnin .gt_font_italic {
   font-style: italic;
 }
 
-#kttcbyfkdz .gt_super {
+#oakmwslnin .gt_super {
   font-size: 65%;
 }
 
-#kttcbyfkdz .gt_footnote_marks {
+#oakmwslnin .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#kttcbyfkdz .gt_asterisk {
+#oakmwslnin .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#kttcbyfkdz .gt_indent_1 {
+#oakmwslnin .gt_indent_1 {
   text-indent: 5px;
 }
 
-#kttcbyfkdz .gt_indent_2 {
+#oakmwslnin .gt_indent_2 {
   text-indent: 10px;
 }
 
-#kttcbyfkdz .gt_indent_3 {
+#oakmwslnin .gt_indent_3 {
   text-indent: 15px;
 }
 
-#kttcbyfkdz .gt_indent_4 {
+#oakmwslnin .gt_indent_4 {
   text-indent: 20px;
 }
 
-#kttcbyfkdz .gt_indent_5 {
+#oakmwslnin .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -922,12 +928,12 @@ double</p>
 </div>
 <div class="cell-output-display">
 
-<div id="dvhiepdlns" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="ltczmwdpnt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#dvhiepdlns .gt_table {
+#ltczmwdpnt .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -952,7 +958,7 @@ double</p>
   border-left-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_heading {
+#ltczmwdpnt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -964,12 +970,12 @@ double</p>
   border-right-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_caption {
+#ltczmwdpnt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#dvhiepdlns .gt_title {
+#ltczmwdpnt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -981,7 +987,7 @@ double</p>
   border-bottom-width: 0;
 }
 
-#dvhiepdlns .gt_subtitle {
+#ltczmwdpnt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -993,13 +999,13 @@ double</p>
   border-top-width: 0;
 }
 
-#dvhiepdlns .gt_bottom_border {
+#ltczmwdpnt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_col_headings {
+#ltczmwdpnt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1014,7 +1020,7 @@ double</p>
   border-right-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_col_heading {
+#ltczmwdpnt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1034,7 +1040,7 @@ double</p>
   overflow-x: hidden;
 }
 
-#dvhiepdlns .gt_column_spanner_outer {
+#ltczmwdpnt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1046,15 +1052,15 @@ double</p>
   padding-right: 4px;
 }
 
-#dvhiepdlns .gt_column_spanner_outer:first-child {
+#ltczmwdpnt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#dvhiepdlns .gt_column_spanner_outer:last-child {
+#ltczmwdpnt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#dvhiepdlns .gt_column_spanner {
+#ltczmwdpnt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1066,7 +1072,7 @@ double</p>
   width: 100%;
 }
 
-#dvhiepdlns .gt_group_heading {
+#ltczmwdpnt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1092,7 +1098,7 @@ double</p>
   text-align: left;
 }
 
-#dvhiepdlns .gt_empty_group_heading {
+#ltczmwdpnt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1107,15 +1113,15 @@ double</p>
   vertical-align: middle;
 }
 
-#dvhiepdlns .gt_from_md > :first-child {
+#ltczmwdpnt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#dvhiepdlns .gt_from_md > :last-child {
+#ltczmwdpnt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#dvhiepdlns .gt_row {
+#ltczmwdpnt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1134,7 +1140,7 @@ double</p>
   overflow-x: hidden;
 }
 
-#dvhiepdlns .gt_stub {
+#ltczmwdpnt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1147,7 +1153,7 @@ double</p>
   padding-right: 5px;
 }
 
-#dvhiepdlns .gt_stub_row_group {
+#ltczmwdpnt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1161,11 +1167,11 @@ double</p>
   vertical-align: top;
 }
 
-#dvhiepdlns .gt_row_group_first td {
+#ltczmwdpnt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#dvhiepdlns .gt_summary_row {
+#ltczmwdpnt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1175,16 +1181,16 @@ double</p>
   padding-right: 5px;
 }
 
-#dvhiepdlns .gt_first_summary_row {
+#ltczmwdpnt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_first_summary_row.thick {
+#ltczmwdpnt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#dvhiepdlns .gt_last_summary_row {
+#ltczmwdpnt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1194,7 +1200,7 @@ double</p>
   border-bottom-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_grand_summary_row {
+#ltczmwdpnt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1204,7 +1210,7 @@ double</p>
   padding-right: 5px;
 }
 
-#dvhiepdlns .gt_first_grand_summary_row {
+#ltczmwdpnt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1214,11 +1220,11 @@ double</p>
   border-top-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_striped {
+#ltczmwdpnt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#dvhiepdlns .gt_table_body {
+#ltczmwdpnt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1227,7 +1233,7 @@ double</p>
   border-bottom-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_footnotes {
+#ltczmwdpnt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1241,7 +1247,7 @@ double</p>
   border-right-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_footnote {
+#ltczmwdpnt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1250,7 +1256,7 @@ double</p>
   padding-right: 5px;
 }
 
-#dvhiepdlns .gt_sourcenotes {
+#ltczmwdpnt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1264,7 +1270,7 @@ double</p>
   border-right-color: #D3D3D3;
 }
 
-#dvhiepdlns .gt_sourcenote {
+#ltczmwdpnt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1272,64 +1278,64 @@ double</p>
   padding-right: 5px;
 }
 
-#dvhiepdlns .gt_left {
+#ltczmwdpnt .gt_left {
   text-align: left;
 }
 
-#dvhiepdlns .gt_center {
+#ltczmwdpnt .gt_center {
   text-align: center;
 }
 
-#dvhiepdlns .gt_right {
+#ltczmwdpnt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#dvhiepdlns .gt_font_normal {
+#ltczmwdpnt .gt_font_normal {
   font-weight: normal;
 }
 
-#dvhiepdlns .gt_font_bold {
+#ltczmwdpnt .gt_font_bold {
   font-weight: bold;
 }
 
-#dvhiepdlns .gt_font_italic {
+#ltczmwdpnt .gt_font_italic {
   font-style: italic;
 }
 
-#dvhiepdlns .gt_super {
+#ltczmwdpnt .gt_super {
   font-size: 65%;
 }
 
-#dvhiepdlns .gt_footnote_marks {
+#ltczmwdpnt .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#dvhiepdlns .gt_asterisk {
+#ltczmwdpnt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#dvhiepdlns .gt_indent_1 {
+#ltczmwdpnt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#dvhiepdlns .gt_indent_2 {
+#ltczmwdpnt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#dvhiepdlns .gt_indent_3 {
+#ltczmwdpnt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#dvhiepdlns .gt_indent_4 {
+#ltczmwdpnt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#dvhiepdlns .gt_indent_5 {
+#ltczmwdpnt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1874,24 +1880,8 @@ Levels: Uni Oldenburg Uni Bremen Uni Vechta</code></pre>
 <h3 data-number="2.10.1" class="anchored" data-anchor-id="ue_3"><span class="header-section-number">2.10.1</span> <a href="#data3">Übung</a></h3>
 </section>
 </section>
-<section id="import" class="level2" data-number="2.11">
-<h2 data-number="2.11" class="anchored" data-anchor-id="import"><span class="header-section-number">2.11</span> Datensätze einlesen</h2>
-<p>In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.</p>
-<p>In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.</p>
-<p>Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall “D:/Kurse/R-Kurs/” lauten:</p>
-<p>Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:</p>
-<div class="cell" data-layout-align="center">
-<div class="cell-output-display">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="./pic/102_dateipfad_datei.png" style="width:45.0%;height:45.0%" class="figure-img"></p>
-</figure>
-</div>
-</div>
-</div>
-<p>Diesen Dateipfad müssen wir also R mitteilen.</p>
-<section id="rproj" class="level3" data-number="2.11.1">
-<h3 data-number="2.11.1" class="anchored" data-anchor-id="rproj"><span class="header-section-number">2.11.1</span> Projekt einrichten</h3>
+<section id="rproj" class="level2" data-number="2.11">
+<h2 data-number="2.11" class="anchored" data-anchor-id="rproj"><span class="header-section-number">2.11</span> Projekt einrichten</h2>
 <p>Grundsätzlich lohnt es sich, in RStudio Projekte einzurichten. Projekte sind <code>.Rproj</code>-Dateien <img src="./pic/rproj-icon.png" class="img-fluid" width="30">, die automatisch Arbeitsverzeichnis auf den Ort setzen, an dem sie gespeichert sind. Das erleichtert das kollaborative Arbeiten: egal wer und auf welchem Gerät gerade an einem Projekt arbeitet - durch die Projektdatei sind alle Pfade immer relativ zum Projektverzeichnis. Im weiteren können auch Versionkontrolle via git, bspw. <a href="www.github.com">github</a> und weitere Funktionen in der Projektdatei hinterlegt werden und so für alle Nutzenden gleich gesetzt werden. Außerdem bleiben die zuletzt geöffneten Scripte geöffnet, was ein Arbeiten an mehreren Projekten erleichtert.</p>
 <div class="cell" data-layout-align="center">
 <div class="cell-output-display">
@@ -1925,8 +1915,24 @@ Levels: Uni Oldenburg Uni Bremen Uni Vechta</code></pre>
 <div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a>rstudioapi<span class="sc">::</span><span class="fu">initializeProject</span>(<span class="at">path =</span> <span class="st">"D:/Kurse/R-Kurs"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="der-einlesebefehl" class="level3" data-number="2.11.2">
-<h3 data-number="2.11.2" class="anchored" data-anchor-id="der-einlesebefehl"><span class="header-section-number">2.11.2</span> Der Einlesebefehl</h3>
+<section id="import" class="level2" data-number="2.12">
+<h2 data-number="2.12" class="anchored" data-anchor-id="import"><span class="header-section-number">2.12</span> Datensätze einlesen</h2>
+<p>In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.</p>
+<p>In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.</p>
+<p>Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall “D:/Kurse/R-Kurs/” lauten:</p>
+<p>Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="./pic/102_dateipfad_datei.png" style="width:45.0%;height:45.0%" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Diesen Dateipfad müssen wir also R mitteilen.</p>
+<section id="der-einlesebefehl" class="level3" data-number="2.12.1">
+<h3 data-number="2.12.1" class="anchored" data-anchor-id="der-einlesebefehl"><span class="header-section-number">2.12.1</span> Der Einlesebefehl</h3>
 <p>Jetzt können wir den eigentlichen Einlesebefehl <code>read.table</code> verwenden. Für den Pfad können wir nach <code>file =</code> lediglich die Anführungszeichen angeben und innerhalb dieser die Tab-Taste drücken. Dann bekommen wir alle Unterverzeichnisse und Tabellen im Projektordner angezeigt.<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a></p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)</span>
@@ -2027,12 +2033,12 @@ Labels:
 </div>
 <p>Wie wir beim Überblick gesehen haben, gibt es aber noch deutlich mehr Variablen im PASS als <code>palter</code> und nicht alle haben so aussagekräftige Namen - z.B. <code>PD0400</code>. Um diese Variablennamen und auch die Bedeutung der Ausprägungen zu verstehen brauchen wir das Codebuch. Außerdem können wir auf die <code>attributes()</code> einer Variable zurückgreifen - mehr zu labels später.</p>
 </section>
-<section id="ue_4" class="level3" data-number="2.11.3">
-<h3 data-number="2.11.3" class="anchored" data-anchor-id="ue_4"><span class="header-section-number">2.11.3</span> <a href="#data4">Übung</a></h3>
+<section id="ue_4" class="level3" data-number="2.12.2">
+<h3 data-number="2.12.2" class="anchored" data-anchor-id="ue_4"><span class="header-section-number">2.12.2</span> <a href="#data4">Übung</a></h3>
 </section>
 </section>
-<section id="objekte-exportieren" class="level2" data-number="2.12">
-<h2 data-number="2.12" class="anchored" data-anchor-id="objekte-exportieren"><span class="header-section-number">2.12</span> Objekte exportieren</h2>
+<section id="objekte-exportieren" class="level2" data-number="2.13">
+<h2 data-number="2.13" class="anchored" data-anchor-id="objekte-exportieren"><span class="header-section-number">2.13</span> Objekte exportieren</h2>
 <div class="callout callout-style-simple callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -2094,14 +2100,14 @@ Labels:
 <span id="cb128-6"><a href="#cb128-6" aria-hidden="true" tabindex="-1"></a>studs</span>
 <span id="cb128-7"><a href="#cb128-7" aria-hidden="true" tabindex="-1"></a>profs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<section id="ue_5" class="level3" data-number="2.12.1">
-<h3 data-number="2.12.1" class="anchored" data-anchor-id="ue_5"><span class="header-section-number">2.12.1</span> <a href="#data5">Übung</a></h3>
+<section id="ue_5" class="level3" data-number="2.13.1">
+<h3 data-number="2.13.1" class="anchored" data-anchor-id="ue_5"><span class="header-section-number">2.13.1</span> <a href="#data5">Übung</a></h3>
 </section>
 </section>
-<section id="überblick-einlesen-und-exportieren" class="level2" data-number="2.13">
-<h2 data-number="2.13" class="anchored" data-anchor-id="überblick-einlesen-und-exportieren"><span class="header-section-number">2.13</span> Überblick: Einlesen und Exportieren</h2>
-<section id="datensätze-einlesen" class="level3" data-number="2.13.1">
-<h3 data-number="2.13.1" class="anchored" data-anchor-id="datensätze-einlesen"><span class="header-section-number">2.13.1</span> Datensätze einlesen</h3>
+<section id="überblick-einlesen-und-exportieren" class="level2" data-number="2.14">
+<h2 data-number="2.14" class="anchored" data-anchor-id="überblick-einlesen-und-exportieren"><span class="header-section-number">2.14</span> Überblick: Einlesen und Exportieren</h2>
+<section id="datensätze-einlesen" class="level3" data-number="2.14.1">
+<h3 data-number="2.14.1" class="anchored" data-anchor-id="datensätze-einlesen"><span class="header-section-number">2.14.1</span> Datensätze einlesen</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true">Überblick</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">Code</a></li></ul>
 <div class="tab-content">
@@ -2183,8 +2189,8 @@ Labels:
 </div>
 </div>
 </section>
-<section id="datensätze-exportieren" class="level3" data-number="2.13.2">
-<h3 data-number="2.13.2" class="anchored" data-anchor-id="datensätze-exportieren"><span class="header-section-number">2.13.2</span> Datensätze exportieren</h3>
+<section id="datensätze-exportieren" class="level3" data-number="2.14.2">
+<h3 data-number="2.14.2" class="anchored" data-anchor-id="datensätze-exportieren"><span class="header-section-number">2.14.2</span> Datensätze exportieren</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">Überblick</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">Code</a></li></ul>
 <div class="tab-content">
@@ -2266,8 +2272,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </div>
 </section>
 </section>
-<section id="hilfe-zu-paketen-und-funktionen" class="level2" data-number="2.14">
-<h2 data-number="2.14" class="anchored" data-anchor-id="hilfe-zu-paketen-und-funktionen"><span class="header-section-number">2.14</span> Hilfe zu Paketen und Funktionen</h2>
+<section id="hilfe-zu-paketen-und-funktionen" class="level2" data-number="2.15">
+<h2 data-number="2.15" class="anchored" data-anchor-id="hilfe-zu-paketen-und-funktionen"><span class="header-section-number">2.15</span> Hilfe zu Paketen und Funktionen</h2>
 <p>R Pakete kommen (häufig) mit sehr ausführlichen Hilfeseiten, die entweder direkt aus RStudio abgerufen werden können:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Hilfe zu Paketen</span></span>
@@ -2294,10 +2300,10 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </div>
 </div>
 </section>
-<section id="übungen" class="level2" data-number="2.15">
-<h2 data-number="2.15" class="anchored" data-anchor-id="übungen"><span class="header-section-number">2.15</span> Übungen</h2>
-<section id="data1" class="level3" data-number="2.15.1">
-<h3 data-number="2.15.1" class="anchored" data-anchor-id="data1"><span class="header-section-number">2.15.1</span> Übung 1</h3>
+<section id="übungen" class="level2" data-number="2.16">
+<h2 data-number="2.16" class="anchored" data-anchor-id="übungen"><span class="header-section-number">2.16</span> Übungen</h2>
+<section id="data1" class="level3" data-number="2.16.1">
+<h3 data-number="2.16.1" class="anchored" data-anchor-id="data1"><span class="header-section-number">2.16.1</span> Übung 1</h3>
 <ul>
 <li>Erstellen Sie den Datensatz mit den Studierenden- &amp; Prof-Zahlen wie gezeigt:</li>
 </ul>
@@ -2324,8 +2330,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </ul>
 <p><a href="#ue_1">Zurück nach oben</a></p>
 </section>
-<section id="data2" class="level3" data-number="2.15.2">
-<h3 data-number="2.15.2" class="anchored" data-anchor-id="data2"><span class="header-section-number">2.15.2</span> Übung 2</h3>
+<section id="data2" class="level3" data-number="2.16.2">
+<h3 data-number="2.16.2" class="anchored" data-anchor-id="data2"><span class="header-section-number">2.16.2</span> Übung 2</h3>
 <ul>
 <li>Installieren Sie die Pakete des tidyverse mit <code>fdz_install("tidyverse")</code>, nachdem Sie die <code>.Rprofile</code>-Datei in unter <strong>PFAD</strong> abgelegt haben.</li>
 <li>Verwenden Sie wieder den <code>data.frame</code> <code>dat2</code> aus Übung 1</li>
@@ -2335,8 +2341,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </ul>
 <p><a href="#ue_2">Zurück nach oben</a></p>
 </section>
-<section id="data3" class="level3" data-number="2.15.3">
-<h3 data-number="2.15.3" class="anchored" data-anchor-id="data3"><span class="header-section-number">2.15.3</span> Übung 3</h3>
+<section id="data3" class="level3" data-number="2.16.3">
+<h3 data-number="2.16.3" class="anchored" data-anchor-id="data3"><span class="header-section-number">2.16.3</span> Übung 3</h3>
 <ul>
 <li>Verwenden Sie weiterhin den Datensatz aus Übung 1 &amp; 2.</li>
 <li>Lassen Sie sich nur Hochschulen anzeigen, die 1971, 1457 oder 1995 gegründet wurden - und für diese Fälle nur den Namen und das Gründungsjahr.</li>
@@ -2347,8 +2353,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </div>
 <p><a href="#ue_3">Zurück nach oben</a></p>
 </section>
-<section id="data4" class="level3" data-number="2.15.4">
-<h3 data-number="2.15.4" class="anchored" data-anchor-id="data4"><span class="header-section-number">2.15.4</span> Übung 4</h3>
+<section id="data4" class="level3" data-number="2.16.4">
+<h3 data-number="2.16.4" class="anchored" data-anchor-id="data4"><span class="header-section-number">2.16.4</span> Übung 4</h3>
 <ul>
 <li>Erstellen Sie in Ihrem Verzeichnis für diesen Kurs ein <a href="#rproj">R-Projekt</a></li>
 <li>Speichern Sie die Personendaten des PASS-CampusFile (PENDDAT_cf_W13.dta) in Ihrem Verzeichnis im Unterordner <em>orig</em>.</li>
@@ -2370,8 +2376,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 </blockquote>
 <p><a href="#ue_4">Zurück nach oben</a></p>
 </section>
-<section id="data5" class="level3" data-number="2.15.5">
-<h3 data-number="2.15.5" class="anchored" data-anchor-id="data5"><span class="header-section-number">2.15.5</span> Übung 5</h3>
+<section id="data5" class="level3" data-number="2.16.5">
+<h3 data-number="2.16.5" class="anchored" data-anchor-id="data5"><span class="header-section-number">2.16.5</span> Übung 5</h3>
 <ul>
 <li>Exportieren Sie den <code>data.frame</code> mit den in der vorherigen Übung erstellten kleineren Datensatz-Version (<code>ue_1960</code>) als <code>.Rdata</code>-Datei.</li>
 <li>Laden Sie die eben exportierte <code>.Rdata</code>-Datei unter einem beliebigen Namen, bspw. <code>ue_1960_neu</code>.</li>
@@ -2380,10 +2386,10 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 <p><a href="#ue_5">Zurück nach oben</a></p>
 </section>
 </section>
-<section id="anhang" class="level2" data-number="2.16">
-<h2 data-number="2.16" class="anchored" data-anchor-id="anhang"><span class="header-section-number">2.16</span> Anhang</h2>
-<section id="setwd" class="level3" data-number="2.16.1">
-<h3 data-number="2.16.1" class="anchored" data-anchor-id="setwd"><span class="header-section-number">2.16.1</span> Alternativen zu R-Projekten</h3>
+<section id="anhang" class="level2" data-number="2.17">
+<h2 data-number="2.17" class="anchored" data-anchor-id="anhang"><span class="header-section-number">2.17</span> Anhang</h2>
+<section id="setwd" class="level3" data-number="2.17.1">
+<h3 data-number="2.17.1" class="anchored" data-anchor-id="setwd"><span class="header-section-number">2.17.1</span> Alternativen zu R-Projekten</h3>
 <p>Neben dem Einrichten eines Projekts können wir den Pfad auch mit <code>setwd()</code> setzen oder direkt in <code>read_dta()</code> bzw. anderen <code>read...()</code>-Befehlen angeben. Das hat allerdings den Nachteil, dass diese Strategie nicht auf andere Rechner übertragbar ist: wenn jemand anderes die <code>.Rproj</code>-Datei öffnet, wird R automatisch die Pfade relativ zum Speicherort der Datei setzen. Das gilt auch wenn wir das Verzeichnis verschieben auf unserem Gerät - R wird automatisch das Arbeitsverzeichnis auf den neuen Speicherort setzen.</p>
 <p>Zum Setzen des Arbeitsverzeichnis mit <code>setwd()</code> setzen wir in die Klammern den Pfad des Ordners ein. Wichtig dabei ist dass Sie ggf. alle <code>\</code> durch <code>/</code>ersetzen müssen:</p>
 <div class="cell">
@@ -2399,8 +2405,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 <div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>pend <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"C:/Kurse/R_IAB/orig/PENDDAT_cf_W13.dta"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="selfiltbase" class="level3" data-number="2.16.2">
-<h3 data-number="2.16.2" class="anchored" data-anchor-id="selfiltbase"><span class="header-section-number">2.16.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></h3>
+<section id="selfiltbase" class="level3" data-number="2.17.2">
+<h3 data-number="2.17.2" class="anchored" data-anchor-id="selfiltbase"><span class="header-section-number">2.17.2</span> Zeilen &amp; Spaltenauswahl ohne <code>{dplyr}</code></h3>
 <p>Natürlich kann auch base R (also R ohne Erweiterungen wie <code>{dplyr}</code> Datensätze filtern usw.), dazu wird [ ] verwendet:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb138"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>dat1[<span class="dv">1</span>,<span class="dv">1</span>] <span class="co"># erste Zeile, erste Spalte</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -2455,8 +2461,8 @@ mit row.names= F Zeilennummerierung unterdrücken</td>
 <div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>dat1[dat1<span class="sc">$</span>uni <span class="sc">==</span> <span class="st">"Uni Oldenburg"</span> <span class="sc">|</span> dat1<span class="sc">$</span>studs <span class="sc">&gt;</span> <span class="dv">10000</span>, ]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-<section id="select-vs" class="level3" data-number="2.16.3">
-<h3 data-number="2.16.3" class="anchored" data-anchor-id="select-vs"><span class="header-section-number">2.16.3</span> <code>select()</code> vs <code>$</code></h3>
+<section id="select-vs" class="level3" data-number="2.17.3">
+<h3 data-number="2.17.3" class="anchored" data-anchor-id="select-vs"><span class="header-section-number">2.17.3</span> <code>select()</code> vs <code>$</code></h3>
 <p>Wenn wir mit <code>select()</code> eine spezifische Variable auswählen, wird trotzdem die Datenstruktur als <code>data.frame()</code> erhalten, während die Auswahl <code>dat1$variablenname</code> die Spalte als Vektor (also Wertereihe) ausgibt:</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb155"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb155-1"><a href="#cb155-1" aria-hidden="true" tabindex="-1"></a>dat1<span class="sc">$</span>studs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>

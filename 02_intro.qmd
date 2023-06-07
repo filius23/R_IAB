@@ -575,23 +575,7 @@ dat1 %>% arrange(desc(uni_fct), gegr, studs)
 
 ### [Übung](#data3) {#ue_3}
 
-## Datensätze einlesen {#import}
-
-In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
-
-In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.
-
-Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurs/" lauten:
-
-Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:
-
-```{r,echo = F, out.height="45%",out.width="45%", fig.align="center"}
-knitr::include_graphics("./pic/102_dateipfad_datei.png")
-```
-
-Diesen Dateipfad müssen wir also R mitteilen.
-
-### Projekt einrichten {#rproj}
+## Projekt einrichten {#rproj}
 
 Grundsätzlich lohnt es sich, in RStudio Projekte einzurichten. 
 Projekte sind `.Rproj`-Dateien ![](./pic/rproj-icon.png){width="30px"}, die automatisch Arbeitsverzeichnis auf den Ort setzen, an dem sie gespeichert sind. 
@@ -625,6 +609,23 @@ rstudioapi::initializeProject(path = "D:/Kurse/R-Kurs")
 ```{r,echo = F, out.height="55%",out.width="65%", fig.align="center"}
 # knitr::include_graphics("./pic/102_dateipfad_neu.png")
 ```
+
+## Datensätze einlesen {#import}
+
+In der Regel werden wir aber Datensätze verwenden, deren Werte bereits in einer Datei gespeichert sind und die wir lediglich einlesen müssen. Dafür gibt es unzählige Möglichkeiten.
+
+In diesem Seminar werden wir mit dem Campus-File des PASS arbeiten, dessen Teile als Stata-Dateien vorliegen.
+
+Um den Datensatz nun in R zu importieren, müssen wir R mitteilen unter welchem Dateipfad der Datensatz zu finden ist. Der Dateipfad ergibt sich aus der Ordnerstruktur Ihres Gerätes, so würde der Dateipfad im hier dargestellten Fall "D:/Kurse/R-Kurs/" lauten:
+
+Natürlich hängt der Dateipfad aber ganz davon ab, wo Sie den Datensatz gespeichert haben:
+
+```{r,echo = F, out.height="45%",out.width="45%", fig.align="center"}
+knitr::include_graphics("./pic/102_dateipfad_datei.png")
+```
+
+Diesen Dateipfad müssen wir also R mitteilen.
+
 
 ### Der Einlesebefehl
 
