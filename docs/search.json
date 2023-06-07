@@ -105,6 +105,13 @@
     "text": "2.10 Variablentyp factor - eigene Reihenfolgen festlegen\nEin weitere häufige Aufgabe in der Datenanalyse ist das Sortieren von Datensätzen. Dazu haben wir arrange() zur Verfügung:\n\ndat1 %&gt;% arrange(studs)\n\n  studs profs gegr stu_prof           uni\n1  5333    67 1830 79.59701    Uni Vechta\n2 15643   210 1973 74.49048 Uni Oldenburg\n3 19173   322 1971 59.54348    Uni Bremen\n\n\nDas funktioniert auch für string-Variablen:\n\ndat1 %&gt;% arrange(uni)\n\n  studs profs gegr stu_prof           uni\n1 19173   322 1971 59.54348    Uni Bremen\n2 15643   210 1973 74.49048 Uni Oldenburg\n3  5333    67 1830 79.59701    Uni Vechta\n\n\nWas aber, wenn wir eine fixe Ordnung vergeben möchten, die nicht der numerischen oder alphabetischen Ordnung entspricht? Hier bspw. wenn wir die Unis in folgende Ordnung bringen möchten: 1) Uni Oldenburg, 2) Uni Bremen und 3) Uni Vechta. Dabei hilft uns ein dritter Variablentyp: factor.\nMit dem Argument levels = können wir eine Reihenfolge festlegen:\n\nfactor(dat1$uni, levels = c(\"Uni Oldenburg\", \"Uni Bremen\", \"Uni Vechta\"))\n\n[1] Uni Bremen    Uni Vechta    Uni Oldenburg\nLevels: Uni Oldenburg Uni Bremen Uni Vechta\n\ndat1$uni_fct &lt;- factor(dat1$uni,\n                       levels = c(\"Uni Oldenburg\", \"Uni Bremen\", \"Uni Vechta\"))\n\nWenn wir nun nach uni_fct sortieren, dann wird die Reihenfolge der levels berücksichtigt:\n\nclass(dat1$uni_fct)\n\n[1] \"factor\"\n\ndat1 %&gt;% arrange(uni_fct)\n\n  studs profs gegr stu_prof           uni       uni_fct\n1 15643   210 1973 74.49048 Uni Oldenburg Uni Oldenburg\n2 19173   322 1971 59.54348    Uni Bremen    Uni Bremen\n3  5333    67 1830 79.59701    Uni Vechta    Uni Vechta\n\n\nMit desc() können wir in umgekehrter Reihenfolge sortieren:\n\ndat1 %&gt;% arrange(desc(uni_fct))\n\n  studs profs gegr stu_prof           uni       uni_fct\n1  5333    67 1830 79.59701    Uni Vechta    Uni Vechta\n2 19173   322 1971 59.54348    Uni Bremen    Uni Bremen\n3 15643   210 1973 74.49048 Uni Oldenburg Uni Oldenburg\n\n\nDas mag für den Moment relativ trivial erscheinen, ist aber später sehr praktisch um in Grafiken Variablen in eine gewisse Ordnung zu bringen oder in Regressionsmodellen die Referenzkategorie festzulegen.\nNatürlich können wir auch nach mehreren Variablen sortieren, dazu fügen wir einfach weitere in arrange() ein:\n\ndat1 %&gt;% arrange(desc(uni_fct), gegr, studs)\n\n  studs profs gegr stu_prof           uni       uni_fct\n1  5333    67 1830 79.59701    Uni Vechta    Uni Vechta\n2 19173   322 1971 59.54348    Uni Bremen    Uni Bremen\n3 15643   210 1973 74.49048 Uni Oldenburg Uni Oldenburg\n\n\n(Macht in diesem Beispiel aber wenig Sinn)\n\n2.10.1 Übung"
   },
   {
+    "objectID": "02_intro.html#rproj",
+    "href": "02_intro.html#rproj",
+    "title": "2  Arbeiten mit Datensätzen",
+    "section": "2.11 Projekt einrichten",
+    "text": "2.11 Projekt einrichten\nGrundsätzlich lohnt es sich, in RStudio Projekte einzurichten. Projekte sind .Rproj-Dateien , die automatisch Arbeitsverzeichnis auf den Ort setzen, an dem sie gespeichert sind. Das erleichtert das kollaborative Arbeiten: egal wer und auf welchem Gerät gerade an einem Projekt arbeitet - durch die Projektdatei sind alle Pfade immer relativ zum Projektverzeichnis. Im weiteren können auch Versionkontrolle via git, bspw. github und weitere Funktionen in der Projektdatei hinterlegt werden und so für alle Nutzenden gleich gesetzt werden. Außerdem bleiben die zuletzt geöffneten Scripte geöffnet, was ein Arbeiten an mehreren Projekten erleichtert.\n\n\n\n\n\n\n\n\n\nMit getwd() lässt sich überprüfen, ob das funktioniert hat:\n\ngetwd()\n\n\n\n[1] \"D:/Kurse/R-Kurs\"\n\n\n\n\n\n\n\n\n\n\n\nAlternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen (hier ein Beispiel für den Aufruf eines Pakets mit ::):\n\nrstudioapi::initializeProject(path = \"D:/Kurse/R-Kurs\")\n\nSo können wir das Projekt dann öffnen:\n\nrstudioapi::openProject(path = \"D:/Kurse/R-Kurs\")"
+  },
+  {
     "objectID": "02_intro.html#import",
     "href": "02_intro.html#import",
     "title": "2  Arbeiten mit Datensätzen",
@@ -173,13 +180,6 @@
     "title": "3  Einen Überblick erhalten",
     "section": "3.3 Andere Tabellenwerte",
     "text": "3.3 Andere Tabellenwerte\nMit Hilfe weiterer Funktionen können wir die Häufigkeitstabellen jeweils anpassen:\n\nprop.table(): relative Werte/Anteile\n\n\ntable(pend$statakt) %&gt;% prop.table(.) \n\n\n        1         2         3 \n0.4490280 0.2910858 0.2598862 \n\n\n29.109% aller Befragten sind arbeitslos.\n\ncumsum(): kumulierte Werte\n\n\ntable(pend$statakt) %&gt;% cumsum(.)\n\n    1     2     3 \n 9470 15609 21090 \n\n\n15609 Befragte sind erwerbstätig oder sind arbeitslos.\n\nprop.table() mit cumsum(): kumulierte relative Häufigkeiten\n\n\ntable(pend$statakt) %&gt;% prop.table() %&gt;% cumsum()\n\n        1         2         3 \n0.4490280 0.7401138 1.0000000 \n\n\n74.011% aller Befragten sind erwerbstätig oder arbeitslos (und nicht inaktiv).\n\n\n\n\n\n\nMehrere Kennzahlen in einer Tabelle\n\n\n\n\n\nAus Stata kennen viele sicherlich folgende Ansicht mit tab statakt:\n\n\n   Aktueller Hauptstatus, generiert (ab |\n                               Welle 2) |      Freq.     Percent        Cum.\n----------------------------------------+-----------------------------------\n                          Erwerbstaetig |      9,470       33.32       33.32\n     Arbeitslos (Gemeldet und sonstige) |      6,139       21.60       54.91\n                                Inaktiv |      5,481       19.28       74.20\n                                      . |      7,334       25.80      100.00\n----------------------------------------+-----------------------------------\n                                  Total |     28,424      100.00\n\n\nStandardmäßig ein table() oder count() immer nur eine Art von Kennzahlen. Da wir aber mit count() die Auszählungen als data.frame() erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen.\nDazu verwenden wir dat1$var &lt;- ...., das wir im vorherigen Kapitel kennen gelernt hatten. Um also eine neue Spalte pctin unseren data.frame mit den Auszählungen einzufügen gehen wir wie folgt vor: + Zuerst erstellen wir einen data.frame mit der Auszählung mit Hilfe von count()\n\ntab_statakt &lt;- pend %&gt;% count(statakt) # ausgangsbefehl\ntab_statakt\n\n# A tibble: 4 × 2\n  statakt                                     n\n  &lt;dbl+lbl&gt;                               &lt;int&gt;\n1  1 [Erwerbstaetig]                       9470\n2  2 [Arbeitslos (Gemeldet und sonstige)]  6139\n3  3 [Inaktiv]                             5481\n4 NA                                       7334\n\n\n\nDann fügen wir eine neue Spalte für die relativen Häufigkeiten hinzu, welche mit prop.table() berechnet werden:\n\n\ntab_statakt$pct &lt;- prop.table(tab_statakt$n)\ntab_statakt\n\n# A tibble: 4 × 3\n  statakt                                     n   pct\n  &lt;dbl+lbl&gt;                               &lt;int&gt; &lt;dbl&gt;\n1  1 [Erwerbstaetig]                       9470 0.333\n2  2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.216\n3  3 [Inaktiv]                             5481 0.193\n4 NA                                       7334 0.258\n\n\nWenn wir jetzt noch die kumulierten Häufigkeiten erstellen möchten, dann können wir cumsum() auf pct anwenden:\n\ntab_statakt$Cum &lt;- cumsum(tab_statakt$pct)\n\nEtwas störend ist aber noch das NA, die für fehlende Angaben steht und nicht berücksichtigt werden soll. Das können wir einfach !is.na() in filter() ausschließen:\n\ntab_statakt2 &lt;- pend %&gt;% filter(!is.na(statakt)) %&gt;% count(statakt) \ntab_statakt2$pct &lt;- prop.table(tab_statakt2$n)\ntab_statakt2$Cum &lt;- cumsum(tab_statakt2$pct)\ntab_statakt2\n\n# A tibble: 3 × 4\n  statakt                                    n   pct   Cum\n  &lt;dbl+lbl&gt;                              &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 1 [Erwerbstaetig]                       9470 0.449 0.449\n2 2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.291 0.740\n3 3 [Inaktiv]                             5481 0.260 1"
-  },
-  {
-    "objectID": "03_desc.html#mehrere-kennzahlen-in-einer-tabelle",
-    "href": "03_desc.html#mehrere-kennzahlen-in-einer-tabelle",
-    "title": "3  Einen Überblick erhalten",
-    "section": "3.4 Mehrere Kennzahlen in einer Tabelle",
-    "text": "3.4 Mehrere Kennzahlen in einer Tabelle\nAus Stata kennen viele sicherlich folgende Ansicht mit tab statakt:\n\n\n   Aktueller Hauptstatus, generiert (ab |\n                               Welle 2) |      Freq.     Percent        Cum.\n----------------------------------------+-----------------------------------\n                          Erwerbstaetig |      9,470       33.32       33.32\n     Arbeitslos (Gemeldet und sonstige) |      6,139       21.60       54.91\n                                Inaktiv |      5,481       19.28       74.20\n                                      . |      7,334       25.80      100.00\n----------------------------------------+-----------------------------------\n                                  Total |     28,424      100.00\n\n\nStandardmäßig ein table() oder count() immer nur eine Art von Kennzahlen. Da wir aber mit count() die Auszählungen als data.frame() erhalten, können wir die relativen und kumulierten Häufigkeiten einfach als neue Variablen anfügen.\nDazu verwenden wir dat1$var &lt;- ...., das wir im vorherigen Kapitel kennen gelernt hatten. Um also eine neue Spalte pctin unseren data.frame mit den Auszählungen einzufügen gehen wir wie folgt vor: + Zuerst erstellen wir einen data.frame mit der Auszählung mit Hilfe von count()\n\ntab_statakt &lt;- pend %&gt;% count(statakt) # ausgangsbefehl\ntab_statakt\n\n# A tibble: 4 × 2\n  statakt                                     n\n  &lt;dbl+lbl&gt;                               &lt;int&gt;\n1  1 [Erwerbstaetig]                       9470\n2  2 [Arbeitslos (Gemeldet und sonstige)]  6139\n3  3 [Inaktiv]                             5481\n4 NA                                       7334\n\n\n\nDann fügen wir eine neue Spalte für die relativen Häufigkeiten hinzu, welche mit prop.table() berechnet werden:\n\n\ntab_statakt$pct &lt;- prop.table(tab_statakt$n)\ntab_statakt\n\n# A tibble: 4 × 3\n  statakt                                     n   pct\n  &lt;dbl+lbl&gt;                               &lt;int&gt; &lt;dbl&gt;\n1  1 [Erwerbstaetig]                       9470 0.333\n2  2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.216\n3  3 [Inaktiv]                             5481 0.193\n4 NA                                       7334 0.258\n\n\nWenn wir jetzt noch die kumulierten Häufigkeiten erstellen möchten, dann können wir cumsum() auf pct anwenden:\n\ntab_statakt$Cum &lt;- cumsum(tab_statakt$pct)\n\nEtwas störend ist aber noch das NA, die für fehlende Angaben steht und nicht berücksichtigt werden soll. Das können wir einfach !is.na() in filter() ausschließen:\n\ntab_statakt2 &lt;- pend %&gt;% filter(!is.na(statakt)) %&gt;% count(statakt) \ntab_statakt2$pct &lt;- prop.table(tab_statakt2$n)\ntab_statakt2$Cum &lt;- cumsum(tab_statakt2$pct)\ntab_statakt2\n\n# A tibble: 3 × 4\n  statakt                                    n   pct   Cum\n  &lt;dbl+lbl&gt;                              &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt;\n1 1 [Erwerbstaetig]                       9470 0.449 0.449\n2 2 [Arbeitslos (Gemeldet und sonstige)]  6139 0.291 0.740\n3 3 [Inaktiv]                             5481 0.260 1"
   },
   {
     "objectID": "03_desc.html#kontingenztabellen",
@@ -371,76 +371,6 @@
     "text": "“Tilde” - Tastaturbefehle: Alt Gr + * auf Windows. Auf macOS Alt + N und anschließend ein Leerzeichen, damit die Tilde erscheint.↩︎\nDo not repeat yourself, siehe Wickham et al: “You should consider writing a function whenever you’ve copied and pasted a block of code more than twice (i.e. you now have three copies of the same code).”↩︎\n“Tilde” - Tastaturbefehle: Alt Gr + * auf Windows. Auf macOS Alt + N und anschließend ein Leerzeichen, damit die Tilde erscheint.↩︎"
   },
   {
-    "objectID": "references.html#vs.",
-    "href": "references.html#vs.",
-    "title": "Links & Weiterführendes",
-    "section": "%>% vs. |>",
-    "text": "%&gt;% vs. |&gt;\nIn diesem Kurs haben wir die Pipe %&gt;% aus {tidyverse} (streng genommen aus dem Paket {magrittr}) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe |&gt; eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher %&gt;% durch |&gt;. Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an ‘alte Variante’ gehalten. Letztlich spricht aber nichts dagegen, nach einem Update auf |&gt; umzusteigen - oder einfach bei %&gt;% zu bleiben.\n\nUnter anderem steht hier mehr zu den Unterschieden zwischen beiden Pipes. Außerdem bietet dieser Blogbeitrag einen guten Überblick zu den Fallstricken beim Umstieg von %&gt;% auf |&gt;."
-  },
-  {
-    "objectID": "references.html#anonymfun",
-    "href": "references.html#anonymfun",
-    "title": "Links & Weiterführendes",
-    "section": "Anonyme Funktionen: .x vs. /(x)",
-    "text": "Anonyme Funktionen: .x vs. /(x)\nMit R 4.1.0 wurde in base R eine neue ‘anonymous function short hand’ eingeführt, welche die ‘formula syntax’ Schreibweise ~mean(.x) ablöst, die wir in Kapitel 6 kennen gelernt haben. In der neuen base R wäre das \\(x) mean(x) geschrieben.\nAus der {purrr} release notes für Version 1.0.0 (Dezember 2022): We believe that it’s better to use these new base tools because they work everywhere: the base pipe doesn’t require that you load magrittr and the new function shorthand works everywhere, not just in purrr functions. Additionally, being able to specify the argument name for the anonymous function can often lead to clearer code.\nDementsprechend würde die Anwendung in across() wie folgt aussehen:\n\nsat_small &lt;- haven::read_dta(\"./data/BIBBBAuA_2018_suf1.0.dta\",n_max = 16) %&gt;% \n    select(F1450_04,F1450_05,F1450_06) %&gt;% \n    slice(12:16)\n\n# formula syntax\nsat_small %&gt;% \n  mutate(across(matches(\"F1450\"),~mean(.x)))\n# anonymous function short hand\nsat_small %&gt;% \n  mutate(across(matches(\"F1450\"),\\(x) mean(x) ))\n\nIn diesem Skript habe ich auf die bisherige ‘formula syntax’ Schreibweise zurück gegriffen, da aktuell noch die meisten Hilfeseite mit dieser Syntax arbeiten."
-  },
-  {
-    "objectID": "references.html#quarto",
-    "href": "references.html#quarto",
-    "title": "Links & Weiterführendes",
-    "section": "Quarto",
-    "text": "Quarto\nQuarto ist eine Erweiterung/Weiterentwicklung von RMarkdown. Allerdings erfordert Quarto eine separate Installation, mehr Infos."
-  },
-  {
-    "objectID": "references.html#einführungen-in-r",
-    "href": "references.html#einführungen-in-r",
-    "title": "Links & Weiterführendes",
-    "section": "Einführungen in R",
-    "text": "Einführungen in R\nEine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:\nR for Data Science das Standardwerk für Datenanalysen mit {tidyverse} - sehr intuitive Einführung, Fokus auf Data Science\nProblemorientiere Einführungen in spezifische Anwendungen “do more with R”\nTen simple rules for teaching yourself R\nModerne Datenanalyse mit R: Deutschsprachige Einführung in {tidyverse}\nR for the Rest of Us bietet viele Tutorials und freie Kurse an, unter anderem auch viele YouTube Videos.\nStata 2 R richtet sich alle Anwender*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des {tidyverse} das Paket {data.table} für die Datenaufbereitung gezeigt. {data.table} ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das {tidyverse}. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, {data.table} auszuprobieren."
-  },
-  {
-    "objectID": "references.html#beispiel-für-vollständiges-paper-geschrieben-mit-rmarkdown",
-    "href": "references.html#beispiel-für-vollständiges-paper-geschrieben-mit-rmarkdown",
-    "title": "Links & Weiterführendes",
-    "section": "Beispiel für vollständiges Paper geschrieben mit RMarkdown",
-    "text": "Beispiel für vollständiges Paper geschrieben mit RMarkdown\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben\nHier findet ihr den Source-Code"
-  },
-  {
-    "objectID": "references.html#cheatsheets",
-    "href": "references.html#cheatsheets",
-    "title": "Links & Weiterführendes",
-    "section": "Cheatsheets",
-    "text": "Cheatsheets\nEine Sammlung an Cheatsheets für eine breite Palette an Anwendungen gibt es hier.\n\nDatenvisualisierung mit {ggplot2}\nDatensätze bearbeiten mit {dplyr}\nDatensätze erstellen/reshapen mit {tidyr}"
-  },
-  {
-    "objectID": "references.html#ggplot2",
-    "href": "references.html#ggplot2",
-    "title": "Links & Weiterführendes",
-    "section": "{ggplot2}",
-    "text": "{ggplot2}\nEine große Stärke von ggplot2 sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen\n\nmehrere Grafiken zu kombinieren mit {patchwork}\nKarten zu erstellen mit sf, weitere Link\nfortgeschrittene Textformatierungen zu verwenden mit {ggtext}\nGrafiken als Animation zu erstellen {gganimate} - eine Einführung oder hier\nLogos in in {ggplot2} einfügen mit {ggpath}\n\nEine Übersicht zu Erweiterungspakteten für {ggplot2} findet sich hier\nAuch The R Graph Gallery bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für {ggplot2}.\n\nTutorial von Cédric Scherer\nSession zu intuitiveren Grafiken von Cara Thompson"
-  },
-  {
-    "objectID": "references.html#purrr",
-    "href": "references.html#purrr",
-    "title": "Links & Weiterführendes",
-    "section": "Fortgeschrittene Anwendung von lapply()/map() mit selbstgeschriebenen Funktionen",
-    "text": "Fortgeschrittene Anwendung von lapply()/map() mit selbstgeschriebenen Funktionen\n\nUmfangreiche Einführung in loops mit map() und weiteren Funktionen aus {purrr} Hendrik van Broekhuizen\nModellserien: Blog von Tim Tiefenbach zu eleganten Möglichkeiten"
-  },
-  {
-    "objectID": "references.html#regex",
-    "href": "references.html#regex",
-    "title": "Links & Weiterführendes",
-    "section": "regex",
-    "text": "regex\nFür die Arbeit mit Textvariablen sind regular expressions (regex) eine große Hilfe. Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen durchsuchen, diese ersetzen usw. Der Blog von Joshua C. Fjelstul ist ein guter Einstieg. Darüber hinaus gibt es ein hilfreiches Cheatsheet zu regex in R und das regex -Paket {stringr}"
-  },
-  {
-    "objectID": "references.html#weiteres",
-    "href": "references.html#weiteres",
-    "title": "Links & Weiterführendes",
-    "section": "Weiteres",
-    "text": "Weiteres\n{easystats} bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem easystats-Universum unter anderem {performance} und {effectsize} kennengelernt.\nEreigniszeitmodelle / Event History Modellung / Survival Analysis"
-  },
-  {
     "objectID": "07_inferenz.html#t-tests",
     "href": "07_inferenz.html#t-tests",
     "title": "7  Inferenzstatistik & Gewichtung",
@@ -609,8 +539,8 @@
     "text": "10.2 average marginal effects\nLogits sind aber sehr unhandlich - wie verändert sich jetzt aber die Wahrscheinlichkeit für \\(\\texttt{soc\\_med} = 1\\) mit palter? Hier haben wir das Problem, dass die Ableitung der “rücktransformierten Funktion” nicht so einfach ist wie im Fall der OLS. Verändern wir nämlich auch die Regressionsgleichung von oben3 mit exp() und \\(p=\\frac{Odds}{1+Odds}\\), so landen wir bei\n\\[\\begin{equation*}\n\\widehat{P(soc\\_med=1)} = \\frac{e^{\\hat\\beta0+\\hat\\beta1 \\times \\texttt{palter}}}{1+e^{\\hat\\beta0+\\hat{\\beta1}\\times \\texttt{palter}}}\n\\end{equation*}\\]\nDiesen Ausdruck müssten wir nach palter ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für \\(\\texttt{soc\\_med} = 1\\) mit einem um einen Jahr höheren Befragtenalter verändert. Durch die Tatsache dass palter hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor (“oben und unten”) steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen lm()-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket {marginaleffects} brauchen. Darin findet sich der Befehl avg_slopes(), welcher uns erlaubt ein \\(\\beta\\) zwischen dem Einkommen und der Wahrscheinlichkeit für \\(\\texttt{soc\\_med} = 1\\) zu berechnen. Dieses wird auch als average marginal effect bezeichnet, da sie den durchschnittlichen marginalen Effekt der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben.\n\ninstall.packages(\"marginaleffects\") # nur einmal nötig\nlibrary(marginaleffects)\n\n\navg_slopes(m2)\n\n\n   Term Estimate Std. Error     z Pr(&gt;|z|)   2.5 %  97.5 %\n palter  -0.0142   0.000266 -53.4   &lt;0.001 -0.0147 -0.0137\n\nColumns: term, estimate, std.error, statistic, p.value, conf.low, conf.high \n\n\n\nMit einem um 1 Jahr höheren Lebensalter geht im Durchschnitt eine um 0.01419 (1.41891 Prozentpunkte) geringere Wahrscheinlichkeit einher, Social Media zu verwenden."
   },
   {
-    "objectID": "10_log_reg.html#predictions",
-    "href": "10_log_reg.html#predictions",
+    "objectID": "10_log_reg.html#pred",
+    "href": "10_log_reg.html#pred",
     "title": "10  Logistische Regressionsmodelle",
     "section": "10.3 Predictions",
     "text": "10.3 Predictions\nAlternativ können die Ergebnisse aus log. Regressionen auch als vorhergesagte Werte dargestellt werden. Vorhergesagte Werte können wir mit predictions() aus {marginaleffects} erstellen:\n\npredictions(m2, newdata = datagrid(palter  = c(18,25,65))) \n\n\n Estimate Pr(&gt;|z|) 2.5 % 97.5 % palter\n    0.867   &lt;0.001 0.850  0.881     18\n    0.795   &lt;0.001 0.777  0.812     25\n    0.170   &lt;0.001 0.155  0.186     65\n\nColumns: rowid, estimate, p.value, conf.low, conf.high, soc_med, palter \n\n\nDas können wir in einem ggplot() grafisch darstellen:\n\npredictions(m2, newdata = datagrid(palter  = 18:65)) %&gt;% # vorhergesagte Werte\n  data.frame() %&gt;% \n  ggplot(aes(y = estimate , x = palter)) + \n  geom_errorbar(aes(ymin = conf.low, ymax= conf.high), color = \"slateblue\",width = .1) + # konfidenzintervalle\n  geom_point(color = \"slateblue\") + # punktschätzer\n  theme_minimal()"
@@ -714,13 +644,6 @@
     "text": "12.4 Übungen\n\npend_ue12 &lt;- \n  haven::read_dta(\"./orig/PENDDAT_cf_W13.dta\",\n                  col_select = c(\"pnr\",\"welle\",\"zpsex\",\"netges\",\"schul2\",\"bilzeit\",\"azges1\",\"palter\") ) %&gt;% \n  filter(netges &gt; 0, schul2 %in% 2:7, palter &gt; 0, bilzeit &gt; 0, azges1 &gt; 0 , welle == 13) %&gt;% \n  mutate(\n    across(matches(\"palter|netges|azges1|bilzeit\"),~as.numeric(.x)),\n    schul2_fct = factor(schul2,levels = 2:7, labels = c(\"ohne\",\"Förderschule\",\"Hauptschule\",\"Mittlere Reife\",\"FOS/BOS\",\"Abi\")),\n    zpsex_fct = factor(zpsex,levels = 1:2,labels =c(\"Männer\",\"Frauen\")))\n\n\n12.4.1 Übung 1\n\nErstellen Sie einen Scatterplot für die Variablen bilzeit und palter\n\nZurück nach oben\n\n\n12.4.2 Übung 2\n\nErstellen Sie eine Funktion, welche den data.frame etb_ue12 für ein lm() verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel:\nazges1 ~ zpsex_fct + ausb + palter (Denken Sie daran, die Formula in \"\" zu setzen).\nErstellen Sie eine Liste mit folgenden Modellen:\n\nModell 1 \"azges1 ~ zpsex_fct\",\nModell 2 \"azges1 ~ zpsex_fct + schul2_fct\",\nModell 3 \"azges1 ~ zpsex_fct + schul2_fct + palter\"\n\nVerwenden Sie map() und die erstellte Funktion, um die Modelle zu schätzen und in modelsummary() anzuzeigen\n\nZurück nach oben\n\n\n12.4.3 Übung 3\nBerechnen Sie das Modell \"azges1 ~ schul2_fct + palter + I(palter^2)\" getrennt für Männer und Frauen (zpsex_fct).\nZurück nach oben\nMehr zu map()"
   },
   {
-    "objectID": "12_apply_loop.html#mehr-zu-map",
-    "href": "12_apply_loop.html#mehr-zu-map",
-    "title": "12  Schleifen & Funktionen",
-    "section": "12.5 Mehr zu map()",
-    "text": "12.5 Mehr zu map()"
-  },
-  {
     "objectID": "12_apply_loop.html#anhang",
     "href": "12_apply_loop.html#anhang",
     "title": "12  Schleifen & Funktionen",
@@ -791,46 +714,11 @@
     "text": "Adaptiert von D Sjoberg↩︎"
   },
   {
-    "objectID": "10_log_reg.html#pred",
-    "href": "10_log_reg.html#pred",
-    "title": "10  Logistische Regressionsmodelle",
-    "section": "10.3 Predictions",
-    "text": "10.3 Predictions\nAlternativ können die Ergebnisse aus log. Regressionen auch als vorhergesagte Werte dargestellt werden. Vorhergesagte Werte können wir mit predictions() aus {marginaleffects} erstellen:\n\npredictions(m2, newdata = datagrid(palter  = c(18,25,65))) \n\n\n Estimate Pr(&gt;|z|) 2.5 % 97.5 % palter\n    0.867   &lt;0.001 0.850  0.881     18\n    0.795   &lt;0.001 0.777  0.812     25\n    0.170   &lt;0.001 0.155  0.186     65\n\nColumns: rowid, estimate, p.value, conf.low, conf.high, soc_med, palter \n\n\nDas können wir in einem ggplot() grafisch darstellen:\n\npredictions(m2, newdata = datagrid(palter  = 18:65)) %&gt;% # vorhergesagte Werte\n  data.frame() %&gt;% \n  ggplot(aes(y = estimate , x = palter)) + \n  geom_errorbar(aes(ymin = conf.low, ymax= conf.high), color = \"slateblue\",width = .1) + # konfidenzintervalle\n  geom_point(color = \"slateblue\") + # punktschätzer\n  theme_minimal()"
-  },
-  {
     "objectID": "15_map.html#map",
     "href": "15_map.html#map",
     "title": "14  Weitere Visualisierungen mit {ggplot2}",
     "section": "14.1 Karten (“Choroplethen”)",
     "text": "14.1 Karten (“Choroplethen”)\nFür Karten und Arbeiten mit räumlichen Daten steht das Paket {sf} zur Verfügung. Das tolle ist: wir können {sf}-Daten mit den bekannten {tidyverse} Befehlen bearbeiten. Um eine Karte zu erstellen, benötigen wir ein shapefile, welches Informationen zu den darzustellenden Gebieten enthält. Für Deutschland stellt das Geodatenzentrum des Bundesamts für Kartographie und Geodäsie shapefiles für die Gemeinden, Kreise und Länder zur Verfügung.\n\n\n\n\n\n\nHier finden sich die shapefiles der verschiedenen Jahre.\n\n\n\nMeist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern). Um ein aufwändiges record linkage zu vermeinden, ist es hilfreich das shape file für das entsprechende Jahr zu verwenden. Auf dieser Seite finden sich auch vergangene Gebietsstände. Die Dateien mit dem Namensschema vg250_01-01.utm32s.shape.ebenen.zip enthalten die benötigten Infos, wie wir sie im folgenden verwenden.\n\n\nDiese shapefiles können wir dann auf Basis der AGS (Amtlicher Gemeindeschlüssel) mit Daten verbinden und dann als Karte darstellen:\n\n\n\n\n\nUm ein shapefile zu laden, installieren wir zunächst {sf} und laden es dann mit library(). Das eigentliche Laden leistet dann der Befehl read_sf(), wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das layer, also die Ebene angeben müssen. In den shapefiles des BKG gibt es folgende Layer:\n\nVG250_LAN: Bundesländer (2-stellige AGS)\nVG250_KRS: Kreise und kreisfreie Städte (5-stellige AGS)\nVG250_GEM: Städte und Gemeinden (8-stellige AGS)\n\nWenn wir also die Bundesländer laden möchten gehen wir wie folgt vor:\n\nlan17 &lt;- sf::read_sf(\"D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen\",\n                     layer=\"VG250_LAN\")\n\nDas Objekt lan17 können wir nun für einen ggplot()-Befehl verwenden. lan17 enthält außerdem die Seegebiete, diese können wir mittels eines filter()-Befehls auf die Landgebiete einschränken (GF = 4):\n\nggplot(lan17) + \n    geom_sf(size = .1)  +\n    labs(title = \"Bundesländer nach Gebietsstand 2017\") +\n    theme_minimal()\nggplot(lan17 %&gt;% filter(GF==4)) + \n    geom_sf(size = .1)  +\n    labs(title = \"Bundesländer nach Gebietsstand 2017\") +\n    theme_minimal()\n\n\n\n\n\n\n\n\n\n\n\nMöchten wir nun die Bundesländer bspw. nach der Arbeitslosenquote einfärben, müssen wir diese an die Daten heranspielen. Der Einfachheit halber simuliere ich hier die Werte:\n\nalo_df &lt;- \n  data.frame(ags = unique(lan17$AGS),\n             alq = sample(seq(.03,.095,.001) ,size = 16,replace = T))\nhead(alo_df)\n\n  ags   alq\n1  01 0.076\n2  02 0.072\n3  03 0.072\n4  04 0.074\n5  05 0.063\n6  06 0.089\n\n\nJetzt können wir den alo_df an das lan17 shapefile heranspielen mit Hilfe eines left_join().\n\nlan17 %&gt;% filter(GF==4) %&gt;% left_join(alo_df,by = join_by(\"AGS\"==\"ags\"))\n\n\nlan17 %&gt;% filter(GF==4) %&gt;% left_join(alo_df,by = join_by(\"AGS\"==\"ags\")) %&gt;% \n  select(AGS,GEN,alq) %&gt;% \n  head()\n\nSimple feature collection with 6 features and 3 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 280371.1 ymin: 5471366 xmax: 674202.3 ymax: 6101444\nProjected CRS: ETRS89 / UTM zone 32N\n# A tibble: 6 × 4\n  AGS   GEN                   alq                                       geometry\n  &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;                             &lt;MULTIPOLYGON [m]&gt;\n1 01    Schleswig-Holstein  0.076 (((464810.7 6100447, 464936.7 6100389, 465073…\n2 02    Hamburg             0.072 (((578219 5954278, 578433.9 5954189, 578557.7…\n3 03    Niedersachsen       0.072 (((479451.1 5971302, 479365.8 5971220, 479213…\n4 04    Bremen              0.074 (((466930.3 5897851, 467015.7 5897733, 467379…\n5 05    Nordrhein-Westfalen 0.063 (((477607.3 5818769, 477708 5818638, 477758.9…\n6 06    Hessen              0.089 (((534242 5721822, 534214.5 5721748, 534149.4…\n\n\nDie Syntax für den eigentlichen Plot ist dann wieder wie für jeden anderen ggplot() auch - mit fill = können wir eine Flächenfarbe angeben und mit scale_fill_... eine Farbpalette auswählen:\n\nlibrary(scico)\nlan17 %&gt;% filter(GF==4) %&gt;% left_join(alo_df,by = join_by(\"AGS\"==\"ags\")) %&gt;% \n  ggplot() + \n      geom_sf(size = .1, aes(fill = alq))  +\n      labs(title = \"Arbeitslosenquote für Bundesländer\",\n           subtitle = \"(keine echten Daten)\",\n           fill = \"Arbeitslosen-\\nquote\") +\n      scale_fill_scico(palette = \"oslo\") + # setzt scico Paket voraus\n      theme_minimal()"
-  },
-  {
-    "objectID": "15_map.html#modelplot",
-    "href": "15_map.html#modelplot",
-    "title": "14  Weitere Visualisierungen mit {ggplot2}",
-    "section": "14.2 Koeffizientenplots",
-    "text": "14.2 Koeffizientenplots\n\n14.2.1 Übung"
-  },
-  {
-    "objectID": "15_map.html#übungen",
-    "href": "15_map.html#übungen",
-    "title": "14  Weitere Visualisierungen mit {ggplot2}",
-    "section": "14.3 Übungen",
-    "text": "14.3 Übungen\nVerwenden Sie folgenden Subdatensatz des PASS CampusFiles:\n\npend_ue08 &lt;- haven::read_dta(\"./orig/PENDDAT_cf_W13.dta\") %&gt;% \n  filter(welle == 13, netges &gt; 0, azges1 &gt; 0,schul2 &gt; 1, palter &gt; 0)\n\n\n14.3.1 Übung 1: Regression\n\nErstellen Sie ein Objekt mod1 mit einem linearen Regressionsmodell (lm) mit netges (Monatsnetto in EUR) als abhängiger und azges1 (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe hier)\nBetrachten Sie Ergebnisse mod1 - was können Sie zum Zusammenhang zwischen netges und azges1 erkennen?\nVisualisieren Sie Ihr Regressionsmodell mit {ggplot2}.\nSehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable pnr und geom_text()."
-  },
-  {
-    "objectID": "references.html#rmarkdown",
-    "href": "references.html#rmarkdown",
-    "title": "Links & Weiterführendes",
-    "section": "RMarkdown",
-    "text": "RMarkdown\n{rmarkdown} ermöglich es, formatierte Textelemente mit Markdown und R code bzw. Output zu kombinieren. Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von Markdown-Befehlen formatiert werden kann. So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden. Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen. Diese gesamte Webseite wurde mit {R Markdown} bzw. dem verwandten Paket {Quarto} erstellt.\nDie Hilfeseiten und Dokumentation für R Markdown ist extrem umfangreich und auch die Tutorials und Cheatsheets sind hervorragend. Daher hier nur eine kleiner Überblick.\n\nMarkdown Syntax\nEin RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:\n---\ntitle: \"Mein erstes RMarkdown-Dokument\"\nauthor: \"Mein Name\"\ndate: \"2022-09-11\"\noutput: pdf_document\n---\n  \n# Überschrift 1\n\n## Unterüberschrift 2\n\nDies ist ein R Markdown-Dokument. \nMarkdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. \nText kann **fett** und *kursiv* geschrieben werden. \n\nWenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.\nDas sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. \nEin R-Code-Baustein (\"chunk\") sieht so aus:\n\n```{r cars}\n# hier kommt der R Code hin\nsummary(mtcars$qsec)\n```\n\n\n\n\n\n\n\nBeispiel\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben\nHier findet ihr den Source-Code"
-  },
-  {
-    "objectID": "15_map.html#footnotes",
-    "href": "15_map.html#footnotes",
-    "title": "14  Weitere Visualisierungen mit {ggplot2}",
-    "section": "",
-    "text": "YYYY steht aly Platzhalter für das jeweilige Jahr↩︎"
   },
   {
     "objectID": "15_map.html#übung",
@@ -840,10 +728,66 @@
     "text": "14.2 Übung\nErstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.\n\nDas Shapefile für das Jahr 2017 finden Sie im Kursordner unter /orig in der Quickablage."
   },
   {
-    "objectID": "02_intro.html#rproj",
-    "href": "02_intro.html#rproj",
-    "title": "2  Arbeiten mit Datensätzen",
-    "section": "2.11 Projekt einrichten",
-    "text": "2.11 Projekt einrichten\nGrundsätzlich lohnt es sich, in RStudio Projekte einzurichten. Projekte sind .Rproj-Dateien , die automatisch Arbeitsverzeichnis auf den Ort setzen, an dem sie gespeichert sind. Das erleichtert das kollaborative Arbeiten: egal wer und auf welchem Gerät gerade an einem Projekt arbeitet - durch die Projektdatei sind alle Pfade immer relativ zum Projektverzeichnis. Im weiteren können auch Versionkontrolle via git, bspw. github und weitere Funktionen in der Projektdatei hinterlegt werden und so für alle Nutzenden gleich gesetzt werden. Außerdem bleiben die zuletzt geöffneten Scripte geöffnet, was ein Arbeiten an mehreren Projekten erleichtert.\n\n\n\n\n\n\n\n\n\nMit getwd() lässt sich überprüfen, ob das funktioniert hat:\n\ngetwd()\n\n\n\n[1] \"D:/Kurse/R-Kurs\"\n\n\n\n\n\n\n\n\n\n\n\nAlternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen (hier ein Beispiel für den Aufruf eines Pakets mit ::):\n\nrstudioapi::initializeProject(path = \"D:/Kurse/R-Kurs\")\n\nSo können wir das Projekt dann öffnen:\n\nrstudioapi::openProject(path = \"D:/Kurse/R-Kurs\")"
+    "objectID": "references.html#vs.",
+    "href": "references.html#vs.",
+    "title": "Links & Weiterführendes",
+    "section": "%>% vs. |>",
+    "text": "%&gt;% vs. |&gt;\nIn diesem Kurs haben wir die Pipe %&gt;% aus {tidyverse} (streng genommen aus dem Paket {magrittr}) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe |&gt; eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher %&gt;% durch |&gt;. Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an ‘alte Variante’ gehalten. Letztlich spricht aber nichts dagegen, nach einem Update auf |&gt; umzusteigen - oder einfach bei %&gt;% zu bleiben.\n\nUnter anderem steht hier mehr zu den Unterschieden zwischen beiden Pipes. Außerdem bietet dieser Blogbeitrag einen guten Überblick zu den Fallstricken beim Umstieg von %&gt;% auf |&gt;."
+  },
+  {
+    "objectID": "references.html#anonymfun",
+    "href": "references.html#anonymfun",
+    "title": "Links & Weiterführendes",
+    "section": "Anonyme Funktionen: .x vs. /(x)",
+    "text": "Anonyme Funktionen: .x vs. /(x)\nMit R 4.1.0 wurde in base R eine neue ‘anonymous function short hand’ eingeführt, welche die ‘formula syntax’ Schreibweise ~mean(.x) ablöst, die wir in Kapitel 6 kennen gelernt haben. In der neuen base R wäre das \\(x) mean(x) geschrieben.\nAus der {purrr} release notes für Version 1.0.0 (Dezember 2022): We believe that it’s better to use these new base tools because they work everywhere: the base pipe doesn’t require that you load magrittr and the new function shorthand works everywhere, not just in purrr functions. Additionally, being able to specify the argument name for the anonymous function can often lead to clearer code.\nDementsprechend würde die Anwendung in across() wie folgt aussehen:\n\nsat_small &lt;- haven::read_dta(\"./data/BIBBBAuA_2018_suf1.0.dta\",n_max = 16) %&gt;% \n    select(F1450_04,F1450_05,F1450_06) %&gt;% \n    slice(12:16)\n\n# formula syntax\nsat_small %&gt;% \n  mutate(across(matches(\"F1450\"),~mean(.x)))\n# anonymous function short hand\nsat_small %&gt;% \n  mutate(across(matches(\"F1450\"),\\(x) mean(x) ))\n\nIn diesem Skript habe ich auf die bisherige ‘formula syntax’ Schreibweise zurück gegriffen, da aktuell noch die meisten Hilfeseite mit dieser Syntax arbeiten."
+  },
+  {
+    "objectID": "references.html#einführungen-in-r",
+    "href": "references.html#einführungen-in-r",
+    "title": "Links & Weiterführendes",
+    "section": "Einführungen in R",
+    "text": "Einführungen in R\nEine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:\nR for Data Science das Standardwerk für Datenanalysen mit {tidyverse} - sehr intuitive Einführung, Fokus auf Data Science\nProblemorientiere Einführungen in spezifische Anwendungen “do more with R”\nTen simple rules for teaching yourself R\nModerne Datenanalyse mit R: Deutschsprachige Einführung in {tidyverse}\nR for the Rest of Us bietet viele Tutorials und freie Kurse an, unter anderem auch viele YouTube Videos.\nStata 2 R richtet sich alle Anwender*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des {tidyverse} das Paket {data.table} für die Datenaufbereitung gezeigt. {data.table} ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das {tidyverse}. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, {data.table} auszuprobieren."
+  },
+  {
+    "objectID": "references.html#rmarkdown",
+    "href": "references.html#rmarkdown",
+    "title": "Links & Weiterführendes",
+    "section": "RMarkdown",
+    "text": "RMarkdown\n{rmarkdown} ermöglich es, formatierte Textelemente mit Markdown und R code bzw. Output zu kombinieren. Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von Markdown-Befehlen formatiert werden kann. So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden. Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen. Diese gesamte Webseite wurde mit {R Markdown} bzw. dem verwandten Paket {Quarto} erstellt.\nDie Hilfeseiten und Dokumentation für R Markdown ist extrem umfangreich und auch die Tutorials und Cheatsheets sind hervorragend. Daher hier nur eine kleiner Überblick.\n\nMarkdown Syntax\nEin RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:\n---\ntitle: \"Mein erstes RMarkdown-Dokument\"\nauthor: \"Mein Name\"\ndate: \"2022-09-11\"\noutput: pdf_document\n---\n  \n# Überschrift 1\n\n## Unterüberschrift 2\n\nDies ist ein R Markdown-Dokument. \nMarkdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. \nText kann **fett** und *kursiv* geschrieben werden. \n\nWenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.\nDas sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. \nEin R-Code-Baustein (\"chunk\") sieht so aus:\n\n```{r cars}\n# hier kommt der R Code hin\nsummary(mtcars$qsec)\n```\n\n\n\n\n\n\n\nBeispiel\nPaper zu einem Beispieldatensatz, komplett in R Markdown geschrieben\nHier findet ihr den Source-Code"
+  },
+  {
+    "objectID": "references.html#cheatsheets",
+    "href": "references.html#cheatsheets",
+    "title": "Links & Weiterführendes",
+    "section": "Cheatsheets",
+    "text": "Cheatsheets\nEine Sammlung an Cheatsheets für eine breite Palette an Anwendungen gibt es hier.\n\nDatenvisualisierung mit {ggplot2}\nDatensätze bearbeiten mit {dplyr}\nDatensätze erstellen/reshapen mit {tidyr}"
+  },
+  {
+    "objectID": "references.html#ggplot2",
+    "href": "references.html#ggplot2",
+    "title": "Links & Weiterführendes",
+    "section": "{ggplot2}",
+    "text": "{ggplot2}\nEine große Stärke von ggplot2 sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen\n\nmehrere Grafiken zu kombinieren mit {patchwork}\nKarten zu erstellen mit sf, weitere Link\nfortgeschrittene Textformatierungen zu verwenden mit {ggtext}\nGrafiken als Animation zu erstellen {gganimate} - eine Einführung oder hier\nLogos in in {ggplot2} einfügen mit {ggpath}\n\nEine Übersicht zu Erweiterungspakteten für {ggplot2} findet sich hier\nAuch The R Graph Gallery bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für {ggplot2}.\n\nTutorial von Cédric Scherer\nSession zu intuitiveren Grafiken von Cara Thompson"
+  },
+  {
+    "objectID": "references.html#purrr",
+    "href": "references.html#purrr",
+    "title": "Links & Weiterführendes",
+    "section": "Fortgeschrittene Anwendung von lapply()/map() mit selbstgeschriebenen Funktionen",
+    "text": "Fortgeschrittene Anwendung von lapply()/map() mit selbstgeschriebenen Funktionen\n\nUmfangreiche Einführung in loops mit map() und weiteren Funktionen aus {purrr} Hendrik van Broekhuizen\nModellserien: Blog von Tim Tiefenbach zu eleganten Möglichkeiten"
+  },
+  {
+    "objectID": "references.html#regex",
+    "href": "references.html#regex",
+    "title": "Links & Weiterführendes",
+    "section": "regex",
+    "text": "regex\nFür die Arbeit mit Textvariablen sind regular expressions (regex) eine große Hilfe. Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen durchsuchen, diese ersetzen usw. Der Blog von Joshua C. Fjelstul ist ein guter Einstieg. Darüber hinaus gibt es ein hilfreiches Cheatsheet zu regex in R und das regex -Paket {stringr}"
+  },
+  {
+    "objectID": "references.html#weiteres",
+    "href": "references.html#weiteres",
+    "title": "Links & Weiterführendes",
+    "section": "Weiteres",
+    "text": "Weiteres\n{easystats} bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem easystats-Universum unter anderem {performance} und {effectsize} kennengelernt.\nEreigniszeitmodelle / Event History Modellung / Survival Analysis"
   }
 ]
