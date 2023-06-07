@@ -282,7 +282,7 @@ knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
 :::{.callout-caution}
-# `install.packages()` im IAB-Netzwerk
+## `install.packages()` im IAB-Netzwerk {#fdz_install}
 
 Pakete werden in R standardmäßig als Download von [CRAN](https://cran.r-project.org/web/packages/available_packages_by_name.html) installiert.
 Auf der Servern im IAB ist das durch die Abkapselung vom Internet nicht möglich. 
@@ -291,9 +291,25 @@ Das schränkt die Installation von Paketen in R auf die von DIM gepflegte Sammlu
 Zentrale Herausforderung der Installation aus lokalen zip-Dateien ist die Installation von *Dependencies*: Paketen, auf welche das eigentlich gewünschte Paket zurückgreift. 
 Bei einer Installation aus dem Internet werden die Dependencies automatisch mitinstalliert - bei einer lokalen Installation ist das nicht der Fall.
 
-Am IAB existieren einige Workarounds, aktuell habe ich am FDZ eine Lösung in Arbeit, die den Befehl `fdz_install()` zur Verfügung stellt - dieser verhält sich wie der Standard-Befehl `install.packages()` (oder sollte es zumindest).
+Am IAB existieren einige Workarounds, aktuell habe ich am FDZ eine Lösung in Arbeit, die auf Basis einer `.Rprofile`-Datei den Befehl `fdz_install()` zur Verfügung stellt - dieser verhält sich wie der Standard-Befehl `install.packages()` (oder sollte es zumindest).
 
-Legt die `.Rprofile`-Datei in `C:\Users\*EUREKENNUNG*\Documents` und startet R neu (`STRG + F10`)
+Die `.Rprofile`-Datei findet sich unter `[N:\Ablagen\D01700-Quickablage\Filser\R_2023\prog](N:\Ablagen\D01700-Quickablage\Filser\R_2023\prog)`.
+
+Legt die `.Rprofile`-Datei in `C:\Users\*EUREKENNUNG*\Documents` und startet R neu (`STRG + F10`), ihr solltet dann in der Konsole eine ähnliche  Meldung sehen:
+```{r, eval = F}
+----------------------------------------
+IAB-FDZ .Rprofile
+Version 0.1
+----------------------------------------
+- Local repository: N:/Ablagen/D01700-Allgemein/R/bin/windows/contrib/4.2
+- Working directory: N:/Ablagen/D01700-FDZ/Quickablage/AndreasF/R-Kurs
+ 
+- Default package library: C:/Users/FilserA001.IAB/AppData/Local/R/win-library/4.2
+- HOME directory: C:/Users/FilserA001.IAB/Documents
+- R_home directory: C:/PROGRA~1/R/R-4.2.1
+----------------------------------------
+```
+
 
 [**Mehr zu RProfile**](https://support.posit.co/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
 
@@ -331,6 +347,7 @@ Das kann umgangen werden, wenn gewisse Pakte gar nicht vollständig geladen, son
 Wir werden in diesem Kurs vor allem mit Paketen aus dem [`{tidyverse}`](www.tidyverse.org/) arbeiten. tidyverse ist eine Sammlung an Paketen, die übergreifende Syntaxlogik haben und so besonders gut miteinander harmonisieren und eine riesige Bandbreite an Anwendungsfällen abdecken. Mit
 ```{r,eval =FALSE}
 install.packages("tidyverse")
+fdz_install("tidyverse") # auf den IAB-Servern mit .Rprofile
 ```
 werden folgende Pakete installiert:
 
@@ -341,11 +358,6 @@ Wir werden einige im Laufe des Kurses kennen lernen. Das zunächst wichtigste is
 ```{r dplyr, echo = F, out.height="80%",out.width="80%", fig.align="center"}
 #| fig-cap: Darstellung basierend auf dem [`{dplyr}` Cheatsheet](https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdat1) 
 knitr::include_graphics("./pic/103_dplyr.png")
-```
-
-```{r,eval = F}
-install.packages("tidyverse") 
-# installiert die komplette Paketsammlung des tidyverse
 ```
 
 Eine Installation ist aber nur der erste Schritt, jetzt müssen wir mit `library()` noch das Paket laden:
@@ -875,6 +887,7 @@ c("FH Aachen","RWTH Aachen","Uni Freiburg","Uni Bonn","FH Bonn-Rhein-Sieg")
 
 ### Übung 2 {#data2}
 
+-   [Legen Sie `.Rprofile` für die Paketinstalltion](#fdz_install) in `C:\Users\*KENNUNG*\Documents`
 -   Installieren Sie die Pakete des tidyverse mit `fdz_install("tidyverse")`, nachdem Sie die `.Rprofile`-Datei in unter **PFAD** abgelegt haben.
 -   Verwenden Sie wieder den `data.frame` `dat2` aus Übung 1
 -   Nutzen Sie `filter`, um sich nur die Unis mit unter 10000 Studierenden anzeigen zu lassen. (Denken Sie daran, `{tidyverse}` zu installieren und mit `library()` zu laden)
