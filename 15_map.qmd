@@ -171,4 +171,4 @@ lan17 %>% filter(GF==4) %>% left_join(alo_df,by = join_by("AGS"=="ags")) %>%
 
 Erstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.
 
-+ Das Shapefile für das Jahr 2017 finden Sie im Kursordner in der Quickablage.
++ Das Shapefile für das Jahr 2017 finden Sie im Kursordner unter `/orig` in der Quickablage.

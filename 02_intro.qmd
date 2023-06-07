@@ -277,28 +277,25 @@ Häufig werden bei `install.packages()` nicht nur das angegebene Paket, sondern 
 Mit `install.packages()` schrauben wir sozusagen die Glühbirne in R, mit `library()` betätigen wir den Lichtschalter, sodass wir die Befehle aus dem Paket auch verwenden können. Mit jedem Neustart geht die Glühbirne wieder aus und wir müssen sie mit `library()` wieder aktivieren. Das hat aber den Vorteil, dass wir nicht alle Glühbirnen auf einmal anknipsen müssen, wenn wir R starten.
 
 ```{r,echo = F, out.height="53%",out.width="53%", fig.align="center"}
+#| fig-cap: "Quelle: [Dianne Cook](https://twitter.com/visnut/status/1248087845589274624)"
 knitr::include_graphics("./pic/104_install-packages.jpg")
 ```
 
 :::{.callout-caution}
 # `install.packages()` im IAB-Netzwerk
 
+Pakete werden in R standardmäßig als Download von [CRAN](https://cran.r-project.org/web/packages/available_packages_by_name.html) installiert.
+Auf der Servern im IAB ist das durch die Abkapselung vom Internet nicht möglich. 
+Das schränkt die Installation von Paketen in R auf die von DIM gepflegte Sammlung unter [N:/Ablagen/D01700-Allgemein/R/bin/windows/contrib/](N:/Ablagen/D01700-Allgemein/R/bin/windows/contrib/) ein.
 
-Aufgrund der VPN-Einstellungen im IAB muss in R folgende Option gesetzt werden, damit Downloads möglich sind:  
+Zentrale Herausforderung der Installation aus lokalen zip-Dateien ist die Installation von *Dependencies*: Paketen, auf welche das eigentlich gewünschte Paket zurückgreift. 
+Bei einer Installation aus dem Internet werden die Dependencies automatisch mitinstalliert - bei einer lokalen Installation ist das nicht der Fall.
 
-`options(download.file.method = "wininet")`  
+Am IAB existieren einige Workarounds, aktuell habe ich am FDZ eine Lösung in Arbeit, die den Befehl `fdz_install()` zur Verfügung stellt - dieser verhält sich wie der Standard-Befehl `install.packages()` (oder sollte es zumindest).
 
-Dazu bieten sich zwei Möglichkeiten:
+Legt die `.Rprofile`-Datei in `C:\Users\*EUREKENNUNG*\Documents` und startet R neu (`STRG + F10`)
 
-1. nach jedem Neustart von RStudio vor `install.packages()` mit setzen:
-```{r}
-#| eval: false
-options(download.file.method = "wininet")
-install.packages()
-```
- 
-2. diese Option permanent "verankern": wer den Befehl nicht zu Beginn jeden R-Scripts aufführen möchte, kann ihn in die `Rprofile`-Datei (`Rprofile.site`) mit globalen Einstellungen aufnehmen. Diese Datei liegt beim BIBB Arbeitsgerät unter folgendem Pfad: `C:\RforWindows_4_2_1\etc`
-  [**Mehr zu RProfile**](https://support.posit.co/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
+[**Mehr zu RProfile**](https://support.posit.co/hc/en-us/articles/360047157094-Managing-R-with-Rprofile-Renviron-Rprofile-site-Renviron-site-rsession-conf-and-repos-conf)
 
 :::
 
@@ -325,20 +322,6 @@ Das folgende Objekt ist maskiert ‘package:purrr’:
 ```
 
 Das kann umgangen werden, wenn gewisse Pakte gar nicht vollständig geladen, sondern lediglich die nötigen Funktionen mit `::` aufgerufen werden.
-
-:::
-
-
-:::{.callout-tip collapse="true"}
-# Allgemeine Lösung für `install.packages()` wenn keine Internetverbindung besteht
-
-Unter [R Packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) können die benötigten Pakete heruntergeladen werden. Nachdem wir das Paket als .zip-Datei gespeichert haben, wir mit folgendem Befehl das Paket in der R-Umgebung installieren:
-
-```{r}
-#| eval: false
-# Installation von Paket "XML"
-install.packages("E:/XML_3.98-1.3.zip", repos = NULL, type = "source")
-```
 
 :::
 

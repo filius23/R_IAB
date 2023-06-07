@@ -329,12 +329,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(alo_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ags   alq
-1  01 0.086
-2  02 0.095
-3  03 0.058
-4  04 0.095
-5  05 0.091
-6  06 0.061</code></pre>
+1  01 0.076
+2  02 0.072
+3  03 0.072
+4  04 0.074
+5  05 0.063
+6  06 0.089</code></pre>
 </div>
 </div>
 <p>Jetzt können wir den <code>alo_df</code> an das <code>lan17</code> shapefile heranspielen mit Hilfe eines <a href="11_data_wrangle3.html#join"><code>left_join()</code></a>.</p>
@@ -354,12 +354,12 @@ Projected CRS: ETRS89 / UTM zone 32N
 # A tibble: 6 × 4
   AGS   GEN                   alq                                       geometry
   &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;                             &lt;MULTIPOLYGON [m]&gt;
-1 01    Schleswig-Holstein  0.086 (((464810.7 6100447, 464936.7 6100389, 465073…
-2 02    Hamburg             0.095 (((578219 5954278, 578433.9 5954189, 578557.7…
-3 03    Niedersachsen       0.058 (((479451.1 5971302, 479365.8 5971220, 479213…
-4 04    Bremen              0.095 (((466930.3 5897851, 467015.7 5897733, 467379…
-5 05    Nordrhein-Westfalen 0.091 (((477607.3 5818769, 477708 5818638, 477758.9…
-6 06    Hessen              0.061 (((534242 5721822, 534214.5 5721748, 534149.4…</code></pre>
+1 01    Schleswig-Holstein  0.076 (((464810.7 6100447, 464936.7 6100389, 465073…
+2 02    Hamburg             0.072 (((578219 5954278, 578433.9 5954189, 578557.7…
+3 03    Niedersachsen       0.072 (((479451.1 5971302, 479365.8 5971220, 479213…
+4 04    Bremen              0.074 (((466930.3 5897851, 467015.7 5897733, 467379…
+5 05    Nordrhein-Westfalen 0.063 (((477607.3 5818769, 477708 5818638, 477758.9…
+6 06    Hessen              0.089 (((534242 5721822, 534214.5 5721748, 534149.4…</code></pre>
 </div>
 </div>
 <p>Die Syntax für den eigentlichen Plot ist dann wieder wie für jeden anderen <code>ggplot()</code> auch - mit <code>fill =</code> können wir eine Flächenfarbe angeben und mit <code>scale_fill_...</code> eine Farbpalette auswählen:</p>
@@ -382,7 +382,7 @@ Projected CRS: ETRS89 / UTM zone 32N
 <h2 data-number="14.2" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.2</span> Übung</h2>
 <p>Erstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.</p>
 <ul>
-<li>Das Shapefile für das Jahr 2017 finden Sie im Kursordner in der Quickablage.</li>
+<li>Das Shapefile für das Jahr 2017 finden Sie im Kursordner unter <code>/orig</code> in der Quickablage.</li>
 </ul>
 
 
