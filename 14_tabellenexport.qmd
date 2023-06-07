@@ -430,6 +430,7 @@ m2 <- lm(azges1 ~ schul2 + zpalter, etb_ue14)
 ### Verteilungstabellen für metrische Variablen 
 ```{r}
 #| warning: false
+#| #| eval: false
 library(kableExtra)
 
 met_kbl <- 
@@ -448,6 +449,7 @@ write(met_kbl,file = "./results/desc1.tex")
 
 ### Häufigkeitsauszählungen 
 ```{r}
+#| eval: false
 kat_kbl <- 
   pend14 %>%  
     select(zpsex,schul2) %>% 
@@ -465,6 +467,7 @@ write(kat_kbl,file = "./results/crosstab1.tex")
 ```{r}
 #| warning: false
 #| message: false
+#| eval: false
   m1 <- lm(netges ~ azges1 + zpsex_fct, data = pend14_reg_df)
   m2 <- lm(netges ~ azges1 + zpsex_fct + schul2_fct, data = pend14_reg_df)
   
