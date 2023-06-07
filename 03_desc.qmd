@@ -63,7 +63,7 @@ t1 <- table(pend$statakt)
 t2 <- pend %>% count(statakt)
 ```
 
-Wir sehen hier, dass die Tabelle mit `xtabs()` eine neue Objektform ist, ein table. Mit `count()` wird hingegen ein `data.frame` erstellt.
+Wir sehen hier, dass die Tabelle mit `table()` eine neue Objektform ist, ein table. Mit `count()` wird hingegen ein `data.frame` erstellt.
 ```{r W04class, include=T, echo = T}
 class(t1)
 class(t2)

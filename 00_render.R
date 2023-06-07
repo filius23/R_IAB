@@ -1,7 +1,10 @@
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
 
 
-knitr::purl(input = "12_apply_loop.qmd",output= "./prog_2023/12_function_map.R",documentation = 0)
+  in1 <- list.files(pattern = "^\\d{2}.+\\.qmd")[-c(1,6,8,10,16,20:22)]
+  paste0("./prog_draft/",gsub(x = in1,"qmd","R"))
+
+knitr::purl(input = "12_apply_loop.qmd",output= "./prog_draft/12_function_map.R",documentation = 0)
 
 
 rstudioapi::navigateToFile("./prog_prelim/11_data_wrangle3.R")

@@ -221,6 +221,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./15_map.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit <code>{ggplot2}</code></span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
@@ -351,7 +357,7 @@ Item fuer Fragebogenversion nicht relevant
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>t1 <span class="ot">&lt;-</span> <span class="fu">table</span>(pend<span class="sc">$</span>statakt)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>t2 <span class="ot">&lt;-</span> pend <span class="sc">%&gt;%</span> <span class="fu">count</span>(statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>Wir sehen hier, dass die Tabelle mit <code>xtabs()</code> eine neue Objektform ist, ein table. Mit <code>count()</code> wird hingegen ein <code>data.frame</code> erstellt.</p>
+<p>Wir sehen hier, dass die Tabelle mit <code>table()</code> eine neue Objektform ist, ein table. Mit <code>count()</code> wird hingegen ein <code>data.frame</code> erstellt.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(t1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -821,12 +827,12 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="hxvzuguksj" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="pxenyncuvt" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#hxvzuguksj .gt_table {
+#pxenyncuvt .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -851,7 +857,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-left-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_heading {
+#pxenyncuvt .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -863,12 +869,12 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-right-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_caption {
+#pxenyncuvt .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#hxvzuguksj .gt_title {
+#pxenyncuvt .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -880,7 +886,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-bottom-width: 0;
 }
 
-#hxvzuguksj .gt_subtitle {
+#pxenyncuvt .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -892,13 +898,13 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-top-width: 0;
 }
 
-#hxvzuguksj .gt_bottom_border {
+#pxenyncuvt .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_col_headings {
+#pxenyncuvt .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -913,7 +919,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-right-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_col_heading {
+#pxenyncuvt .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -933,7 +939,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   overflow-x: hidden;
 }
 
-#hxvzuguksj .gt_column_spanner_outer {
+#pxenyncuvt .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -945,15 +951,15 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 4px;
 }
 
-#hxvzuguksj .gt_column_spanner_outer:first-child {
+#pxenyncuvt .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#hxvzuguksj .gt_column_spanner_outer:last-child {
+#pxenyncuvt .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#hxvzuguksj .gt_column_spanner {
+#pxenyncuvt .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -965,7 +971,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   width: 100%;
 }
 
-#hxvzuguksj .gt_group_heading {
+#pxenyncuvt .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -991,7 +997,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   text-align: left;
 }
 
-#hxvzuguksj .gt_empty_group_heading {
+#pxenyncuvt .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1006,15 +1012,15 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   vertical-align: middle;
 }
 
-#hxvzuguksj .gt_from_md > :first-child {
+#pxenyncuvt .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#hxvzuguksj .gt_from_md > :last-child {
+#pxenyncuvt .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#hxvzuguksj .gt_row {
+#pxenyncuvt .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1033,7 +1039,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   overflow-x: hidden;
 }
 
-#hxvzuguksj .gt_stub {
+#pxenyncuvt .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1046,7 +1052,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 5px;
 }
 
-#hxvzuguksj .gt_stub_row_group {
+#pxenyncuvt .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1060,11 +1066,11 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   vertical-align: top;
 }
 
-#hxvzuguksj .gt_row_group_first td {
+#pxenyncuvt .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#hxvzuguksj .gt_summary_row {
+#pxenyncuvt .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1074,16 +1080,16 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 5px;
 }
 
-#hxvzuguksj .gt_first_summary_row {
+#pxenyncuvt .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_first_summary_row.thick {
+#pxenyncuvt .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#hxvzuguksj .gt_last_summary_row {
+#pxenyncuvt .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1093,7 +1099,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-bottom-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_grand_summary_row {
+#pxenyncuvt .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1103,7 +1109,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 5px;
 }
 
-#hxvzuguksj .gt_first_grand_summary_row {
+#pxenyncuvt .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1113,11 +1119,11 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-top-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_striped {
+#pxenyncuvt .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#hxvzuguksj .gt_table_body {
+#pxenyncuvt .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1126,7 +1132,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-bottom-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_footnotes {
+#pxenyncuvt .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1140,7 +1146,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-right-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_footnote {
+#pxenyncuvt .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1149,7 +1155,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 5px;
 }
 
-#hxvzuguksj .gt_sourcenotes {
+#pxenyncuvt .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1163,7 +1169,7 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   border-right-color: #D3D3D3;
 }
 
-#hxvzuguksj .gt_sourcenote {
+#pxenyncuvt .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1171,64 +1177,64 @@ Bei langen Tabellen gibt <code>count()</code> nicht alle Zeilen aus
   padding-right: 5px;
 }
 
-#hxvzuguksj .gt_left {
+#pxenyncuvt .gt_left {
   text-align: left;
 }
 
-#hxvzuguksj .gt_center {
+#pxenyncuvt .gt_center {
   text-align: center;
 }
 
-#hxvzuguksj .gt_right {
+#pxenyncuvt .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#hxvzuguksj .gt_font_normal {
+#pxenyncuvt .gt_font_normal {
   font-weight: normal;
 }
 
-#hxvzuguksj .gt_font_bold {
+#pxenyncuvt .gt_font_bold {
   font-weight: bold;
 }
 
-#hxvzuguksj .gt_font_italic {
+#pxenyncuvt .gt_font_italic {
   font-style: italic;
 }
 
-#hxvzuguksj .gt_super {
+#pxenyncuvt .gt_super {
   font-size: 65%;
 }
 
-#hxvzuguksj .gt_footnote_marks {
+#pxenyncuvt .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#hxvzuguksj .gt_asterisk {
+#pxenyncuvt .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#hxvzuguksj .gt_indent_1 {
+#pxenyncuvt .gt_indent_1 {
   text-indent: 5px;
 }
 
-#hxvzuguksj .gt_indent_2 {
+#pxenyncuvt .gt_indent_2 {
   text-indent: 10px;
 }
 
-#hxvzuguksj .gt_indent_3 {
+#pxenyncuvt .gt_indent_3 {
   text-indent: 15px;
 }
 
-#hxvzuguksj .gt_indent_4 {
+#pxenyncuvt .gt_indent_4 {
   text-indent: 20px;
 }
 
-#hxvzuguksj .gt_indent_5 {
+#pxenyncuvt .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
@@ -1441,12 +1447,12 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="ssguszkfve" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="jlrvfzconb" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#ssguszkfve .gt_table {
+#jlrvfzconb .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -1471,7 +1477,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-left-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_heading {
+#jlrvfzconb .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -1483,12 +1489,12 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-right-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_caption {
+#jlrvfzconb .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#ssguszkfve .gt_title {
+#jlrvfzconb .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -1500,7 +1506,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-bottom-width: 0;
 }
 
-#ssguszkfve .gt_subtitle {
+#jlrvfzconb .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -1512,13 +1518,13 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-top-width: 0;
 }
 
-#ssguszkfve .gt_bottom_border {
+#jlrvfzconb .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_col_headings {
+#jlrvfzconb .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1533,7 +1539,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-right-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_col_heading {
+#jlrvfzconb .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1553,7 +1559,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   overflow-x: hidden;
 }
 
-#ssguszkfve .gt_column_spanner_outer {
+#jlrvfzconb .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1565,15 +1571,15 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 4px;
 }
 
-#ssguszkfve .gt_column_spanner_outer:first-child {
+#jlrvfzconb .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#ssguszkfve .gt_column_spanner_outer:last-child {
+#jlrvfzconb .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#ssguszkfve .gt_column_spanner {
+#jlrvfzconb .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1585,7 +1591,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   width: 100%;
 }
 
-#ssguszkfve .gt_group_heading {
+#jlrvfzconb .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1611,7 +1617,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   text-align: left;
 }
 
-#ssguszkfve .gt_empty_group_heading {
+#jlrvfzconb .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1626,15 +1632,15 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   vertical-align: middle;
 }
 
-#ssguszkfve .gt_from_md > :first-child {
+#jlrvfzconb .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#ssguszkfve .gt_from_md > :last-child {
+#jlrvfzconb .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#ssguszkfve .gt_row {
+#jlrvfzconb .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1653,7 +1659,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   overflow-x: hidden;
 }
 
-#ssguszkfve .gt_stub {
+#jlrvfzconb .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1666,7 +1672,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 5px;
 }
 
-#ssguszkfve .gt_stub_row_group {
+#jlrvfzconb .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1680,11 +1686,11 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   vertical-align: top;
 }
 
-#ssguszkfve .gt_row_group_first td {
+#jlrvfzconb .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#ssguszkfve .gt_summary_row {
+#jlrvfzconb .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1694,16 +1700,16 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 5px;
 }
 
-#ssguszkfve .gt_first_summary_row {
+#jlrvfzconb .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_first_summary_row.thick {
+#jlrvfzconb .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#ssguszkfve .gt_last_summary_row {
+#jlrvfzconb .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1713,7 +1719,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-bottom-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_grand_summary_row {
+#jlrvfzconb .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1723,7 +1729,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 5px;
 }
 
-#ssguszkfve .gt_first_grand_summary_row {
+#jlrvfzconb .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1733,11 +1739,11 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-top-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_striped {
+#jlrvfzconb .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#ssguszkfve .gt_table_body {
+#jlrvfzconb .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1746,7 +1752,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-bottom-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_footnotes {
+#jlrvfzconb .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1760,7 +1766,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-right-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_footnote {
+#jlrvfzconb .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1769,7 +1775,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 5px;
 }
 
-#ssguszkfve .gt_sourcenotes {
+#jlrvfzconb .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1783,7 +1789,7 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   border-right-color: #D3D3D3;
 }
 
-#ssguszkfve .gt_sourcenote {
+#jlrvfzconb .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1791,64 +1797,64 @@ Dafür hilft uns das Argument <code>.by =</code> in <code>summarise()</code>:</p
   padding-right: 5px;
 }
 
-#ssguszkfve .gt_left {
+#jlrvfzconb .gt_left {
   text-align: left;
 }
 
-#ssguszkfve .gt_center {
+#jlrvfzconb .gt_center {
   text-align: center;
 }
 
-#ssguszkfve .gt_right {
+#jlrvfzconb .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#ssguszkfve .gt_font_normal {
+#jlrvfzconb .gt_font_normal {
   font-weight: normal;
 }
 
-#ssguszkfve .gt_font_bold {
+#jlrvfzconb .gt_font_bold {
   font-weight: bold;
 }
 
-#ssguszkfve .gt_font_italic {
+#jlrvfzconb .gt_font_italic {
   font-style: italic;
 }
 
-#ssguszkfve .gt_super {
+#jlrvfzconb .gt_super {
   font-size: 65%;
 }
 
-#ssguszkfve .gt_footnote_marks {
+#jlrvfzconb .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#ssguszkfve .gt_asterisk {
+#jlrvfzconb .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#ssguszkfve .gt_indent_1 {
+#jlrvfzconb .gt_indent_1 {
   text-indent: 5px;
 }
 
-#ssguszkfve .gt_indent_2 {
+#jlrvfzconb .gt_indent_2 {
   text-indent: 10px;
 }
 
-#ssguszkfve .gt_indent_3 {
+#jlrvfzconb .gt_indent_3 {
   text-indent: 15px;
 }
 
-#ssguszkfve .gt_indent_4 {
+#jlrvfzconb .gt_indent_4 {
   text-indent: 20px;
 }
 
-#ssguszkfve .gt_indent_5 {
+#jlrvfzconb .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
