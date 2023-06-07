@@ -9,7 +9,8 @@ library(tidyverse)
 Eine Einführung in R für Mitarbeitende am IAB.
 
 ```{r main, echo = F, out.height="70%",out.width="70%", fig.align="center"}
-knitr::include_graphics("./pic/00_frontpage.png")
+knitr::include_graphics("./pic/00_frontpage_iab.png")
+
 ```
 
 

@@ -1,7 +1,7 @@
 {
-  "hash": "9d548a0ade219179423cbfae1b9a00f0",
+  "hash": "548e0cf7df12816c8005e459dbc2c659",
   "result": {
-    "markdown": "# Willkommen {#index .unnumbered}\n\n\n\n\n\nEine Einführung in R für Mitarbeitende am IAB.\n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n![](./pic/00_frontpage.png){fig-align='center' width=70% height=70%}\n:::\n:::\n\n\n\n**Kursinformationen**\n\n::: {.g-col-12 .g-col-sm-6 .g-col-md-4}\n\n\n{{< fa calendar-alt >}} &nbsp; 12.06., 13.06., 16.06. & 19.06.2023\n\n{{< fa clock >}} &nbsp; 8:30 – 15:30 Uhr\n\n{{< fa location-dot >}} &nbsp; E09\n\n:::\n",
+    "markdown": "# Willkommen {#index .unnumbered}\n\n\n\n\n\nEine Einführung in R für Mitarbeitende am IAB.\n\n\n::: {.cell layout-align=\"center\"}\n::: {.cell-output-display}\n![](./pic/00_frontpage_iab.png){fig-align='center' width=70% height=70%}\n:::\n:::\n\n\n\n**Kursinformationen**\n\n::: {.g-col-12 .g-col-sm-6 .g-col-md-4}\n\n\n{{< fa calendar-alt >}} &nbsp; 12.06., 13.06., 16.06. & 19.06.2023\n\n{{< fa clock >}} &nbsp; 8:30 – 15:30 Uhr\n\n{{< fa location-dot >}} &nbsp; E09\n\n:::\n",
     "supporting": [],
     "filters": [
       "rmarkdown/pagebreak.lua"
