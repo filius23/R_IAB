@@ -280,7 +280,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Konkret verwenden wir die Dateien <strong><code>vg250_01-01.utm32s.shape.ebenen.zip</code></strong><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a></p>
+<p>Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern). Um ein aufwändiges record linkage zu vermeinden, ist es hilfreich das shape file für das entsprechende Jahr zu verwenden. <a href="https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/">Auf dieser Seite</a> finden sich auch vergangene Gebietsstände. Die Dateien mit dem Namensschema <strong><code>vg250_01-01.utm32s.shape.ebenen.zip</code></strong> enthalten die benötigten Infos, wie wir sie im folgenden verwenden.</p>
 </div>
 </div>
 <p>Diese shapefiles können wir dann auf Basis der AGS (<a href="https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel">Amtlicher Gemeindeschlüssel</a>) mit Daten verbinden und dann als Karte darstellen:</p>
@@ -289,7 +289,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><img src="15_map_files/figure-html/map1-1.png" class="img-fluid" width="384"></p>
 </div>
 </div>
-<p>Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern).</p>
 <p>Um ein shapefile zu laden, installieren wir zunächst <code>{sf}</code> und laden es dann mit <code>library()</code>. Das eigentliche Laden leistet dann der Befehl <code>read_sf()</code>, wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das <code>layer</code>, also die Ebene angeben müssen. In den shapefiles des BKG gibt es folgende Layer:</p>
 <ul>
 <li><code>VG250_LAN</code>: Bundesländer (2-stellige AGS)</li>
@@ -330,12 +329,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(alo_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  ags   alq
-1  01 0.095
-2  02 0.051
-3  03 0.070
-4  04 0.087
-5  05 0.072
-6  06 0.068</code></pre>
+1  01 0.086
+2  02 0.095
+3  03 0.058
+4  04 0.095
+5  05 0.091
+6  06 0.061</code></pre>
 </div>
 </div>
 <p>Jetzt können wir den <code>alo_df</code> an das <code>lan17</code> shapefile heranspielen mit Hilfe eines <a href="11_data_wrangle3.html#join"><code>left_join()</code></a>.</p>
@@ -355,12 +354,12 @@ Projected CRS: ETRS89 / UTM zone 32N
 # A tibble: 6 × 4
   AGS   GEN                   alq                                       geometry
   &lt;chr&gt; &lt;chr&gt;               &lt;dbl&gt;                             &lt;MULTIPOLYGON [m]&gt;
-1 01    Schleswig-Holstein  0.095 (((464810.7 6100447, 464936.7 6100389, 465073…
-2 02    Hamburg             0.051 (((578219 5954278, 578433.9 5954189, 578557.7…
-3 03    Niedersachsen       0.07  (((479451.1 5971302, 479365.8 5971220, 479213…
-4 04    Bremen              0.087 (((466930.3 5897851, 467015.7 5897733, 467379…
-5 05    Nordrhein-Westfalen 0.072 (((477607.3 5818769, 477708 5818638, 477758.9…
-6 06    Hessen              0.068 (((534242 5721822, 534214.5 5721748, 534149.4…</code></pre>
+1 01    Schleswig-Holstein  0.086 (((464810.7 6100447, 464936.7 6100389, 465073…
+2 02    Hamburg             0.095 (((578219 5954278, 578433.9 5954189, 578557.7…
+3 03    Niedersachsen       0.058 (((479451.1 5971302, 479365.8 5971220, 479213…
+4 04    Bremen              0.095 (((466930.3 5897851, 467015.7 5897733, 467379…
+5 05    Nordrhein-Westfalen 0.091 (((477607.3 5818769, 477708 5818638, 477758.9…
+6 06    Hessen              0.061 (((534242 5721822, 534214.5 5721748, 534149.4…</code></pre>
 </div>
 </div>
 <p>Die Syntax für den eigentlichen Plot ist dann wieder wie für jeden anderen <code>ggplot()</code> auch - mit <code>fill =</code> können wir eine Flächenfarbe angeben und mit <code>scale_fill_...</code> eine Farbpalette auswählen:</p>
@@ -383,16 +382,10 @@ Projected CRS: ETRS89 / UTM zone 32N
 <h2 data-number="14.2" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.2</span> Übung</h2>
 <p>Erstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.</p>
 <ul>
-<li>Das Shapefile für das Jahr 2017 finden Sie</li>
+<li>Das Shapefile für das Jahr 2017 finden Sie im Kursordner in der Quickablage.</li>
 </ul>
 
 
-</section>
-<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
-<hr>
-<ol>
-<li id="fn1"><p><code>YYYY</code> steht aly Platzhalter für das jeweilige Jahr<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
-</ol>
 </section>
 
 </main> <!-- /main -->

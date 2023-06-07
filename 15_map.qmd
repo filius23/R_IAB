@@ -46,11 +46,12 @@ Für Deutschland stellt das [Geodatenzentrum des Bundesamts für Kartographie un
 ::: {.callout-tip}
 ## [Hier](https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/) finden sich die shapefiles der verschiedenen Jahre.
 
-Konkret verwenden wir die Dateien **`vg250_01-01.utm32s.shape.ebenen.zip`**[^shpfl] 
+Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern).
+Um ein aufwändiges record linkage zu vermeinden, ist es hilfreich das shape file für das entsprechende Jahr zu verwenden. 
+[Auf dieser Seite](https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/) finden sich auch vergangene Gebietsstände.
+Die Dateien mit dem Namensschema **`vg250_01-01.utm32s.shape.ebenen.zip`** enthalten die benötigten Infos, wie wir sie im folgenden verwenden.
 
 :::
-
-[^shpfl]: `YYYY` steht aly Platzhalter für das jeweilige Jahr
 
 Diese shapefiles können wir dann auf Basis der AGS ([Amtlicher Gemeindeschlüssel](https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel)) mit Daten verbinden und dann als Karte darstellen:
 
@@ -67,11 +68,6 @@ ggplot(kreis) +
     labs(title = "Landkreise nach Gebietsstand 2017") +
     theme_minimal()
 ```
-
-
-
-Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern).
-
 
 Um ein shapefile zu laden, installieren wir zunächst `{sf}` und laden es dann mit `library()`. 
 Das eigentliche Laden leistet dann der Befehl `read_sf()`, wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das `layer`, also die Ebene angeben müssen. 
@@ -175,4 +171,4 @@ lan17 %>% filter(GF==4) %>% left_join(alo_df,by = join_by("AGS"=="ags")) %>%
 
 Erstellen Sie selbst eine Karte - für die Länder-, Kreis- oder Gemeindeebene.
 
-+ Das Shapefile für das Jahr 2017 finden Sie 
++ Das Shapefile für das Jahr 2017 finden Sie im Kursordner in der Quickablage.

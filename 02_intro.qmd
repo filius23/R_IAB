@@ -605,6 +605,11 @@ Alternativ könnten wir auch mit folgendem Befehl ein .Rproj - Projekt erstellen
 rstudioapi::initializeProject(path = "D:/Kurse/R-Kurs")
 ```
 
+So können wir das Projekt dann öffnen:
+```{r}
+#| eval: false
+rstudioapi::openProject(path = "D:/Kurse/R-Kurs")
+```
 
 ```{r,echo = F, out.height="55%",out.width="65%", fig.align="center"}
 # knitr::include_graphics("./pic/102_dateipfad_neu.png")
