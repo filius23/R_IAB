@@ -24,6 +24,7 @@ book:
     - 11_data_wrangle3.qmd
     - 12_apply_loop.qmd
     - 14_tabellenexport.qmd
+    - 15_map.qmd
     # - 15_RMarkdown.qmd
     # - 17_errors.qmd
     - references.qmd

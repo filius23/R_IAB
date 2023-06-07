@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>R am IAB - Links &amp; Weiterführendes</title>
+<title>R am IAB - 14&nbsp; Weitere Visualisierungen mit {ggplot2}</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -54,26 +54,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="site_libs/quarto-nav/quarto-nav.js"></script>
@@ -83,7 +64,8 @@ div.csl-indent {
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./15_map.html" rel="prev">
+<link href="./references.html" rel="next">
+<link href="./14_tabellenexport.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -128,7 +110,7 @@ div.csl-indent {
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./references.html">Links &amp; Weiterführendes</a></li></ol></nav>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./15_map.html"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit `{ggplot2}`</span></a></li></ol></nav>
       <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
       </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -239,13 +221,13 @@ div.csl-indent {
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./15_map.html" class="sidebar-item-text sidebar-link">
+  <a href="./15_map.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit <code>{ggplot2}</code></span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./references.html" class="sidebar-item-text sidebar-link active">
+  <a href="./references.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Links &amp; Weiterführendes</span></a>
   </div>
 </li>
@@ -259,19 +241,15 @@ div.csl-indent {
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#vs." id="toc-vs." class="nav-link active" data-scroll-target="#vs."><code>%&gt;%</code> vs.&nbsp;<code>|&gt;</code></a></li>
-  <li><a href="#anonymfun" id="toc-anonymfun" class="nav-link" data-scroll-target="#anonymfun">Anonyme Funktionen: <code>.x</code> vs.&nbsp;<code>/(x)</code></a></li>
-  <li><a href="#einführungen-in-r" id="toc-einführungen-in-r" class="nav-link" data-scroll-target="#einführungen-in-r">Einführungen in R</a></li>
-  <li><a href="#rmarkdown" id="toc-rmarkdown" class="nav-link" data-scroll-target="#rmarkdown">RMarkdown</a>
+  <li><a href="#map" id="toc-map" class="nav-link active" data-scroll-target="#map"><span class="header-section-number">14.1</span> Karten (“Choroplethen”)</a></li>
+  <li><a href="#modelplot" id="toc-modelplot" class="nav-link" data-scroll-target="#modelplot"><span class="header-section-number">14.2</span> Koeffizientenplots</a>
   <ul class="collapse">
-  <li><a href="#markdown-syntax" id="toc-markdown-syntax" class="nav-link" data-scroll-target="#markdown-syntax">Markdown Syntax</a></li>
-  <li><a href="#beispiel" id="toc-beispiel" class="nav-link" data-scroll-target="#beispiel">Beispiel</a></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">14.2.1</span> Übung</a></li>
   </ul></li>
-  <li><a href="#cheatsheets" id="toc-cheatsheets" class="nav-link" data-scroll-target="#cheatsheets">Cheatsheets</a></li>
-  <li><a href="#ggplot2" id="toc-ggplot2" class="nav-link" data-scroll-target="#ggplot2"><code>{ggplot2}</code></a></li>
-  <li><a href="#purrr" id="toc-purrr" class="nav-link" data-scroll-target="#purrr">Fortgeschrittene Anwendung von <code>lapply()</code>/<code>map()</code> mit selbstgeschriebenen Funktionen</a></li>
-  <li><a href="#regex" id="toc-regex" class="nav-link" data-scroll-target="#regex">regex</a></li>
-  <li><a href="#weiteres" id="toc-weiteres" class="nav-link" data-scroll-target="#weiteres">Weiteres</a></li>
+  <li><a href="#übungen" id="toc-übungen" class="nav-link" data-scroll-target="#übungen"><span class="header-section-number">14.3</span> Übungen</a>
+  <ul class="collapse">
+  <li><a href="#reg1" id="toc-reg1" class="nav-link" data-scroll-target="#reg1"><span class="header-section-number">14.3.1</span> Übung 1: Regression</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -280,7 +258,7 @@ div.csl-indent {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Links &amp; Weiterführendes</h1>
+<h1 class="title"><span id="viz2" class="quarto-section-identifier"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit <code>{ggplot2}</code></span></span></h1>
 </div>
 
 
@@ -295,129 +273,104 @@ div.csl-indent {
 
 </header>
 
-<section id="vs." class="level2">
-<h2 class="anchored" data-anchor-id="vs."><code>%&gt;%</code> vs.&nbsp;<code>|&gt;</code></h2>
-<p>In diesem Kurs haben wir die Pipe <code>%&gt;%</code> aus <code>{tidyverse}</code> (streng genommen aus dem Paket <code>{magrittr}</code>) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe <code>|&gt;</code> eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher <code>%&gt;%</code> durch <code>|&gt;</code>. Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an ‘alte Variante’ gehalten. Letztlich spricht aber nichts dagegen, nach einem Update auf <code>|&gt;</code> umzusteigen - oder einfach bei <code>%&gt;%</code> zu bleiben.</p>
-<p><img src="pic/pipe.png" height="480px"></p>
-<p>Unter anderem steht <a href="https://r4ds.hadley.nz/workflow-pipes.html#vs">hier mehr zu den Unterschieden</a> zwischen beiden Pipes. Außerdem bietet <a href="https://kpress.dev/blog/2022-06-19-replacing-the-magrittr-pipe-with-native-r-pipe/">dieser Blogbeitrag</a> einen guten Überblick zu den Fallstricken beim Umstieg von <code>%&gt;%</code> auf <code>|&gt;</code>.</p>
-</section>
-<section id="anonymfun" class="level2">
-<h2 class="anchored" data-anchor-id="anonymfun">Anonyme Funktionen: <code>.x</code> vs.&nbsp;<code>/(x)</code></h2>
-<p>Mit <a href="https://towardsdatascience.com/the-new-pipe-and-anonymous-function-syntax-in-r-54d98861014c">R 4.1.0</a> wurde in base R eine neue ‘anonymous function short hand’ eingeführt, welche die ‘formula syntax’ Schreibweise <code>~mean(.x)</code> ablöst, die wir in <a href="#06_data_wrangle2">Kapitel 6</a> kennen gelernt haben. In der neuen base R wäre das <code>\(x) mean(x)</code> geschrieben.</p>
-<p>Aus der <a href="https://www.tidyverse.org/blog/2022/12/purrr-1-0-0/#documentation"><code>{purrr}</code> release notes für Version 1.0.0</a> (Dezember 2022): <em>We believe that it’s better to use these new base tools because they work everywhere: the base pipe doesn’t require that you load magrittr and the new function shorthand works everywhere, not just in purrr functions. Additionally, being able to specify the argument name for the anonymous function can often lead to clearer code.</em></p>
-<p>Dementsprechend würde die Anwendung in <code>across()</code> wie folgt aussehen:</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>sat_small <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./data/BIBBBAuA_2018_suf1.0.dta"</span>,<span class="at">n_max =</span> <span class="dv">16</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(F1450_04,F1450_05,F1450_06) <span class="sc">%&gt;%</span> </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">slice</span>(<span class="dv">12</span><span class="sc">:</span><span class="dv">16</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># formula syntax</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sat_small <span class="sc">%&gt;%</span> </span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"F1450"</span>),<span class="sc">~</span><span class="fu">mean</span>(.x)))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># anonymous function short hand</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>sat_small <span class="sc">%&gt;%</span> </span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">matches</span>(<span class="st">"F1450"</span>),\(x) <span class="fu">mean</span>(x) ))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>In diesem Skript habe ich auf die bisherige ‘formula syntax’ Schreibweise zurück gegriffen, da aktuell noch die meisten Hilfeseite mit dieser Syntax arbeiten.</p>
-</section>
-<section id="einführungen-in-r" class="level2">
-<h2 class="anchored" data-anchor-id="einführungen-in-r">Einführungen in R</h2>
-<p>Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen:</p>
-<p><a href="https://r4ds.had.co.nz/">R for Data Science</a> <strong>das</strong> Standardwerk für Datenanalysen mit <code>{tidyverse}</code> - sehr intuitive Einführung, Fokus auf Data Science</p>
-<p><a href="https://www.infoworld.com/article/3411819/do-more-with-r-video-tutorials.html">Problemorientiere Einführungen in spezifische Anwendungen “do more with R”</a></p>
-<p><a href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1010372">Ten simple rules for teaching yourself R</a></p>
-<p><a href="https://link.springer.com/book/10.1007/978-3-658-21587-3">Moderne Datenanalyse mit R</a>: Deutschsprachige Einführung in <code>{tidyverse}</code></p>
-<p><a href="https://rfortherestofus.com/">R for the Rest of Us</a> bietet viele Tutorials und freie Kurse an, unter anderem auch viele <a href="https://www.youtube.com/channel/UCSoUNu8x-HblqqOK_EwdZGw">YouTube</a> Videos.</p>
-<p><a href="https://stata2r.github.io/">Stata 2 R</a> richtet sich alle Anwender*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des <code>{tidyverse}</code> das Paket <code>{data.table}</code> für die Datenaufbereitung gezeigt. <code>{data.table}</code> ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das <code>{tidyverse}</code>. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, <code>{data.table}</code> auszuprobieren.</p>
-</section>
-<section id="rmarkdown" class="level2">
-<h2 class="anchored" data-anchor-id="rmarkdown">RMarkdown</h2>
-<p><a href="https://rmarkdown.rstudio.com/">{rmarkdown}</a> ermöglich es, formatierte Textelemente mit <a href="https://www.markdownguide.org/cheat-sheet/">Markdown</a> und R code bzw. Output zu kombinieren. Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von <a href="https://www.markdownguide.org/cheat-sheet/">Markdown</a>-Befehlen formatiert werden kann. So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden. Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen. Diese gesamte Webseite wurde mit <a href="https://bookdown.org/yihui/rmarkdown-cookbook/">{R Markdown}</a> bzw. dem verwandten Paket <a href="www.quarto.org/">{Quarto}</a> erstellt.</p>
-<p>Die <a href="https://rmarkdown.rstudio.com/">Hilfeseiten und Dokumentation für R Markdown</a> ist extrem umfangreich und auch die <a href="https://rmarkdown.rstudio.com/lesson-1.html">Tutorials</a> und <a href="https://rmarkdown.rstudio.com/lesson-15.html">Cheatsheets</a> sind hervorragend. Daher hier nur eine kleiner Überblick.</p>
-<section id="markdown-syntax" class="level3">
-<h3 class="anchored" data-anchor-id="markdown-syntax">Markdown Syntax</h3>
-<p>Ein RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Mein erstes RMarkdown-Dokument"</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="an">author:</span><span class="co"> "Mein Name"</span></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-09-11"</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="an">output:</span><span class="co"> pdf_document</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu"># Überschrift 1</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="fu">## Unterüberschrift 2</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Dies ist ein R Markdown-Dokument. </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Text kann **fett** und *kursiv* geschrieben werden. </span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. </span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>Ein R-Code-Baustein ("chunk") sieht so aus:</span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="in">```{r cars}</span></span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co"># hier kommt der R Code hin</span></span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mtcars<span class="sc">$</span>qsec)</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Neben den in <a href="#viz">Kapitel 4</a> vorgestellten klassischen Grafiken gibt es eine ganze Reihe an Erweiterungen, die <code>{ggplot2}</code></p>
+<section id="map" class="level2" data-number="14.1">
+<h2 data-number="14.1" class="anchored" data-anchor-id="map"><span class="header-section-number">14.1</span> Karten (“Choroplethen”)</h2>
+<p>Für Karten und Arbeiten mit räumlichen Daten steht das Paket <code>{sf}</code> zur Verfügung. Das tolle ist: wir können <code>{sf}</code>-Daten mit den bekannten <code>{tidyverse}</code> Befehlen bearbeiten. Um eine Karte zu erstellen, benötigen wir ein <em>shapefile</em>, welches Informationen zu den darzustellenden Gebieten enthält. Für Deutschland stellt das <a href="http://gdz.bkg.bund.de/">Geodatenzentrum des Bundesamts für Kartographie und Geodäsie</a> shapefiles für die Gemeinden, Kreise und Länder zur Verfügung.</p>
+<p>Diese shapefiles können wir dann auf Basis der AGS (<a href="https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel">Amtlicher Gemeindeschlüssel</a>) mit Daten verbinden und dann als Karte darstellen:</p>
 <div class="cell">
 <div class="cell-output-display">
-<p><img src="./pic/115_rmd_demo.png" class="img-fluid" style="width:75.0%"></p>
+<p><img src="15_map_files/figure-html/map1-1.png" class="img-fluid" width="384"></p>
+</div>
+</div>
+<p>Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern). <a href="https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/">Hier</a> finden sich die shapefiles der verschiedenen Jahre.</p>
+<p>Um ein shapefile zu laden, installieren wir zunächst <code>{sf}</code> und laden es dann mit <code>library()</code>. Das eigentliche Laden leistet dann der Befehl <code>read_sf()</code>, wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das <code>layer</code>, also die Ebene angeben müssen. In den shapefiles des BKG gibt es folgende Layer:</p>
+<ul>
+<li><code>VG250_LAN</code>: Bundesländer (2-stellige AGS)</li>
+<li><code>VG250_KRS</code>: Kreise und kreisfreie Städte (5-stellige AGS)</li>
+<li><code>VG250_GEM</code>: Städte und Gemeinden (8-stellige AGS)</li>
+</ul>
+<p>Wenn wir also die Bundesländer laden möchten gehen wir wie folgt vor:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>dpath17 <span class="ot">&lt;-</span> <span class="st">"D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>lan17 <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">read_sf</span>(dpath17, <span class="at">layer=</span><span class="st">"VG250_LAN"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Das Objekt <code>lan17</code> können wir nun für einen <code>ggplot()</code>-Befehl verwenden. <code>lan17</code> enthält außerdem die Seegebiete, diese können wir mittels eines <code>filter()</code>-Befehls auf die Landgebiete einschränken (<code>GF</code> = 4):</p>
+<div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lan17) <span class="sc">+</span> </span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">size =</span> .<span class="dv">1</span>)  <span class="sc">+</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bundesländer nach Gebietsstand 2017"</span>) <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>)) <span class="sc">+</span> </span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_sf</span>(<span class="at">size =</span> .<span class="dv">1</span>)  <span class="sc">+</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Bundesländer nach Gebietsstand 2017"</span>) <span class="sc">+</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell quarto-layout-panel">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="15_map_files/figure-html/mapplot-1.png" class="img-fluid" width="576"></p>
+</div>
+<div class="cell-output-display quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<p><img src="15_map_files/figure-html/mapplot-2.png" class="img-fluid" width="576"></p>
+</div>
+</div>
+</div>
+</div>
+<p>Möchten wir nun die Bundesländer bspw. nach der Arbeitslosenquote einfärben, müssen wir diese an die Daten heranspielen. Der Einfachheit halber simuliere ich hier die Werte:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>alo_df <span class="ot">&lt;-</span> </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">ags =</span> <span class="fu">unique</span>(lan17<span class="sc">$</span>AGS),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">alq =</span> <span class="fu">sample</span>(<span class="fu">seq</span>(.<span class="dv">03</span>,.<span class="dv">095</span>,.<span class="dv">001</span>) ,<span class="at">size =</span> <span class="dv">16</span>,<span class="at">replace =</span> T))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(alo_df)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>  ags   alq
+1  01 0.058
+2  02 0.047
+3  03 0.075
+4  04 0.068
+5  05 0.043
+6  06 0.067</code></pre>
+</div>
+</div>
+<p>Jetzt können wir den <code>alo_df</code> an das <code>lan17</code> shapefile heranspielen mit Hilfe eines <a href="11_data_wrangle3.html#join"><code>left_join()</code></a>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>lan17 <span class="sc">%&gt;%</span> <span class="fu">filter</span>(GF<span class="sc">==</span><span class="dv">4</span>) <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(alo_df,<span class="at">by =</span> <span class="fu">join_by</span>(<span class="st">"AGS"</span><span class="sc">==</span><span class="st">"ags"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>      <span class="fu">geom_sf</span>(<span class="at">size =</span> .<span class="dv">1</span>, <span class="fu">aes</span>(<span class="at">fill =</span> alq))  <span class="sc">+</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Arbeitslosenquote für Bundesländer"</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">subtitle =</span> <span class="st">"(keine echten Daten)"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> <span class="st">"Arbeitslosen-</span><span class="sc">\n</span><span class="st">quote"</span>) <span class="sc">+</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">scale_fill_viridis_c</span>(<span class="at">option =</span> <span class="st">"mako"</span>,<span class="at">begin =</span> .<span class="dv">1</span>,<span class="at">end =</span> .<span class="dv">9</span>) <span class="sc">+</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>      <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="15_map_files/figure-html/mapplot2-1.png" class="img-fluid" width="480"></p>
 </div>
 </div>
 </section>
-<section id="beispiel" class="level3">
-<h3 class="anchored" data-anchor-id="beispiel">Beispiel</h3>
-<p><a href="https://allisonhorst.github.io/penguins_paper_distill/rjarticle/penguins.html">Paper zu einem Beispieldatensatz, komplett in R Markdown geschrieben</a></p>
-<p><a href="https://github.com/allisonhorst/penguins_paper_distill/blob/46342ebf450dfdb49741ae9f7059c6e3c266af70/rjarticle/penguins.Rmd">Hier findet ihr den Source-Code</a></p>
+<section id="modelplot" class="level2" data-number="14.2">
+<h2 data-number="14.2" class="anchored" data-anchor-id="modelplot"><span class="header-section-number">14.2</span> Koeffizientenplots</h2>
+<section id="übung" class="level3" data-number="14.2.1">
+<h3 data-number="14.2.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">14.2.1</span> <a href="09_reg.html#reg4">Übung</a></h3>
 </section>
 </section>
-<section id="cheatsheets" class="level2">
-<h2 class="anchored" data-anchor-id="cheatsheets">Cheatsheets</h2>
-<p>Eine Sammlung an Cheatsheets für eine breite Palette an Anwendungen gibt es <a href="https://www.rstudio.com/resources/cheatsheets/">hier</a>.</p>
-<ul>
-<li>Datenvisualisierung mit <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-visualization.pdf"><code>{ggplot2}</code></a></li>
-<li>Datensätze bearbeiten mit <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/data-transformation.pdf"><code>{dplyr}</code></a></li>
-<li>Datensätze erstellen/reshapen mit <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/tidyr.pdf"><code>{tidyr}</code></a></li>
-</ul>
-</section>
-<section id="ggplot2" class="level2">
-<h2 class="anchored" data-anchor-id="ggplot2"><code>{ggplot2}</code></h2>
-<p>Eine große Stärke von <code>ggplot2</code> sind die zahlreichen Erweiterungen, welche beispielsweise ermöglichen</p>
-<ul>
-<li>mehrere Grafiken zu kombinieren mit <a href="https://github.com/thomasp85/patchwork#patchwork"><code>{patchwork}</code></a></li>
-<li>Karten zu erstellen mit <a href="https://oliviergimenez.github.io/intro_spatialR/#1">sf</a>, weitere <a href="https://ourcodingclub.github.io/tutorials/dataviz-beautification-synthesis/">Link</a></li>
-<li>fortgeschrittene Textformatierungen zu verwenden mit <a href="https://wilkelab.org/ggtext/"><code>{ggtext}</code></a></li>
-<li>Grafiken als Animation zu erstellen <a href="https://gganimate.com/"><code>{gganimate}</code></a> - <a href="https://goodekat.github.io/presentations/2019-isugg-gganimate-spooky/slides.html">eine Einführung</a> oder <a href="https://rpubs.com/bradyrippon/929572">hier</a></li>
-<li>Logos in in <code>{ggplot2}</code> einfügen mit <a href="https://mrcaseb.github.io/ggpath/"><code>{ggpath}</code></a></li>
-</ul>
-<p>Eine Übersicht zu Erweiterungspakteten für <code>{ggplot2}</code> findet sich <a href="https://exts.ggplot2.tidyverse.org/gallery/">hier</a></p>
-<p>Auch <a href="https://r-graph-gallery.com/">The R Graph Gallery</a> bietet eine hervorragende Übersicht zu Darstellungsmöglichkeiten mit Syntaxbeispielen für <code>{ggplot2}</code>.</p>
-<ul>
-<li><p><a href="https://cedricscherer.netlify.app/2019/08/05/a-ggplot2-tutorial-for-beautiful-plotting-in-r/">Tutorial von Cédric Scherer</a></p></li>
-<li><p><a href="https://www.youtube.com/watch?v=_indbXPXUw8">Session zu intuitiveren Grafiken von Cara Thompson</a></p></li>
-</ul>
-</section>
-<section id="purrr" class="level2">
-<h2 class="anchored" data-anchor-id="purrr">Fortgeschrittene Anwendung von <code>lapply()</code>/<code>map()</code> mit selbstgeschriebenen Funktionen</h2>
-<ul>
-<li>Umfangreiche Einführung in loops mit <code>map()</code> und weiteren Funktionen aus <code>{purrr}</code> <a href="https://hendrikvanb.gitlab.io/slides/purrr_beyond_map.html#1">Hendrik van Broekhuizen</a></li>
-<li>Modellserien: <a href="https://tim-tiefenbach.de/post/2023-dplyr-many-models/">Blog von Tim Tiefenbach</a> zu eleganten Möglichkeiten</li>
-</ul>
-</section>
-<section id="regex" class="level2">
-<h2 class="anchored" data-anchor-id="regex">regex</h2>
-<p>Für die Arbeit mit Textvariablen sind <em>regular expressions</em> (regex) eine große Hilfe. Damit lassen sich beispielsweise Textabschnitte nach bestimmten Zeichenfolgen durchsuchen, diese ersetzen usw. Der <a href="https://jfjelstul.github.io/regular-expressions-tutorial/">Blog von Joshua C. Fjelstul</a> ist ein guter Einstieg. Darüber hinaus gibt es ein hilfreiches Cheatsheet zu <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/regex.pdf"><em>regex</em> in R</a> und das <em>regex</em> -Paket <a href="https://raw.githubusercontent.com/rstudio/cheatsheets/main/strings.pdf"><code>{stringr}</code></a></p>
-</section>
-<section id="weiteres" class="level2">
-<h2 class="anchored" data-anchor-id="weiteres">Weiteres</h2>
-<p><a href="https://github.com/easystats/easystats#easystats-framework-for-easy-statistical-modeling-visualization-and-reporting"><code>{easystats}</code></a> bietet eine Sammlung von Paketen, welche statische Auswertungen erleichtern und vereinheitlichen. Gleichzeitig geht diese Vereinheitlichung aber mit einer beschränkteren Flexibilität einher - das ist Geschmackssache und kommt auf den Anwendungsfall an. Wir haben aus dem <code>easystats</code>-Universum unter anderem <a href="https://easystats.github.io/performance/">{performance}</a> und <a href="https://easystats.github.io/effectsize/index.html">{effectsize}</a> kennengelernt.</p>
-<p><a href="https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html">Ereigniszeitmodelle / Event History Modellung / Survival Analysis</a></p>
-<div id="refs" role="list" style="display: none">
-
+<section id="übungen" class="level2" data-number="14.3">
+<h2 data-number="14.3" class="anchored" data-anchor-id="übungen"><span class="header-section-number">14.3</span> Übungen</h2>
+<p>Verwenden Sie folgenden Subdatensatz des PASS CampusFiles:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pend_ue08 <span class="ot">&lt;-</span> haven<span class="sc">::</span><span class="fu">read_dta</span>(<span class="st">"./orig/PENDDAT_cf_W13.dta"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(welle <span class="sc">==</span> <span class="dv">13</span>, netges <span class="sc">&gt;</span> <span class="dv">0</span>, azges1 <span class="sc">&gt;</span> <span class="dv">0</span>,schul2 <span class="sc">&gt;</span> <span class="dv">1</span>, palter <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
+<section id="reg1" class="level3" data-number="14.3.1">
+<h3 data-number="14.3.1" class="anchored" data-anchor-id="reg1"><span class="header-section-number">14.3.1</span> Übung 1: Regression</h3>
+<ul>
+<li>Erstellen Sie ein Objekt <code>mod1</code> mit einem linearen Regressionsmodell (<code>lm</code>) mit <code>netges</code> (Monatsnetto in EUR) als abhängiger und <code>azges1</code> (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe <a href="09_reg.html#lm1">hier</a>)</li>
+<li>Betrachten Sie Ergebnisse <code>mod1</code> - was können Sie zum Zusammenhang zwischen <code>netges</code> und <code>azges1</code> erkennen?</li>
+<li>Visualisieren Sie Ihr Regressionsmodell mit <code>{ggplot2}</code>.</li>
+<li>Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable <code>pnr</code> und <code>geom_text()</code>.</li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -656,11 +609,14 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation column-body">
   <div class="nav-page nav-page-previous">
-      <a href="./15_map.html" class="pagination-link">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">14</span>&nbsp; <span class="chapter-title">Weitere Visualisierungen mit <code>{ggplot2}</code></span></span>
+      <a href="./14_tabellenexport.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Tabellenexport</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="./references.html" class="pagination-link">
+        <span class="nav-page-text">Links &amp; Weiterführendes</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

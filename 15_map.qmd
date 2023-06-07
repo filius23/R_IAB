@@ -1,0 +1,173 @@
+# Weitere Visualisierungen mit `{ggplot2}` {#viz2}
+
+```{r mapinit, include=F}
+# http://hbiostat.org/rmsc/
+
+if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4") 
+library(tidyverse)
+library(patchwork)
+library(sf)
+
+mark_color <- "grey25"
+color1x =  "#00519E" # uol farbe
+colorhex <- "#FCFCFC" #"#FCF9F0FF"7
+colorhex <- NA #"#FCF9F0FF"7
+
+theme_x <- 
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.background = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    rect = element_rect(fill = colorhex, linetype = 1, colour = NA),
+    axis.text =  element_text(color = mark_color,face = "plain", size = rel(.75), angle = 0), 
+    axis.title = element_text(color = mark_color,face = "plain", size = rel(1), angle = 0), 
+    axis.title.y = element_text(color = mark_color,face = "plain", angle = 0,vjust = .5), 
+    axis.ticks = element_blank(),
+    axis.line = element_line(size = .1), 
+    panel.grid = element_line(colour = "grey81", linetype = 1, size = .15), 
+    panel.grid.minor.y = element_blank(), 
+    panel.grid.minor.x = element_blank(), 
+    plot.subtitle = element_text(hjust=0),
+    plot.caption = element_text(hjust=1, size = rel(1.2), color = mark_color),
+    plot.margin = unit(c(1, 1, 1, 1), "lines"))
+
+# theme_set(theme_x)
+
+```
+
+Neben den in [Kapitel 4](#viz) vorgestellten klassischen Grafiken gibt es eine ganze Reihe an Erweiterungen, die `{ggplot2}` 
+
+## Karten ("Choroplethen") {#map}
+
+Für Karten und Arbeiten mit räumlichen Daten steht das Paket `{sf}` zur Verfügung. 
+Das tolle ist: wir können `{sf}`-Daten mit den bekannten  `{tidyverse}` Befehlen bearbeiten. 
+Um eine Karte zu erstellen, benötigen wir ein *shapefile*, welches Informationen zu den darzustellenden Gebieten enthält. 
+Für Deutschland stellt das [Geodatenzentrum des Bundesamts für Kartographie und Geodäsie](http://gdz.bkg.bund.de/) shapefiles für die Gemeinden, Kreise und Länder zur Verfügung.
+
+Diese shapefiles können wir dann auf Basis der AGS ([Amtlicher Gemeindeschlüssel](https://de.wikipedia.org/wiki/Amtlicher_Gemeindeschl%C3%BCssel)) mit Daten verbinden und dann als Karte darstellen:
+
+```{r map1}
+#| echo: false
+#| fig-width: 4
+#| fig-height: 4
+dpath17 <- "D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen"
+kreis <- sf::read_sf(dpath17, layer="VG250_KRS")
+
+ggplot(kreis) + 
+    geom_sf(size = .1,aes(fill = as.numeric(AGS)))  +
+    scale_fill_viridis_c(option = "mako", name = "AGS") +
+    labs(title = "Landkreise nach Gebietsstand 2017") +
+    theme_minimal()
+```
+
+
+
+Meist liegen Ergebnisse oder Daten, die wir darstellen möchten auf Basis eines bestimmten Gebietsstands vor (durch Gebietsreformen gibt es kontinuierliche Änderungen sowohl der Gebiete als auch der Kennziffern).
+[Hier](https://daten.gdz.bkg.bund.de/produkte/vg/vg250_ebenen_0101/) finden sich die shapefiles der verschiedenen Jahre.
+
+Um ein shapefile zu laden, installieren wir zunächst `{sf}` und laden es dann mit `library()`. 
+Das eigentliche Laden leistet dann der Befehl `read_sf()`, wobei wir neben dem Dateipfad in den entpackten Ordner mit den shapefiles zusätzlich das `layer`, also die Ebene angeben müssen. 
+In den shapefiles des BKG gibt es folgende Layer:
+
++ `VG250_LAN`: Bundesländer (2-stellige AGS)
++ `VG250_KRS`: Kreise und kreisfreie Städte (5-stellige AGS)
++ `VG250_GEM`: Städte und Gemeinden (8-stellige AGS)
+
+Wenn wir also die Bundesländer laden möchten gehen wir wie folgt vor:
+```{r mapload}
+dpath17 <- "D:/Datenspeicher/regstat/shapefiles/vg250_2017.utm32s.shape.ebenen/vg250_ebenen"
+lan17 <- sf::read_sf(dpath17, layer="VG250_LAN")
+```
+
+Das Objekt `lan17` können wir nun für einen `ggplot()`-Befehl verwenden.
+`lan17` enthält außerdem die Seegebiete, diese können wir mittels eines `filter()`-Befehls auf die Landgebiete einschränken (`GF` = 4):
+```{r mapplot}
+#| layout-ncol: 2
+#| fig-height: 6
+#| fig-width: 6
+ggplot(lan17) + 
+    geom_sf(size = .1)  +
+    labs(title = "Bundesländer nach Gebietsstand 2017") +
+    theme_minimal()
+
+ggplot(lan17 %>% filter(GF==4)) + 
+    geom_sf(size = .1)  +
+    labs(title = "Bundesländer nach Gebietsstand 2017") +
+    theme_minimal()
+```
+
+
+Möchten wir nun die Bundesländer bspw. nach der Arbeitslosenquote einfärben, müssen wir diese an die Daten heranspielen. 
+Der Einfachheit halber simuliere ich hier die Werte:
+
+```{r}
+alo_df <- 
+  data.frame(ags = unique(lan17$AGS),
+             alq = sample(seq(.03,.095,.001) ,size = 16,replace = T))
+head(alo_df)
+```
+
+
+```{r scrapetest}
+#| include: false
+library(rvest)
+bwle <- "https://de.wikipedia.org/wiki/Liste_der_deutschen_Bundesl%C3%A4nder_nach_Arbeitslosenquote"
+  a3 <- read_html(bwle) %>% html_table() %>% .[[3]] %>% data.frame()
+ax <- 
+  a3 %>% 
+    janitor::clean_names() %>% 
+    separate(land,into = c("name","name2","name3"), sep = "[[:punct:]]+") %>% 
+    mutate(name = ifelse(is.na(name3),name, glue::glue("{name}-{name3}"))
+           )
+
+
+strsplit(ax$name, split="[^[:alnum:]]+") %>% unlist()
+  
+  ax$name %>% 
+  stringi::stri_trans_general(.,"latin-ascii") %>% 
+  strsplit(., split="[^A-Za-z0-9 -]+") %>% unlist()
+
+   unlist(strsplit(ax$name, split="\\w+"))
+   
+   stringi::stri_trans_nfc("Käse")
+stringi::stri_trans_general(c("äöüø"),"latin-ascii")
+
+data.frame()
+```
+
+Jetzt können wir den `alo_df` an das `lan17` shapefile heranspielen mit Hilfe eines [`left_join()`](#join):
+```{r mapplot2}
+#| fig-height: 4
+#| fig-width: 5
+
+lan17 %>% filter(GF==4) %>% left_join(alo_df,by = join_by("AGS"=="ags")) %>% 
+  ggplot() + 
+      geom_sf(size = .1, aes(fill = alq))  +
+      labs(title = "Arbeitslosenquote für Bundesländer",
+           subtitle = "(keine echten Daten)",
+           fill = "Arbeitslosen-\nquote") +
+      scale_fill_viridis_c(option = "mako",begin = .1,end = .9) +
+      theme_minimal()
+```
+
+
+## Koeffizientenplots {#modelplot}
+
+### [Übung](#reg4)
+
+
+## Übungen
+
+Verwenden Sie folgenden Subdatensatz des PASS CampusFiles:
+```{r, echo = T, eval=FALSE}
+pend_ue08 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta") %>% 
+  filter(welle == 13, netges > 0, azges1 > 0,schul2 > 1, palter > 0)
+```
+
+### Übung 1: Regression {#reg1}
+
+
++ Erstellen Sie ein Objekt `mod1` mit einem linearen Regressionsmodell (`lm`) mit `netges` (Monatsnetto in EUR) als abhängiger und `azges1` (Arbeitszeit in Stunden) als unabhängiger Variable! (siehe [hier](#lm1))
++ Betrachten Sie Ergebnisse `mod1` - was können Sie zum Zusammenhang zwischen `netges` und `azges1` erkennen?
++ Visualisieren Sie Ihr Regressionsmodell mit `{ggplot2}`.
++ Sehen Sie Ausreißer im Scatterplot? Markieren Sie diese mit Hilfe der Variable `pnr` und `geom_text()`.
+

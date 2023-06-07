@@ -48,13 +48,6 @@ sat_small %>%
 In diesem Skript habe ich auf die bisherige 'formula syntax' Schreibweise zurück gegriffen, da aktuell noch die meisten Hilfeseite mit dieser Syntax arbeiten. 
 
 
-## Quarto
-
-[Quarto](https://quarto.org/) ist eine Erweiterung/Weiterentwicklung von RMarkdown. 
-Allerdings erfordert Quarto eine separate Installation, [mehr Infos](https://quarto.org/docs/get-started/).
-
-
-
 ## Einführungen in R
 
 Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum selbst weiter lernen: 
@@ -72,8 +65,55 @@ Eine Sammlung von Lehrskripten und Unterlagen aus verschiedenen Kontexten zum se
 
 [Stata 2 R](https://stata2r.github.io/) richtet sich alle Anwender\*innen von Stata, die auf R umsteigen möchten. Allerdings wird hier anstelle des `{tidyverse}` das Paket `{data.table}` für die Datenaufbereitung gezeigt. `{data.table}` ist auf der einen Seite sehr schnell, jedoch von der Syntaxlogik her etwas umständlicher als das `{tidyverse}`. Für alle, die mit sehr großen Datensätzen arbeiten lohnt es sich aber, `{data.table}` auszuprobieren.
 
-## Beispiel für vollständiges Paper geschrieben mit RMarkdown
+## RMarkdown
 
+[{rmarkdown}](https://rmarkdown.rstudio.com/) ermöglich es, formatierte Textelemente mit [Markdown](https://www.markdownguide.org/cheat-sheet/) und R code bzw. Output zu kombinieren. 
+Anders als ein R Script enthält ein RMarkdown-Dokument nicht nur Befehle, sondern auch Text - welcher mit Hilfe von [Markdown](https://www.markdownguide.org/cheat-sheet/)-Befehlen formatiert werden kann.
+So können Grafiken, Tabellen, usw. direkt und zeitgleich mit dem Begleittext erstellt werden.
+Mit R Markdown können wir HTML, PDF, Word Dokumente, PowerPoint und HTML Präsentationen, Webseiten und Bücher erstellen.
+Diese gesamte Webseite wurde mit [{R Markdown}](https://bookdown.org/yihui/rmarkdown-cookbook/) bzw. dem verwandten Paket [{Quarto}](www.quarto.org/) erstellt.
+
+Die [Hilfeseiten und Dokumentation für R Markdown](https://rmarkdown.rstudio.com/) ist extrem umfangreich und auch die [Tutorials](https://rmarkdown.rstudio.com/lesson-1.html) und [Cheatsheets](https://rmarkdown.rstudio.com/lesson-15.html) sind hervorragend.
+Daher hier nur eine kleiner Überblick.
+
+### Markdown Syntax
+Ein RMarkdown-Dokument sieht in seiner Grundform ungefähr so aus:
+ 
+````{verbatim, lang = "markdown"}
+---
+title: "Mein erstes RMarkdown-Dokument"
+author: "Mein Name"
+date: "2022-09-11"
+output: pdf_document
+---
+  
+# Überschrift 1
+
+## Unterüberschrift 2
+
+Dies ist ein R Markdown-Dokument. 
+Markdown ist eine einfache Syntax für die Erstellung von HTML-, PDF- und MS Word-Dokumenten. 
+Text kann **fett** und *kursiv* geschrieben werden. 
+
+Wenn wir auf die Schaltfläche **Knit** klicken, wird ein Dokument erstellt.
+Das sowohl den Inhalt als auch die Ausgabe aller eingebetteten R-Code-Bausteine innerhalb des Dokuments enthält. 
+Ein R-Code-Baustein ("chunk") sieht so aus:
+
+```{r cars}
+# hier kommt der R Code hin
+summary(mtcars$qsec)
+```
+
+```` 
+
+```{r, out.width="75%", out.width="75%"}
+#| echo: false
+
+knitr::include_graphics("./pic/115_rmd_demo.png")
+```
+
+
+### Beispiel
 [Paper zu einem Beispieldatensatz, komplett in R Markdown geschrieben](https://allisonhorst.github.io/penguins_paper_distill/rjarticle/penguins.html)  
 
 [Hier findet ihr den Source-Code](https://github.com/allisonhorst/penguins_paper_distill/blob/46342ebf450dfdb49741ae9f7059c6e3c266af70/rjarticle/penguins.Rmd)
