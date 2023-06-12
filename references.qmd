@@ -12,7 +12,7 @@ library(kableExtra)
 ## `%>%` vs. `|>`
 
 In diesem Kurs haben wir die Pipe ` %>%` aus `{tidyverse}` (streng genommen aus dem Paket `{magrittr}`) kennen gelernt. Mit dem Update auf R 4.1 wurde in base R ebenfalls eine Pipe `|>` eingeführt und Hilfeseiten usw. ersetzen langsam, aber sicher `%>%` durch `|>`. 
-Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am BIBB R die R-Version 4.0.5 zur Verfügung steht, haben wir uns an 'alte Variante' gehalten.
+Für (nahezu) alle Anwendungen, die wir kennengelernt haben, verhalten sich beide Pipes identisch - und nachdem am IAB R teilweise noch alte R-Versionen installiert sind, haben wir uns an 'alte Variante' gehalten.
 Letztlich spricht aber nichts dagegen, nach einem Update auf `|>` umzusteigen - oder einfach bei ` %>% ` zu bleiben.
 
 <img src="pic/pipe.png" height="480px" />
