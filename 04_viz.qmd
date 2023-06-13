@@ -517,7 +517,7 @@ pend_u43 <-
 ```
 
 + Erstellen Sie ein Säulen-Diagramm für die Antworten auf die Frage "Eine berufstätige Mutter kann ein genauso herzliches Verhältnis zu ihren Kindern haben, wie eine Mutter, die nicht erwerbstätig ist." (`PEO0400c`)
-+ Erstellen Sie ein Säulen-Diagramm für d(`PEO0400c`) getrennt nach der Variable `migration`, legen Sie also die Farbe der Säulen nach `migration` fest. Die Variable `migration` erfasst, ob die Befragten einer Nebentätigkeit nachgehen (1 = ja/ 0 = nein).
++ Erstellen Sie ein Säulen-Diagramm für d(`PEO0400c`) getrennt nach der Variable `migration`, legen Sie also die Farbe der Säulen nach `migration` fest. Die Variable `migration` erfasst, ob die Befragten einen Migrationshintergrund haben:
 
 
 ```{r}
