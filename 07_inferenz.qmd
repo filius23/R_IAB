@@ -19,7 +19,7 @@ pend_kap7 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
 Bisher haben wir die Angaben aus unserem Datensatz immer als fix angesehen. 
 Ziel einer statistischen Auswertung ist aber meistens, Aussagen über die *Grundgesamtheit* oder *Population* zu treffen. 
 
-Für die grundlegenden inferenzstatistischen Tests helfen uns im wesentlichen 3 Funktionen:
+Für die grundlegenden Inferenztools helfen uns im wesentlichen 3 Funktionen:
 
 + `t.test()` zur Berechnung von t-Tests
 + `cor.test()` zur Berechnung von Korrelationen und weiterer Zusammenhangsmaße
@@ -71,8 +71,6 @@ t.test(pend_kap7$palter~pend_kap7$zpsex,alternative = "greater")
 <!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
 
 
-### [Übung](#ttestue)
-
 ## Korrelation {#pearson}
 
 Den Korrelationskoeffizienten können wir in R mit `cor.test()` berechnen:
@@ -93,6 +91,8 @@ Für den Spearman-Rangkorrelationskoeffizienten können wir `method = "spearman"
 cor.test(pend_kap7$palter,pend_kap7$azges1,method = "spearman")
 ```
 
+### [Übung](#ttestue)
+
 ## Gewichtung 
 
 
@@ -104,15 +104,15 @@ Die Gewichte für den Personendatz des PASS CampusFiles sind im Datensatz `pweig
 wgt_df <- haven::read_dta("./orig/pweights_cf_W13.dta")
 head(wgt_df)
 
-pend_kap7 <- pend_kap7 %>% left_join(wgt_df, by = join_by(pnr,welle))
+pend_kap7w <- pend_kap7 %>% left_join(wgt_df, by = join_by(pnr,welle))
 ```
 
 
 Die einfachste Variante für eine Gewichtung ist die Option  `wt=` in `count()`:
 ```{r}
-pend_kap7 %>% 
+pend_kap7w %>% 
   count(zpsex,statakt)
-pend_kap7 %>% 
+pend_kap7w %>% 
   count(zpsex,statakt,wt = wqp)
 ```
 
@@ -127,7 +127,7 @@ Zunächst verwenden wir `svydesign()`, um die Gewichtung festzulegen.
 Im weiteren stellt [`{survey}`](https://stylizeddata.com/how-to-use-survey-weights-in-r/) dann zahlreiche Funktionen zur Verfügung, die eine gewichtete Variante der basis-Befehle sind - bspw. `svymean()` und `svytable()`:
 ```{r}
 #| include: false
-pend_kap7 %>% summarise(mean = weighted.mean(palter,w = wqp))
+pend_kap7w %>% summarise(mean = weighted.mean(palter,w = wqp))
 ```
 
 ```{r}
@@ -136,7 +136,7 @@ pend_kap7 %>% summarise(mean = weighted.mean(palter,w = wqp))
 library(survey)
 pend_kap7_wgt <- svydesign(id      = ~pnr,
                            weights = ~wqp,
-                           data    = pend_kap7)
+                           data    = pend_kap7w)
 
 svymean(~palter, pend_kap7_wgt, na.rm = TRUE)
 mean(pend_kap7$palter, na.rm = TRUE)
@@ -167,6 +167,8 @@ pend_ue7 <- haven::read_dta("./orig/PENDDAT_cf_W13.dta",
 Testen Sie die Hypothese, dass ein signifikanter Unterschied im Alter (`palter`) zwischen Männern und Frauen besteht (`zpsex`). Die Missings beider Variablen wurden im `mutate()` der Befehle oben schon mit `NA` überschrieben - Sie können direkt los legen.
 
 Sehen Sie sich die Informationen an, welche `t.test()` erstellt: legen Sie das Ergebnis des Tests als Objekt ab (`test1 <- ...`) und sehen Sie sich die Informationen unter `test1$` an (drücken Sie die `↹` Taste).
+
+Berechnen Sie die Korrelation zwischen Alter (`palter`) und Einkommen (`netges`).
 
 
 ### Übung 2 {#weight}

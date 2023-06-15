@@ -243,11 +243,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#t-tests" id="toc-t-tests" class="nav-link active" data-scroll-target="#t-tests"><span class="header-section-number">7.1</span> t-Tests</a>
+  <li><a href="#t-tests" id="toc-t-tests" class="nav-link active" data-scroll-target="#t-tests"><span class="header-section-number">7.1</span> t-Tests</a></li>
+  <li><a href="#pearson" id="toc-pearson" class="nav-link" data-scroll-target="#pearson"><span class="header-section-number">7.2</span> Korrelation</a>
   <ul class="collapse">
-  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">7.1.1</span> Übung</a></li>
+  <li><a href="#übung" id="toc-übung" class="nav-link" data-scroll-target="#übung"><span class="header-section-number">7.2.1</span> Übung</a></li>
   </ul></li>
-  <li><a href="#pearson" id="toc-pearson" class="nav-link" data-scroll-target="#pearson"><span class="header-section-number">7.2</span> Korrelation</a></li>
   <li><a href="#gewichtung" id="toc-gewichtung" class="nav-link" data-scroll-target="#gewichtung"><span class="header-section-number">7.3</span> Gewichtung</a>
   <ul class="collapse">
   <li><a href="#übung-1" id="toc-übung-1" class="nav-link" data-scroll-target="#übung-1"><span class="header-section-number">7.3.1</span> Übung</a></li>
@@ -288,7 +288,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(<span class="fu">everything</span>(), <span class="sc">~</span><span class="fu">ifelse</span>(.x <span class="sc">&lt;</span> <span class="dv">0</span>,<span class="cn">NA</span>,.x)) )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Bisher haben wir die Angaben aus unserem Datensatz immer als fix angesehen. Ziel einer statistischen Auswertung ist aber meistens, Aussagen über die <em>Grundgesamtheit</em> oder <em>Population</em> zu treffen.</p>
-<p>Für die grundlegenden inferenzstatistischen Tests helfen uns im wesentlichen 3 Funktionen:</p>
+<p>Für die grundlegenden Inferenztools helfen uns im wesentlichen 3 Funktionen:</p>
 <ul>
 <li><code>t.test()</code> zur Berechnung von t-Tests</li>
 <li><code>cor.test()</code> zur Berechnung von Korrelationen und weiterer Zusammenhangsmaße</li>
@@ -348,9 +348,6 @@ mean in group 1 mean in group 2
 <!-- https://github.com/gergness/srvyr/ -->
 <!-- https://federicovegetti.github.io/teaching/heidelberg_2018/lab/sst_lab_day2.html -->
 <!-- http://people.ku.edu/~chkim/soc910/note/Soc910_Note_04_Weight.pdf -->
-<section id="übung" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">7.1.1</span> <a href="#ttestue">Übung</a></h3>
-</section>
 </section>
 <section id="pearson" class="level2" data-number="7.2">
 <h2 data-number="7.2" class="anchored" data-anchor-id="pearson"><span class="header-section-number">7.2</span> Korrelation</h2>
@@ -387,6 +384,9 @@ sample estimates:
 -0.02394976 </code></pre>
 </div>
 </div>
+<section id="übung" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="übung"><span class="header-section-number">7.2.1</span> <a href="#ttestue">Übung</a></h3>
+</section>
 </section>
 <section id="gewichtung" class="level2" data-number="7.3">
 <h2 data-number="7.3" class="anchored" data-anchor-id="gewichtung"><span class="header-section-number">7.3</span> Gewichtung</h2>
@@ -408,11 +408,11 @@ sample estimates:
 5 1000002001 2 [Welle 2 (2007/2008)] 1 [BA-Stichpro…  1668.    1.12    80     64
 6 1000002001 3 [Welle 3 (2008/2009)] 1 [BA-Stichpro…  1748.    1.36    80     64</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pend_kap7 <span class="ot">&lt;-</span> pend_kap7 <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(wgt_df, <span class="at">by =</span> <span class="fu">join_by</span>(pnr,welle))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>pend_kap7w <span class="ot">&lt;-</span> pend_kap7 <span class="sc">%&gt;%</span> <span class="fu">left_join</span>(wgt_df, <span class="at">by =</span> <span class="fu">join_by</span>(pnr,welle))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Die einfachste Variante für eine Gewichtung ist die Option <code>wt=</code> in <code>count()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pend_kap7 <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pend_kap7w <span class="sc">%&gt;%</span> </span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(zpsex,statakt)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
@@ -427,7 +427,7 @@ sample estimates:
 7     2       3  3434
 8     2      NA  3779</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pend_kap7 <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>pend_kap7w <span class="sc">%&gt;%</span> </span>
 <span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(zpsex,statakt,<span class="at">wt =</span> wqp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 8 × 3
@@ -452,7 +452,7 @@ sample estimates:
 <div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
 <span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>pend_kap7_wgt <span class="ot">&lt;-</span> <span class="fu">svydesign</span>(<span class="at">id      =</span> <span class="sc">~</span>pnr,</span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>                           <span class="at">weights =</span> <span class="sc">~</span>wqp,</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data    =</span> pend_kap7)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>                           <span class="at">data    =</span> pend_kap7w)</span>
 <span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a><span class="fu">svymean</span>(<span class="sc">~</span>palter, pend_kap7_wgt, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -498,6 +498,7 @@ zpsex         1         2         3
 </div>
 <p>Testen Sie die Hypothese, dass ein signifikanter Unterschied im Alter (<code>palter</code>) zwischen Männern und Frauen besteht (<code>zpsex</code>). Die Missings beider Variablen wurden im <code>mutate()</code> der Befehle oben schon mit <code>NA</code> überschrieben - Sie können direkt los legen.</p>
 <p>Sehen Sie sich die Informationen an, welche <code>t.test()</code> erstellt: legen Sie das Ergebnis des Tests als Objekt ab (<code>test1 &lt;- ...</code>) und sehen Sie sich die Informationen unter <code>test1$</code> an (drücken Sie die <code>↹</code> Taste).</p>
+<p>Berechnen Sie die Korrelation zwischen Alter (<code>palter</code>) und Einkommen (<code>netges</code>).</p>
 </section>
 <section id="weight" class="level3" data-number="7.4.2">
 <h3 data-number="7.4.2" class="anchored" data-anchor-id="weight"><span class="header-section-number">7.4.2</span> Übung 2</h3>

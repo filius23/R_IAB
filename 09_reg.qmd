@@ -161,7 +161,7 @@ Außerdem ist die [Dokumentation](https://vincentarelbundock.github.io/modelsumm
 
 ```{r}
 #| eval: false
-install.packages("modelsummary")
+fdz_install("modelsummary")
 ```
 
 ```{r}

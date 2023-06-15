@@ -518,9 +518,9 @@ pend14 %>%
 ```
 
 
-Hier ist die Herausforderung, einen `data.frame()` für `{flextable}` vorzubereiten: `xtabs()` gibt keinen `data.frame` aus und  meistens ist der long shape Output von `count()` auch nicht das was wir wollen:
+Hier ist die Herausforderung, einen `data.frame()` für `{flextable}` vorzubereiten: `table()` gibt keinen `data.frame` aus und  meistens ist der long shape Output von `count()` auch nicht das was wir wollen:
 ```{r}
-tab1 <- xtabs(~zpsex+schul2,pend14)
+tab1 <- table(pend14$zpsex,pend14$schul2)
 class(tab1)
 ```
 
@@ -528,8 +528,7 @@ class(tab1)
 pend14 %>% 
   mutate(zpsex_fct = factor(zpsex,levels = 1:2, labels = c("Männer","Frauen"))) %>% # zahlenwerte in zpsex mit labels überschreiben 
   mutate(schul2_fct = factor(schul2, levels = 2:7, labels = c("ohne","Förderschule","Hauptschule","Mittlere Reife","FOS/BOS","Abi"))) %>% # auch für schul2
-  count(zpsex_fct,schul2_fct) %>% 
-  flextable()
+  count(zpsex_fct,schul2_fct) 
 ```
 
 [`tabyl()`](https://sfirke.github.io/janitor/articles/tabyls.html) aus [{janitor}](https://cran.r-project.org/web/packages/janitor/vignettes/janitor.html) hilft hier weiter:

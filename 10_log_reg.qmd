@@ -116,7 +116,7 @@ Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der
 Darin findet sich der Befehl `avg_slopes()`, welcher uns erlaubt ein $\beta$ zwischen dem Einkommen und der _Wahrscheinlichkeit_ für $\texttt{soc\_med} = 1$ zu berechnen. Dieses wird auch als *average marginal effect* bezeichnet, da sie den *durchschnittlichen marginalen Effekt* der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben. 
 
 ```{r,eval=F}
-install.packages("marginaleffects") # nur einmal nötig
+fdz_install("marginaleffects") # nur einmal nötig
 library(marginaleffects)
 ```
 

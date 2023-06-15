@@ -395,8 +395,8 @@ var1         1.838966  0.7727028  2.3799139 0.05477457</code></pre>
 <p>Wir können uns die einzelnen Werte mit <code>View(m1)</code> ansehen:</p>
 <div class="cell">
 <div class="cell-output-display">
-<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-e5353965f5ee3e27c614" style="width:100%;height:10%;"></div>
-<script type="application/json" data-for="htmlwidget-e5353965f5ee3e27c614">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
+<div class="jsonedit html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-db479ebe8379f447c1de" style="width:100%;height:10%;"></div>
+<script type="application/json" data-for="htmlwidget-db479ebe8379f447c1de">{"x":{"data":{"coefficients":{"(Intercept)":-2.33996023856859,"var1":1.8389662027833},"residuals":{"1":0.662027833001989,"2":2.50099403578529,"3":-0.337972166998013,"4":2.14512922465209,"5":-3.53280318091451,"6":-8.37176938369781,"7":10.7892644135189,"8":-3.85487077534791},"effects":{"(Intercept)":-18.7383297014435,"var1":14.5818540383869,"3":-0.958261392445137,"4":2.15669989405101,"5":-3.09999258161823,"6":-7.72833881945285,"7":11.6433149427125,"8":-3.84330010594899},"rank":2,"fitted.values":{"1":1.33797216699801,"2":-0.500994035785286,"3":1.33797216699801,"4":6.85487077534791,"5":10.5328031809145,"6":12.3717693836978,"7":14.2107355864811,"8":6.85487077534791},"assign":[0,1],"qr":{"qr":[[-2.82842712474619,-13.7885822331377],[0.353553390593274,7.92937576357685],[0.353553390593274,0.26786961834195],[0.353553390593274,-0.110470378329709],[0.353553390593274,-0.362697042777481],[0.353553390593274,-0.488810375001367],[0.353553390593274,-0.614923707225254],[0.353553390593274,-0.110470378329709]],"qraux":[1.35355339059327,1.39398295056584],"pivot":[1,2],"tol":1e-07,"rank":2},"df.residual":6,"xlevels":{},"call":{},"terms":{},"model":{"var2":[2,2,1,9,7,4,25,3],"var1":[2,1,2,5,7,8,9,5]}},"options":{"mode":"view","modes":["code","form","text","tree","view"]}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <p>Bspw. finden sich unter <code>fitted.values</code> die vorhergesagten Werte für jeden Fall.</p>
@@ -507,7 +507,7 @@ F-statistic: 2.967 on 1 and 5 DF,  p-value: 0.1456</code></pre>
 <p>Wenn wir diese verschiedenen Modelle jetzt vergleichen möchten, bietet sich eine Tabelle an.</p>
 <p>Es gibt zahlreiche Alternativen zur Erstellung von Regressionstabellen, mein persönlicher Favorit ist <code>modelsummary()</code> aus dem gleichnamigen Paket <a href="https://vincentarelbundock.github.io/modelsummary/">{modelsummary}</a>. Es kommt mit (nahezu) allen Modellarten zurecht und bietet darüber hinaus eine breite Palette an (u.a. auch <a href="#14_tabellenexport.qmd">Word-Output</a> - dazu später mehr) und auch Koeffizientenplots (auch dazu kommen wir noch). Außerdem ist die <a href="https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html">Dokumentation</a> hervorragend.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"modelsummary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fdz_install</span>(<span class="st">"modelsummary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span>
@@ -917,12 +917,12 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="waacxwotwa" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<div id="sgkkjwubau" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
 <style>html {
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
 }
 
-#waacxwotwa .gt_table {
+#sgkkjwubau .gt_table {
   display: table;
   border-collapse: collapse;
   margin-left: auto;
@@ -947,7 +947,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-left-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_heading {
+#sgkkjwubau .gt_heading {
   background-color: #FFFFFF;
   text-align: center;
   border-bottom-color: #FFFFFF;
@@ -959,12 +959,12 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_caption {
+#sgkkjwubau .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#waacxwotwa .gt_title {
+#sgkkjwubau .gt_title {
   color: #333333;
   font-size: 125%;
   font-weight: initial;
@@ -976,7 +976,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-width: 0;
 }
 
-#waacxwotwa .gt_subtitle {
+#sgkkjwubau .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
@@ -988,13 +988,13 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-width: 0;
 }
 
-#waacxwotwa .gt_bottom_border {
+#sgkkjwubau .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_col_headings {
+#sgkkjwubau .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1009,7 +1009,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_col_heading {
+#sgkkjwubau .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1029,7 +1029,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#waacxwotwa .gt_column_spanner_outer {
+#sgkkjwubau .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1041,15 +1041,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 4px;
 }
 
-#waacxwotwa .gt_column_spanner_outer:first-child {
+#sgkkjwubau .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#waacxwotwa .gt_column_spanner_outer:last-child {
+#sgkkjwubau .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#waacxwotwa .gt_column_spanner {
+#sgkkjwubau .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -1061,7 +1061,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   width: 100%;
 }
 
-#waacxwotwa .gt_group_heading {
+#sgkkjwubau .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1087,7 +1087,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   text-align: left;
 }
 
-#waacxwotwa .gt_empty_group_heading {
+#sgkkjwubau .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -1102,15 +1102,15 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: middle;
 }
 
-#waacxwotwa .gt_from_md > :first-child {
+#sgkkjwubau .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#waacxwotwa .gt_from_md > :last-child {
+#sgkkjwubau .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#waacxwotwa .gt_row {
+#sgkkjwubau .gt_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1129,7 +1129,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   overflow-x: hidden;
 }
 
-#waacxwotwa .gt_stub {
+#sgkkjwubau .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1142,7 +1142,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#waacxwotwa .gt_stub_row_group {
+#sgkkjwubau .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -1156,11 +1156,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   vertical-align: top;
 }
 
-#waacxwotwa .gt_row_group_first td {
+#sgkkjwubau .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#waacxwotwa .gt_summary_row {
+#sgkkjwubau .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1170,16 +1170,16 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#waacxwotwa .gt_first_summary_row {
+#sgkkjwubau .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_first_summary_row.thick {
+#sgkkjwubau .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#waacxwotwa .gt_last_summary_row {
+#sgkkjwubau .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1189,7 +1189,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_grand_summary_row {
+#sgkkjwubau .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -1199,7 +1199,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#waacxwotwa .gt_first_grand_summary_row {
+#sgkkjwubau .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -1209,11 +1209,11 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-top-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_striped {
+#sgkkjwubau .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#waacxwotwa .gt_table_body {
+#sgkkjwubau .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -1222,7 +1222,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-bottom-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_footnotes {
+#sgkkjwubau .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1236,7 +1236,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_footnote {
+#sgkkjwubau .gt_footnote {
   margin: 0px;
   font-size: 90%;
   padding-left: 4px;
@@ -1245,7 +1245,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#waacxwotwa .gt_sourcenotes {
+#sgkkjwubau .gt_sourcenotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -1259,7 +1259,7 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   border-right-color: #D3D3D3;
 }
 
-#waacxwotwa .gt_sourcenote {
+#sgkkjwubau .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -1267,64 +1267,64 @@ F-statistic: 2.335 on 3 and 3 DF,  p-value: 0.2521</code></pre>
   padding-right: 5px;
 }
 
-#waacxwotwa .gt_left {
+#sgkkjwubau .gt_left {
   text-align: left;
 }
 
-#waacxwotwa .gt_center {
+#sgkkjwubau .gt_center {
   text-align: center;
 }
 
-#waacxwotwa .gt_right {
+#sgkkjwubau .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#waacxwotwa .gt_font_normal {
+#sgkkjwubau .gt_font_normal {
   font-weight: normal;
 }
 
-#waacxwotwa .gt_font_bold {
+#sgkkjwubau .gt_font_bold {
   font-weight: bold;
 }
 
-#waacxwotwa .gt_font_italic {
+#sgkkjwubau .gt_font_italic {
   font-style: italic;
 }
 
-#waacxwotwa .gt_super {
+#sgkkjwubau .gt_super {
   font-size: 65%;
 }
 
-#waacxwotwa .gt_footnote_marks {
+#sgkkjwubau .gt_footnote_marks {
   font-style: italic;
   font-weight: normal;
   font-size: 75%;
   vertical-align: 0.4em;
 }
 
-#waacxwotwa .gt_asterisk {
+#sgkkjwubau .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#waacxwotwa .gt_indent_1 {
+#sgkkjwubau .gt_indent_1 {
   text-indent: 5px;
 }
 
-#waacxwotwa .gt_indent_2 {
+#sgkkjwubau .gt_indent_2 {
   text-indent: 10px;
 }
 
-#waacxwotwa .gt_indent_3 {
+#sgkkjwubau .gt_indent_3 {
   text-indent: 15px;
 }
 
-#waacxwotwa .gt_indent_4 {
+#sgkkjwubau .gt_indent_4 {
   text-indent: 20px;
 }
 
-#waacxwotwa .gt_indent_5 {
+#sgkkjwubau .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
