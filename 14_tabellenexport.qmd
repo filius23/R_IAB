@@ -17,7 +17,6 @@ library(officer) # eigentlicher Word-Export
 #| eval: false
 library(dplyr) # für die Datenvorbereitung
 library(modelsummary) # Tabellen vorbereiten
-library(skimr) # Tabellen vorbereiten
 library(janitor) # kreuztabellen
 library(flextable) # Formatierung der Tabelle für Word
 library(officer) # eigentlicher Word-Export
