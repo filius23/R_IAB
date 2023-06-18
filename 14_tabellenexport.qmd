@@ -15,7 +15,7 @@ library(officer) # eigentlicher Word-Export
 
 ```{r, message = F}
 #| eval: false
-library(dplyr) # für die Datenvorbereitung
+library(tidyverse) # für die Datenvorbereitung
 library(modelsummary) # Tabellen vorbereiten
 library(janitor) # kreuztabellen
 library(flextable) # Formatierung der Tabelle für Word
@@ -300,7 +300,7 @@ modelsummary(
 
 Mit Hilfe der Option `coef_rename =` und einer `function()` können wir die Variablenumbenennung auch automatisieren. 
 **[Mehr dazu hier](https://vincentarelbundock.github.io/modelsummary/articles/modelsummary.html#coef_rename)** 
-Dazges1u erstellen wir eine Funktion erstellen, welche bspw. mit `gsub()`  Variablennamen durch die gewünschte Beschriftung ersetzt:
+Dazu erstellen wir eine Funktion erstellen, welche bspw. mit `gsub()`  Variablennamen durch die gewünschte Beschriftung ersetzt:
 ```{r}
 
 rename_function <- function(old_names) {
@@ -365,9 +365,11 @@ library(officer)
 ```
 Zunnächst lesen wir mit `read_docx()` eine Vorlage ein, welche Einstellungen für das Word-Dokument enthält (Seitenformat,..) und fügen dann mit `body_add_flextable()` die Tabellen ein. Mit `body_add_par(.,"")` können wir leere Absätze einfügen. 
 ```{r, eval = F}
-read_docx("pfad/zur/Vorlage/DIN_A4_Vorlage.docx") %>%
+read_docx("Word_Vorlage.docx") %>%
+   body_add_par(value = "Metrische Variablen",style = "heading 1") %>%
    body_add_flextable(., value = met_ft ) %>% # flextable met_ft einfügen
-   body_add_par(.,"") %>% # leeren Absatz einfügen
+   body_add_par(.,"") %>% # leeren Absatz  einfügen
+   body_add_par(value = "Kategoriale Variablen",style = "heading 1") %>%
    body_add_flextable(., value = kat_ft ) %>% # flextable cat_ft einfügen
    body_add_par(.,"") %>% # leeren Absatz einfügen
    body_add_flextable(., value = regtab2 ) %>% # flextable regtab2 einfügen

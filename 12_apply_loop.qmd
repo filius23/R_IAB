@@ -50,8 +50,8 @@ pend12 %>%
   theme_minimal()
 ```
 
-Wir erstellen zunächst eine `function()`, welche zwei Argumente enthält. 
-Diese geben wir dann in einen `filter()`-Befehl innerhalb der `function()` an und verwenden sie außerdem, um einen Titel zu generieren. Das können wir mit `paste0()`, welches fixe Inputs und Vektoren-Inputs zu einem `character` zusammenfügt.[^paste]
+Wir erstellen zunächst eine `function()` mit einem Argument/Input. 
+Dieses Argument geben wir dann in einen `filter()`-Befehl innerhalb der `function()` an und verwenden sie außerdem, um einen Titel zu generieren. Das können wir mit `paste0()`, welches fixe Inputs und Vektoren-Inputs zu einem `character` zusammenfügt.[^paste]
 
 [^paste]: Es können auch mehrere  `character` das Ergebnis eines `paste0()` sein: siehe bspw. `paste0("no",1:5)`
 ```{r pltfun1def}
@@ -65,14 +65,14 @@ plot_fun1 <- function(famstat_filter){
 }
 ```
 
-Mit dieser `function()` können wir nur leicht die jeweiligen Plots erstellen:
+Mit dieser `function()` können wir nun leicht die jeweiligen Plots erstellen:
 ```{r plfn1}
 #| fig-width: 3
 #| fig-height: 3
 plot_fun1(famstat_filter = "Ledig")
 ```
 
-Wie kommen wir jetzt aber an alle Kombinationen?
+Wie kommen wir jetzt an die Plots für jede Ausprägung von `famstat_fct`?
 In einem ersten Schritt können wir mit `lapply()` eine Schleife über die Ausprägungen von `famstat_fct` erstellen und die Plots für die Frauen erstellen:
 ```{r plotlapply}
 #| fig-width: 3
@@ -101,7 +101,7 @@ plot_df %>% filter(famstand_fct ==  "Verheiratet") %>% pull(plots)
 
 Was jetzt aber, wenn wir mehrere Variablen berücksichtigen möchten?
 
-Dazges1u erstellen wir zunächst eine neue `function()` mit mehreren Argumenten und erweitern auch den `filter()` und `paste0()`-Befehl innerhalb der Funktionen:
+Dazu erstellen wir zunächst eine neue `function()` mit mehreren Argumenten und erweitern auch den `filter()` und `paste0()`-Befehl innerhalb der Funktionen:
 ```{r}
 plot_fun2 <- function(famstat_filter, zpsex_filter){
   pend12 %>%
