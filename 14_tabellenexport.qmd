@@ -420,7 +420,7 @@ pend_ue14 <-
 + Erstellen sie folgende Regressionsmodelle und erstellen Sie mit `{modelsummary}` eine Regressiontabelle:
 ```{r}
 #| eval: false
-m1 <- lm(azges1 ~ schul2_fct , data = pend_ue14)
+m1 <- lm(azges1 ~ schul2_fct, data = pend_ue14)
 m2 <- lm(azges1 ~ schul2_fct + zpalter, data = pend_ue14)
 ```
 
