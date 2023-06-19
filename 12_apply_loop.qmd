@@ -379,8 +379,8 @@ pend_ue12 <-
 
 ### Übung 2 {#manymod}
 
-+ Erstellen Sie eine Funktion, welche den `data.frame` `etb_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel:   
-`azges1 ~ zpsex_fct + ausb + palter` (Denken Sie daran, die Formula in `""` zu setzen).
++ Erstellen Sie eine Funktion, welche den `data.frame` `pend_ue12` für ein `lm()` verwendet und als Input eine Modellformel verwendet. Testen Sie Ihre Funktion mit folgender Formel:   
+`azges1 ~ zpsex_fct + schul2_fct + palter` (Denken Sie daran, die Formula in `""` zu setzen).
 
 + Erstellen Sie eine Liste mit folgenden Modellen:
     +  Modell 1 `"azges1 ~ zpsex_fct",`
