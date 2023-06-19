@@ -371,7 +371,9 @@ pend_ue12 <-
 ### Übung 1 {#manyplots}
 
 
-+ Erstellen Sie einen Scatterplot für die Variablen `bilzeit` und `palter`
++ Erstellen Sie jeweils einen Scatterplot der Variablen `bilzeit` und `palter` für die Ausprägungen von `schul2_fct` und `zpsex_fct`
++ Erstellen Sie also einen Scatterplot für `bilzeit` und `palter` für Frauen ohne Schulabschluss, Männer ohne Schulabschluss, Frauen mit Förderschule, usw.
+
 
 [Zurück nach oben](#ue12_00)
 
