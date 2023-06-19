@@ -410,7 +410,7 @@ pend_ue14 <-
   + Speichern Sie diesen mit `save_as_docx()`
 
 
-+ Erstellen Sie eine Übersichtstabelle zu `gkpol` (Größe der Wohngemeinde) und `schul2_fct` (Ausbildung).
++ Erstellen Sie eine Übersichtstabelle zu `famstand_fct` (Familienstand) und `schul2_fct` (Ausbildung).
   + Die Labels sind bereits im obigen Einlesebefehl gesetzt.
 
   
