@@ -2,6 +2,7 @@
 
 ```{r setup02, include=F}
 if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
+library(rmarkdown)
 if(Sys.getenv("USERNAME") == "filse" ) path <- "D:/oCloud/RFS/"
 library(tidyverse)
 library(kableExtra)
@@ -768,16 +769,26 @@ readxl::read_xlsx(path = "02_readin.xlsx",sheet = 1) %>%
 ```{r,eval =  F}
 # csv Datei
 dat1 <- read.table(file = "Dateiname.csv",sep = ";")
+
 # Rdata
 dat1 <- readRDS(file = "Dateiname.Rdata")
+
 # große csv
 library(vroom)
 dat1 <- vroom(file = "Dateiname.csv",delim = ";")
+
 # Stata dta
 library(haven)
 dat1 <- read_dta(file = "Dateiname.dta")
+
+# Stata große Dateien
+# deutlich schneller als mit haven, aber data.frame hat dann keine Labels
+library(readstata13)
+dat1 <- read.dta13(file = "Dateiname.dta",convert.factors = F) 
+
 # SPSS sav
 dat1 <- read_sav(file = "Dateiname.sav")
+
 # Excel
 dat1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "1")
 dat1 <- read_xlsx(path = "Dateiname.xlsx", sheet = "Tabellenblatt1")

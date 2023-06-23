@@ -134,6 +134,14 @@ plot_df2 <-
 plot_df2 %>% filter(famstand_fct ==  "Verheiratet",zpsex_fct ==  "Frauen") %>% pull(plots)
 plot_df2 %>% filter(famstand_fct ==  "Verheiratet",zpsex_fct ==  "Männer") %>% pull(plots)
 ```
+### Daumenkino aus der Plotserie
+
+Wenn wir dann mit `map()` die `print()` -Funktion anwenden, können wir die Plots im Viewer-Fenster rechts unten durchklicken:
+
+```{r}
+#| eval: false
+plot_df2$plots %>% map(~print(.x))
+```
 
 
 ### [Übung](#manyplts) {#ue12_00}

@@ -348,17 +348,17 @@ Number of Fisher Scoring iterations: 3</code></pre>
 \end{equation*}\]</span></p>
 <p>Diesen Ausdruck müssten wir nach <code>palter</code> ableiten, um eine Antwort zu bekommen um wieviel sich die vorhergesagte Wahrscheinlichkeit für <span class="math inline">\(\texttt{soc\_med} = 1\)</span> mit einem um einen Jahr höheren Befragtenalter verändert. Durch die Tatsache dass <code>palter</code> hier im Exponenten der e-Funktion und sowohl im Dividenden als auch Divisor (“oben und unten”) steht, wird die Ableitung hier aber deutlich komplizierter als das in den bisherigen <code>lm()</code>-Modellen der Fall war. Für uns ist an dieser Stelle aber nur wichtig, dass wir für die Berechnung der Veränderung der vorhergesagten Wahrscheinlichkeiten die sog. marginalen Effekte aus dem Paket <code>{marginaleffects}</code> brauchen. Darin findet sich der Befehl <code>avg_slopes()</code>, welcher uns erlaubt ein <span class="math inline">\(\beta\)</span> zwischen dem Einkommen und der <em>Wahrscheinlichkeit</em> für <span class="math inline">\(\texttt{soc\_med} = 1\)</span> zu berechnen. Dieses wird auch als <em>average marginal effect</em> bezeichnet, da sie den <em>durchschnittlichen marginalen Effekt</em> der betrachteten unabhängigen Variable auf die abhängige Variable wiedergeben.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"marginaleffects"</span>) <span class="co"># nur einmal nötig</span></span>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fdz_install</span>(<span class="st">"marginaleffects"</span>) <span class="co"># nur einmal nötig</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(marginaleffects)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_slopes</span>(m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-   Term Estimate Std. Error     z Pr(&gt;|z|)   2.5 %  97.5 %
- palter  -0.0142   0.000266 -53.4   &lt;0.001 -0.0147 -0.0137
+   Term Estimate Std. Error     z Pr(&gt;|z|)   S   2.5 %  97.5 %
+ palter  -0.0142   0.000266 -53.4   &lt;0.001 Inf -0.0147 -0.0137
 
-Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </code></pre>
+Columns: term, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high </code></pre>
 </div>
 </div>
 <div class="inter">
@@ -372,12 +372,12 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
 <div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">predictions</span>(m2, <span class="at">newdata =</span> <span class="fu">datagrid</span>(<span class="at">palter  =</span> <span class="fu">c</span>(<span class="dv">18</span>,<span class="dv">25</span>,<span class="dv">65</span>))) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
- Estimate Pr(&gt;|z|) 2.5 % 97.5 % palter
-    0.867   &lt;0.001 0.850  0.881     18
-    0.795   &lt;0.001 0.777  0.812     25
-    0.170   &lt;0.001 0.155  0.186     65
+ Estimate Pr(&gt;|z|)     S 2.5 % 97.5 % palter
+    0.867   &lt;0.001 539.1 0.850  0.881     18
+    0.795   &lt;0.001 447.5 0.777  0.812     25
+    0.170   &lt;0.001 572.9 0.155  0.186     65
 
-Columns: rowid, estimate, p.value, conf.low, conf.high, soc_med, palter </code></pre>
+Columns: rowid, estimate, p.value, s.value, conf.low, conf.high, soc_med, palter </code></pre>
 </div>
 </div>
 <p>Das können wir in einem <code>ggplot()</code> grafisch darstellen:</p>
@@ -426,10 +426,10 @@ Log-Likelihood:  -582.6   Adj. Pseudo R2: -0.468364
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">avg_slopes</span>(fe_log1,<span class="at">by =</span> <span class="cn">TRUE</span>, <span class="at">variables =</span> <span class="st">"palter"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
-   Term Estimate Std. Error     z Pr(&gt;|z|)   2.5 % 97.5 %
- palter   0.0223     0.0313 0.711    0.477 -0.0391 0.0837
+   Term Estimate Std. Error     z Pr(&gt;|z|)   S   2.5 % 97.5 %
+ palter   0.0223     0.0313 0.711    0.477 1.1 -0.0391 0.0837
 
-Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </code></pre>
+Columns: term, estimate, std.error, statistic, p.value, s.value, conf.low, conf.high </code></pre>
 </div>
 </div>
 </section>
@@ -448,8 +448,8 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
 </ul>
 <p><strong>Nicht-Erwerbstaetige: Stellensuche in den letzten vier Wochen?</strong></p>
 <p>als abhängiger Variable (1 = ja, 0 = nein.) Verwenden Sie das Alter <code>palter</code> als unabhängige Variable.</p>
-<p><strong>Bonusübung</strong>: Stellen Sie die * adjusted predictions* in einem Plot auf Basis der <a href="#pred">Predictions</a> dar.</p>
 <p>Berechnen Sie die AME mit <code>marginaleffects</code>.</p>
+<p><strong>Bonusübung</strong>: Stellen Sie die <em>adjusted predictions</em> in einem Plot auf Basis der <a href="#pred">Predictions</a> dar.</p>
 </section>
 <section id="anhang-hintergrund-zu-log.-regression-average-marginal-effects" class="level2" data-number="10.7">
 <h2 data-number="10.7" class="anchored" data-anchor-id="anhang-hintergrund-zu-log.-regression-average-marginal-effects"><span class="header-section-number">10.7</span> Anhang: Hintergrund zu log. Regression &amp; average marginal effects</h2>
@@ -527,14 +527,26 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
 <div class="cell">
 <div class="cell-output-display">
 
-<div id="equljyomcz" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
-<style>html {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+<div id="bamgaydmsw" style="padding-left:0px;padding-right:0px;padding-top:10px;padding-bottom:10px;overflow-x:auto;overflow-y:auto;width:auto;height:auto;">
+<style>#bamgaydmsw table {
+  font-family: system-ui, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-#equljyomcz .gt_table {
+#bamgaydmsw thead, #bamgaydmsw tbody, #bamgaydmsw tfoot, #bamgaydmsw tr, #bamgaydmsw td, #bamgaydmsw th {
+  border-style: none;
+}
+
+#bamgaydmsw p {
+  margin: 0;
+  padding: 0;
+}
+
+#bamgaydmsw .gt_table {
   display: table;
   border-collapse: collapse;
+  line-height: normal;
   margin-left: auto;
   margin-right: auto;
   color: #333333;
@@ -557,24 +569,12 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-left-color: #D3D3D3;
 }
 
-#equljyomcz .gt_heading {
-  background-color: #FFFFFF;
-  text-align: right;
-  border-bottom-color: #FFFFFF;
-  border-left-style: none;
-  border-left-width: 1px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 1px;
-  border-right-color: #D3D3D3;
-}
-
-#equljyomcz .gt_caption {
+#bamgaydmsw .gt_caption {
   padding-top: 4px;
   padding-bottom: 4px;
 }
 
-#equljyomcz .gt_title {
+#bamgaydmsw .gt_title {
   color: #333333;
   font-size: small;
   font-weight: initial;
@@ -586,25 +586,37 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-bottom-width: 0;
 }
 
-#equljyomcz .gt_subtitle {
+#bamgaydmsw .gt_subtitle {
   color: #333333;
   font-size: 85%;
   font-weight: initial;
-  padding-top: 0;
-  padding-bottom: 6px;
+  padding-top: 3px;
+  padding-bottom: 5px;
   padding-left: 5px;
   padding-right: 5px;
   border-top-color: #FFFFFF;
   border-top-width: 0;
 }
 
-#equljyomcz .gt_bottom_border {
+#bamgaydmsw .gt_heading {
+  background-color: #FFFFFF;
+  text-align: right;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#bamgaydmsw .gt_bottom_border {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
 }
 
-#equljyomcz .gt_col_headings {
+#bamgaydmsw .gt_col_headings {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -619,7 +631,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-right-color: #D3D3D3;
 }
 
-#equljyomcz .gt_col_heading {
+#bamgaydmsw .gt_col_heading {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -639,7 +651,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   overflow-x: hidden;
 }
 
-#equljyomcz .gt_column_spanner_outer {
+#bamgaydmsw .gt_column_spanner_outer {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -651,15 +663,15 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   padding-right: 4px;
 }
 
-#equljyomcz .gt_column_spanner_outer:first-child {
+#bamgaydmsw .gt_column_spanner_outer:first-child {
   padding-left: 0;
 }
 
-#equljyomcz .gt_column_spanner_outer:last-child {
+#bamgaydmsw .gt_column_spanner_outer:last-child {
   padding-right: 0;
 }
 
-#equljyomcz .gt_column_spanner {
+#bamgaydmsw .gt_column_spanner {
   border-bottom-style: solid;
   border-bottom-width: 2px;
   border-bottom-color: #D3D3D3;
@@ -671,7 +683,11 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   width: 100%;
 }
 
-#equljyomcz .gt_group_heading {
+#bamgaydmsw .gt_spanner_row {
+  border-bottom-style: hidden;
+}
+
+#bamgaydmsw .gt_group_heading {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -697,7 +713,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   text-align: left;
 }
 
-#equljyomcz .gt_empty_group_heading {
+#bamgaydmsw .gt_empty_group_heading {
   padding: 0.5px;
   color: #333333;
   background-color: #FFFFFF;
@@ -712,15 +728,15 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   vertical-align: middle;
 }
 
-#equljyomcz .gt_from_md > :first-child {
+#bamgaydmsw .gt_from_md > :first-child {
   margin-top: 0;
 }
 
-#equljyomcz .gt_from_md > :last-child {
+#bamgaydmsw .gt_from_md > :last-child {
   margin-bottom: 0;
 }
 
-#equljyomcz .gt_row {
+#bamgaydmsw .gt_row {
   padding-top: 1px;
   padding-bottom: 1px;
   padding-left: 5px;
@@ -739,7 +755,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   overflow-x: hidden;
 }
 
-#equljyomcz .gt_stub {
+#bamgaydmsw .gt_stub {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -752,7 +768,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   padding-right: 5px;
 }
 
-#equljyomcz .gt_stub_row_group {
+#bamgaydmsw .gt_stub_row_group {
   color: #333333;
   background-color: #FFFFFF;
   font-size: 100%;
@@ -766,11 +782,15 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   vertical-align: top;
 }
 
-#equljyomcz .gt_row_group_first td {
+#bamgaydmsw .gt_row_group_first td {
   border-top-width: 2px;
 }
 
-#equljyomcz .gt_summary_row {
+#bamgaydmsw .gt_row_group_first th {
+  border-top-width: 2px;
+}
+
+#bamgaydmsw .gt_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -780,16 +800,16 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   padding-right: 5px;
 }
 
-#equljyomcz .gt_first_summary_row {
+#bamgaydmsw .gt_first_summary_row {
   border-top-style: solid;
   border-top-color: #D3D3D3;
 }
 
-#equljyomcz .gt_first_summary_row.thick {
+#bamgaydmsw .gt_first_summary_row.thick {
   border-top-width: 2px;
 }
 
-#equljyomcz .gt_last_summary_row {
+#bamgaydmsw .gt_last_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -799,7 +819,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-bottom-color: #D3D3D3;
 }
 
-#equljyomcz .gt_grand_summary_row {
+#bamgaydmsw .gt_grand_summary_row {
   color: #333333;
   background-color: #FFFFFF;
   text-transform: inherit;
@@ -809,7 +829,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   padding-right: 5px;
 }
 
-#equljyomcz .gt_first_grand_summary_row {
+#bamgaydmsw .gt_first_grand_summary_row {
   padding-top: 8px;
   padding-bottom: 8px;
   padding-left: 5px;
@@ -819,11 +839,21 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-top-color: #D3D3D3;
 }
 
-#equljyomcz .gt_striped {
+#bamgaydmsw .gt_last_grand_summary_row_top {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-bottom-style: double;
+  border-bottom-width: 6px;
+  border-bottom-color: #D3D3D3;
+}
+
+#bamgaydmsw .gt_striped {
   background-color: rgba(128, 128, 128, 0.05);
 }
 
-#equljyomcz .gt_table_body {
+#bamgaydmsw .gt_table_body {
   border-top-style: solid;
   border-top-width: 2px;
   border-top-color: #D3D3D3;
@@ -832,7 +862,7 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-bottom-color: #D3D3D3;
 }
 
-#equljyomcz .gt_footnotes {
+#bamgaydmsw .gt_footnotes {
   color: #333333;
   background-color: #FFFFFF;
   border-bottom-style: none;
@@ -846,30 +876,8 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   border-right-color: #D3D3D3;
 }
 
-#equljyomcz .gt_footnote {
+#bamgaydmsw .gt_footnote {
   margin: 0px;
-  font-size: 90%;
-  padding-left: 4px;
-  padding-right: 4px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-
-#equljyomcz .gt_sourcenotes {
-  color: #333333;
-  background-color: #FFFFFF;
-  border-bottom-style: none;
-  border-bottom-width: 2px;
-  border-bottom-color: #D3D3D3;
-  border-left-style: none;
-  border-left-width: 2px;
-  border-left-color: #D3D3D3;
-  border-right-style: none;
-  border-right-width: 2px;
-  border-right-color: #D3D3D3;
-}
-
-#equljyomcz .gt_sourcenote {
   font-size: 90%;
   padding-top: 4px;
   padding-bottom: 4px;
@@ -877,179 +885,165 @@ Columns: term, estimate, std.error, statistic, p.value, conf.low, conf.high </co
   padding-right: 5px;
 }
 
-#equljyomcz .gt_left {
+#bamgaydmsw .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#bamgaydmsw .gt_sourcenote {
+  font-size: 90%;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#bamgaydmsw .gt_left {
   text-align: left;
 }
 
-#equljyomcz .gt_center {
+#bamgaydmsw .gt_center {
   text-align: center;
 }
 
-#equljyomcz .gt_right {
+#bamgaydmsw .gt_right {
   text-align: right;
   font-variant-numeric: tabular-nums;
 }
 
-#equljyomcz .gt_font_normal {
+#bamgaydmsw .gt_font_normal {
   font-weight: normal;
 }
 
-#equljyomcz .gt_font_bold {
+#bamgaydmsw .gt_font_bold {
   font-weight: bold;
 }
 
-#equljyomcz .gt_font_italic {
+#bamgaydmsw .gt_font_italic {
   font-style: italic;
 }
 
-#equljyomcz .gt_super {
+#bamgaydmsw .gt_super {
   font-size: 65%;
 }
 
-#equljyomcz .gt_footnote_marks {
-  font-style: italic;
-  font-weight: normal;
+#bamgaydmsw .gt_footnote_marks {
   font-size: 75%;
   vertical-align: 0.4em;
+  position: initial;
 }
 
-#equljyomcz .gt_asterisk {
+#bamgaydmsw .gt_asterisk {
   font-size: 100%;
   vertical-align: 0;
 }
 
-#equljyomcz .gt_indent_1 {
+#bamgaydmsw .gt_indent_1 {
   text-indent: 5px;
 }
 
-#equljyomcz .gt_indent_2 {
+#bamgaydmsw .gt_indent_2 {
   text-indent: 10px;
 }
 
-#equljyomcz .gt_indent_3 {
+#bamgaydmsw .gt_indent_3 {
   text-indent: 15px;
 }
 
-#equljyomcz .gt_indent_4 {
+#bamgaydmsw .gt_indent_4 {
   text-indent: 20px;
 }
 
-#equljyomcz .gt_indent_5 {
+#bamgaydmsw .gt_indent_5 {
   text-indent: 25px;
 }
 </style>
-
-<table class="gt_table table table-sm table-striped small" data-quarto-postprocess="true">
-<thead class="gt_col_headings">
-<tr class="header">
-<th id="$$P$$" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">$$P$$</th>
-<th id="$$Odds = \frac{P}{1-P}$$" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">$$Odds = \frac{P}{1-P}$$</th>
-<th class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col"></th>
-<th id="$$Logits = log(Odds)$$" class="gt_col_heading gt_columns_bottom_border gt_right" data-quarto-table-cell-role="th" scope="col">$$Logits = log(Odds)$$</th>
-</tr>
-</thead>
-<tbody class="gt_table_body">
-<tr class="odd">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{1}{2}$$</p>
+<table class="gt_table" style="table-layout: fixed;; width: 0px" data-quarto-disable-processing="false" data-quarto-bootstrap="false">
+  <colgroup>
+    <col style="width:120px;">
+    <col style="width:200px;">
+    <col style="width:100px;">
+    <col style="width:200px;">
+  </colgroup>
+  <thead>
+    
+    <tr class="gt_col_headings">
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$P$$">$$P$$</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$Odds = \frac{P}{1-P}$$">$$Odds = \frac{P}{1-P}$$</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id=""></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1" scope="col" id="$$Logits = log(Odds)$$">$$Logits = log(Odds)$$</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{2}$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$1$$</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$1$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 1:1</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:1</p>
 </div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>0</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>0</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{3}$$</p>
 </div></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{1}{3}$$</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.5$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$0.5$$</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:2</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 1:2</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-0.6931</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{4}$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>-0.6931</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.33$$</p>
 </div></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{1}{4}$$</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:3</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$0.33$$</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-1.0986</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{5}$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 1:3</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$0.25$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>-1.0986</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 1:5</p>
 </div></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{1}{5}$$</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>-1.3863</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{2}{3}$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$0.25$$</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$2$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 1:5</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 2:1</p>
 </div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>-1.3863</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>0.6931</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{3}{4}$$</p>
 </div></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{2}{3}$$</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$3$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$2$$</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p>oder 3:1</p>
 </div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 2:1</p>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>1.0986</p>
+</div></td></tr>
+    <tr><td headers="p" class="gt_row gt_right"><div class="gt_from_md"><p>$$1$$</p>
 </div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>0.6931</p>
+<td headers="odds1" class="gt_row gt_right"><div class="gt_from_md"><p>$$\frac{1}{0}$$</p>
 </div></td>
-</tr>
-<tr class="even">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$\frac{3}{4}$$</p>
+<td headers="odds2" class="gt_row gt_right"><div class="gt_from_md"><p><em>sicher</em></p>
 </div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$3$$</p>
-</div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p>oder 3:1</p>
-</div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>1.0986</p>
-</div></td>
-</tr>
-<tr class="odd">
-<td class="gt_row gt_right" headers="p"><div class="gt_from_md">
-<p>$$1$$</p>
-</div></td>
-<td class="gt_row gt_right" headers="odds1"><div class="gt_from_md">
-<p>$$\frac{1}{0}$$</p>
-</div></td>
-<td class="gt_row gt_right" headers="odds2"><div class="gt_from_md">
-<p><em>sicher</em></p>
-</div></td>
-<td class="gt_row gt_right" headers="logodds"><div class="gt_from_md">
-<p>Inf</p>
-</div></td>
-</tr>
-</tbody>
+<td headers="logodds" class="gt_row gt_right"><div class="gt_from_md"><p>Inf</p>
+</div></td></tr>
+  </tbody>
+  
+  
 </table>
-
 </div>
 </div>
 </div>

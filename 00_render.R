@@ -2,6 +2,8 @@ if(Sys.getenv("USERNAME") == "filse" ) .libPaths("D:/R-library4")
 
 
   in1 <- list.files(pattern = "^\\d{2}.+\\.qmd")[-c(1,6,8,10,16,20:22)]
+  
+  in1
   walk(in1[3:14],
        ~knitr::purl(input = .x,
                     output= paste0("./prog_draft/",gsub(x = .x,"\\.qmd","_syntax.R")),
